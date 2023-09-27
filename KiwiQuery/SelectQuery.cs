@@ -16,12 +16,14 @@ namespace KiwiQuery
     {
         private string? table;
         private WhereClauseBuilder whereClauseBuilder;
+        private JoinClauseBuilder joinClauseBuilder;
         private List<Column> selection;
 
         public SelectQuery(IEnumerable<Column> selection, Schema schema) : base(schema)
         {
             this.table = null;
             this.whereClauseBuilder = new();
+            this.joinClauseBuilder = new(schema);
             this.selection = selection.ToList();
         }
 
@@ -85,6 +87,34 @@ namespace KiwiQuery
         }
 
         public TReader Fetch<TReader>() where TReader : DbDataReader => (TReader)this.Fetch();
+
+        #region JOIN clause methods
+
+        public SelectQuery Join(Table table, Column firstColumn, Column secondColumn)
+        {
+            this.joinClauseBuilder.Join(table, firstColumn, secondColumn);
+            return this;
+        }
+
+        public SelectQuery Join(Table table, string firstColumn, string secondColumn)
+        {
+            this.joinClauseBuilder.Join(table, firstColumn, secondColumn);
+            return this;
+        }
+
+        public SelectQuery Join(string table, string firstColumn, string secondColumn)
+        {
+            this.joinClauseBuilder.Join(table, firstColumn, secondColumn);
+            return this;
+        }
+
+        public SelectQuery Join(Column columnToJoin, Column matchingColumn)
+        {
+            this.joinClauseBuilder.Join(columnToJoin, matchingColumn);
+            return this;
+        }
+
+        #endregion
 
         #region WHERE clause methods
 

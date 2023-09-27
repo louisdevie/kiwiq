@@ -85,5 +85,7 @@ namespace KiwiQuery.Sql
         public abstract QueryBuilder AppendCommaSeparatedElements(IEnumerable<IWriteable> elements);
         public abstract QueryBuilder AppendFromKeyword();
         public abstract QueryBuilder AppendSelectKeyword();
+        public abstract QueryBuilder AppendJoinKeyword();
+        public abstract QueryBuilder AppendOnKeyword();
     }
 }

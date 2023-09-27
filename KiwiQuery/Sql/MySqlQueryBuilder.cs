@@ -61,6 +61,10 @@ namespace KiwiQuery.Sql
 
         public override QueryBuilder AppendSelectKeyword() => AppendKeywords("SELECT");
 
+        public override QueryBuilder AppendJoinKeyword() => AppendKeywords("JOIN");
+
+        public override QueryBuilder AppendOnKeyword() => AppendKeywords("ON");
+
 
         #endregion
 

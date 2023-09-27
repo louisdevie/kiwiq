@@ -7,7 +7,7 @@ namespace KiwiQuery.Expressions
         private string name;
         private Table? table;
         private Schema schema;
-        public string? alias;
+        private string? alias;
 
         public Column(string name, Table table) : this(name, table.Schema)
         {
@@ -21,6 +21,8 @@ namespace KiwiQuery.Expressions
             this.schema = schema;
             this.alias = null;
         }
+
+        public Table? Table => this.table;
 
         public Column As(string alias)
         {
