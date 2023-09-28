@@ -75,6 +75,7 @@ namespace KiwiQuery
 
             result.AppendTableOrColumnName(this.table);
 
+            this.joinClauseBuilder.WriteClauseTo(result);
             this.whereClauseBuilder.WriteClauseTo(result);
 
             return result.ToString();
