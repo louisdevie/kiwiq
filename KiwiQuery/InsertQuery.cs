@@ -91,10 +91,12 @@ namespace KiwiQuery
                 .NewQueryBuilder(this.Command)
                 .AppendLastInsertIdQuery()
                 .ToString();
-            object? id = this.Command.ExecuteScalar();
+            object? id = selectIdCommand.ExecuteScalar();
 
             if (id is int intId) return intId;
             else if (id is long longId) return (int)longId;
+            else if (id is uint uintId) return (int)uintId;
+            else if (id is ulong ulongId) return (int)ulongId;
             else return -1;
         }
     }
