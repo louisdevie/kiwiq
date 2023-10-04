@@ -46,8 +46,6 @@ namespace KiwiQuery
 
         public UpdateQuery Set(string column, object? value)
         {
-            DbParameter param = this.Command.CreateParameter();
-            param.Value = value;
             this.values.Add(new ValueToUpdate(new Parameter(value), column));
             return this;
         }
@@ -58,7 +56,7 @@ namespace KiwiQuery
             return this;
         }
 
-        internal override string BuildCommandText(QueryBuilder result)
+        protected override string BuildCommandText(QueryBuilder result)
         {
             result.AppendUpdateKeyword()
                   .AppendTableOrColumnName(this.table)

@@ -64,6 +64,10 @@ namespace KiwiQuery.Sql
 
         public override QueryBuilder AppendJoinKeyword() => AppendKeywords("JOIN");
 
+        public override QueryBuilder AppendInnerKeyword() => AppendKeywords("INNER");
+
+        public override QueryBuilder AppendLeftKeyword() => AppendKeywords("LEFT");
+
         public override QueryBuilder AppendOnKeyword() => AppendKeywords("ON");
 
         public override QueryBuilder AppendNull() => AppendKeywords("NULL");

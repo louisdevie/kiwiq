@@ -103,6 +103,8 @@ namespace KiwiQuery.Sql
         public abstract QueryBuilder AppendFromKeyword();
         public abstract QueryBuilder AppendSelectKeyword();
         public abstract QueryBuilder AppendJoinKeyword();
+        public abstract QueryBuilder AppendInnerKeyword();
+        public abstract QueryBuilder AppendLeftKeyword();
         public abstract QueryBuilder AppendOnKeyword();
         public abstract QueryBuilder AppendNamedParameter(string name);
         public abstract QueryBuilder AppendArithmeticOperator(ArithmeticOperator op);

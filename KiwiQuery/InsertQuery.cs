@@ -42,9 +42,7 @@ namespace KiwiQuery
 
         public InsertQuery Value(object? value)
         {
-            DbParameter param = this.Command.CreateParameter();
-            param.Value = value;
-            this.values.Add(new ValueToInsert(new Parameter(param)));
+            this.values.Add(new ValueToInsert(new Parameter(value)));
             return this;
         }
 
@@ -62,9 +60,7 @@ namespace KiwiQuery
 
         public InsertQuery Value(string column, object? value)
         {
-            DbParameter param = this.Command.CreateParameter();
-            param.Value = value;
-            this.values.Add(new ValueToInsert(new Parameter(param), column));
+            this.values.Add(new ValueToInsert(new Parameter(value), column));
             return this;
         }
 
@@ -74,7 +70,7 @@ namespace KiwiQuery
             return this;
         }
 
-        internal override string BuildCommandText(QueryBuilder result)
+        protected override string BuildCommandText(QueryBuilder result)
         {
             result.AppendInsertIntoKeywords()
                   .AppendTableOrColumnName(table);

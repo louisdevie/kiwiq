@@ -19,7 +19,7 @@ namespace KiwiQuery
             this.command = this.schema.Connection.CreateCommand();
         }
 
-        internal abstract string BuildCommandText(QueryBuilder qb);
+        protected abstract string BuildCommandText(QueryBuilder qb);
 
         protected void BuildCommand()
         {

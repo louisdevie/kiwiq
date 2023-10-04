@@ -6,7 +6,7 @@ using System.Data.Common;
 
 namespace KiwiQuery
 {
-    public class SelectQuery : Query
+    public class SelectQuery : Query, IWriteable
     {
         private string? table;
         private WhereClauseBuilder whereClauseBuilder;
@@ -50,7 +50,7 @@ namespace KiwiQuery
             return this;
         }
 
-        internal override string BuildCommandText(QueryBuilder result)
+        public void WriteTo(QueryBuilder result)
         {
             result.AppendSelectKeyword();
 
@@ -71,7 +71,11 @@ namespace KiwiQuery
 
             this.joinClauseBuilder.WriteClauseTo(result);
             this.whereClauseBuilder.WriteClauseTo(result);
+        }
 
+        protected override string BuildCommandText(QueryBuilder result)
+        {
+            this.WriteTo(result);
             return result.ToString();
         }
 
@@ -108,6 +112,29 @@ namespace KiwiQuery
             this.joinClauseBuilder.Join(columnToJoin, matchingColumn);
             return this;
         }
+        public SelectQuery LeftJoin(Table table, Column firstColumn, Column secondColumn)
+        {
+            this.joinClauseBuilder.LeftJoin(table, firstColumn, secondColumn);
+            return this;
+        }
+
+        public SelectQuery LeftJoin(Table table, string firstColumn, string secondColumn)
+        {
+            this.joinClauseBuilder.LeftJoin(table, firstColumn, secondColumn);
+            return this;
+        }
+
+        public SelectQuery LeftJoin(string table, string firstColumn, string secondColumn)
+        {
+            this.joinClauseBuilder.LeftJoin(table, firstColumn, secondColumn);
+            return this;
+        }
+
+        public SelectQuery LeftJoin(Column columnToJoin, Column matchingColumn)
+        {
+            this.joinClauseBuilder.LeftJoin(columnToJoin, matchingColumn);
+            return this;
+        }
 
         #endregion
 
@@ -118,7 +145,6 @@ namespace KiwiQuery
             this.whereClauseBuilder.Where(predicate);
             return this;
         }
-
         #endregion
     }
 }

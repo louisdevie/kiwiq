@@ -11,19 +11,32 @@ namespace KiwiQuery.Clauses
 {
     internal class JoinClause : Clause
     {
+        public enum JoinType { Inner, Left }
+
         private Table table;
         private Column firstColumn;
         private Column secondColumn;
+        private JoinType type;
 
-        public JoinClause(Table table, Column firstColumn, Column secondColumn)
+        public JoinClause(Table table, Column firstColumn, Column secondColumn, JoinType type)
         {
             this.table = table;
             this.firstColumn = firstColumn;
             this.secondColumn = secondColumn;
+            this.type = type;
         }
 
         public override void WriteTo(QueryBuilder builder)
         {
+            switch (this.type)
+            {
+                case JoinType.Inner:
+                    builder.AppendInnerKeyword();
+                    break;
+                case JoinType.Left:
+                    builder.AppendLeftKeyword();
+                    break;
+            }
             builder.AppendJoinKeyword();
             this.table.WriteTo(builder);
 
