@@ -2,13 +2,7 @@
 using KiwiQuery.Expressions;
 using KiwiQuery.Predicates;
 using KiwiQuery.Sql;
-using System;
-using System.Collections.Generic;
 using System.Data.Common;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KiwiQuery
 {
@@ -17,9 +11,9 @@ namespace KiwiQuery
         private string? table;
         private WhereClauseBuilder whereClauseBuilder;
         private JoinClauseBuilder joinClauseBuilder;
-        private List<Column> selection;
+        private List<Value> selection;
 
-        public SelectQuery(IEnumerable<Column> selection, Schema schema) : base(schema)
+        public SelectQuery(IEnumerable<Value> selection, Schema schema) : base(schema)
         {
             this.table = null;
             this.whereClauseBuilder = new();
@@ -56,7 +50,7 @@ namespace KiwiQuery
             return this;
         }
 
-        protected override string BuildCommandText(QueryBuilder result)
+        internal override string BuildCommandText(QueryBuilder result)
         {
             result.AppendSelectKeyword();
 

@@ -56,6 +56,24 @@ namespace KiwiQuery.Sql
             return this;
         }
 
+        public QueryBuilder AppendCommaSeparatedElements(IEnumerable<IWriteable> elements)
+        {
+            bool firstElement = true;
+            foreach (IWriteable element in elements)
+            {
+                if (firstElement)
+                {
+                    firstElement = false;
+                }
+                else
+                {
+                    this.AppendComma();
+                }
+                element.WriteTo(this);
+            }
+            return this;
+        }
+
         public override string ToString()
         {
             if (this.openBrackets > 0)
@@ -82,10 +100,12 @@ namespace KiwiQuery.Sql
         public abstract QueryBuilder AppendSetClauseAssignment();
         public abstract QueryBuilder AppendAsKeyword();
         public abstract QueryBuilder AppendAllColumnsWildcard();
-        public abstract QueryBuilder AppendCommaSeparatedElements(IEnumerable<IWriteable> elements);
         public abstract QueryBuilder AppendFromKeyword();
         public abstract QueryBuilder AppendSelectKeyword();
         public abstract QueryBuilder AppendJoinKeyword();
         public abstract QueryBuilder AppendOnKeyword();
+        public abstract QueryBuilder AppendNamedParameter(string name);
+        public abstract QueryBuilder AppendArithmeticOperator(ArithmeticOperator op);
+        public abstract QueryBuilder AppendNull();
     }
 }

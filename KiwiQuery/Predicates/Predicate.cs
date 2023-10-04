@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using KiwiQuery.Sql;
+﻿using KiwiQuery.Expressions;
 
 namespace KiwiQuery.Predicates
 {
-    public abstract class Predicate : IWriteable
-    {
-        public abstract void WriteTo(QueryBuilder builder);
-    }
+    public abstract class Predicate : Value { }
 }

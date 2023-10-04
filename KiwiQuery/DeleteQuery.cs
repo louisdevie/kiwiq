@@ -16,7 +16,7 @@ namespace KiwiQuery
             this.whereClauseBuilder = new();
         }
 
-        protected override string BuildCommandText(QueryBuilder result)
+        internal override string BuildCommandText(QueryBuilder result)
         {
             result.AppendDeleteFromKeywords()
                   .AppendTableOrColumnName(this.table);

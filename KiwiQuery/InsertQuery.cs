@@ -1,4 +1,5 @@
-﻿using KiwiQuery.Sql;
+﻿using KiwiQuery.Expressions;
+using KiwiQuery.Sql;
 using System.Data.Common;
 
 namespace KiwiQuery
@@ -9,22 +10,23 @@ namespace KiwiQuery
 
         private class ValueToInsert
         {
-            string? column;
-            DbParameter parameter;
+            private string? column;
+            private Value value;
 
             public bool HasColumn => this.column != null;
 
             public string Column => this.column ?? throw new InvalidOperationException("Found mixed named and unnamed columns.");
 
-            public DbParameter Parameter => this.parameter;
+            public Value Value => this.value;
 
-            public ValueToInsert(DbParameter parameter, string? column = null)
+            public ValueToInsert(Value value, string? column = null)
             {
                 this.column = column;
-                this.parameter = parameter;
+                this.value = value;
             }
         }
         private List<ValueToInsert> values;
+        
 
         public InsertQuery(string table, Schema schema) : base(schema)
         {
@@ -32,11 +34,29 @@ namespace KiwiQuery
             this.values = new();
         }
 
+        public InsertQuery Value(Value value)
+        {
+            this.values.Add(new ValueToInsert(value));
+            return this;
+        }
+
         public InsertQuery Value(object? value)
         {
             DbParameter param = this.Command.CreateParameter();
             param.Value = value;
-            this.values.Add(new ValueToInsert(param));
+            this.values.Add(new ValueToInsert(new Parameter(param)));
+            return this;
+        }
+
+        public InsertQuery Value(SelectQuery subQuery)
+        {
+            this.values.Add(new ValueToInsert(new SubQuery(subQuery)));
+            return this;
+        }
+
+        public InsertQuery Value(string column, Value value)
+        {
+            this.values.Add(new ValueToInsert(value, column));
             return this;
         }
 
@@ -44,11 +64,17 @@ namespace KiwiQuery
         {
             DbParameter param = this.Command.CreateParameter();
             param.Value = value;
-            this.values.Add(new ValueToInsert(param, column));
+            this.values.Add(new ValueToInsert(new Parameter(param), column));
             return this;
         }
 
-        protected override string BuildCommandText(QueryBuilder result)
+        public InsertQuery Value(string column, SelectQuery subQuery)
+        {
+            this.values.Add(new ValueToInsert(new SubQuery(subQuery), column));
+            return this;
+        }
+
+        internal override string BuildCommandText(QueryBuilder result)
         {
             result.AppendInsertIntoKeywords()
                   .AppendTableOrColumnName(table);
@@ -66,15 +92,8 @@ namespace KiwiQuery
             }
 
             result.AppendValuesKeyword()
-                  .OpenBracket();
-
-            string[] namedParameters = new string[this.values.Count];
-            for (int i = 0; i < this.values.Count; i++)
-            {
-                namedParameters[i] = result.RegisterParameter(this.values[i].Parameter);
-            }
-
-            result.AppendCommaSeparatedNamedParameters(namedParameters)
+                  .OpenBracket()
+                  .AppendCommaSeparatedElements(this.values.Select(valueToInsert => valueToInsert.Value))
                   .CloseBracket();
 
             return result.ToString();

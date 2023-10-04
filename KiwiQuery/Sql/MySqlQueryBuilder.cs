@@ -1,4 +1,5 @@
-﻿using KiwiQuery.Predicates;
+﻿using KiwiQuery.Expressions;
+using KiwiQuery.Predicates;
 using System.Data.Common;
 
 namespace KiwiQuery.Sql
@@ -65,6 +66,8 @@ namespace KiwiQuery.Sql
 
         public override QueryBuilder AppendOnKeyword() => AppendKeywords("ON");
 
+        public override QueryBuilder AppendNull() => AppendKeywords("NULL");
+
 
         #endregion
 
@@ -111,6 +114,24 @@ namespace KiwiQuery.Sql
             return this;
         }
 
+        public override QueryBuilder AppendArithmeticOperator(ArithmeticOperator op)
+        {
+            switch (op)
+            {
+                case ArithmeticOperator.Plus:
+                    this.Buffer.Append('+');
+                    break;
+                case ArithmeticOperator.Minus:
+                    this.Buffer.Append("-");
+                    break;
+                case ArithmeticOperator.Times:
+                    this.Buffer.Append('*');
+                    break;
+            }
+            this.endsWithWordBoundary = true;
+            return this;
+        }
+
         public override QueryBuilder AppendSetClauseAssignment()
         {
             this.Buffer.Append('=');
@@ -134,6 +155,13 @@ namespace KiwiQuery.Sql
         {
             EnsureWordBoundary();
             this.Buffer.Append('`').Append(tableOrColumn).Append('`');
+            this.endsWithWordBoundary = false;
+            return this;
+        }
+        public override QueryBuilder AppendNamedParameter(string name)
+        {
+            EnsureWordBoundary();
+            this.Buffer.Append('@').Append(name);
             this.endsWithWordBoundary = false;
             return this;
         }
@@ -168,25 +196,6 @@ namespace KiwiQuery.Sql
             this.Buffer.Append("SELECT LAST_INSERT_ID()");
             return this;
         }
-
-        public override QueryBuilder AppendCommaSeparatedElements(IEnumerable<IWriteable> elements)
-        {
-            bool firstElement = true;
-            foreach (IWriteable element in elements)
-            {
-                if (firstElement)
-                {
-                    firstElement = false;
-                }
-                else
-                {
-                    this.AppendComma();
-                }
-                element.WriteTo(this);
-            }
-            return this;
-        }
-
         #endregion
     }
 }

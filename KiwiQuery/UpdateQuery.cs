@@ -1,4 +1,5 @@
 ﻿using KiwiQuery.Clauses;
+using KiwiQuery.Expressions;
 using KiwiQuery.Predicates;
 using KiwiQuery.Sql;
 using System.Data.Common;
@@ -13,19 +14,19 @@ namespace KiwiQuery
 
         private class ValueToUpdate
         {
-            string column;
-            DbParameter parameter;
+            private string column;
+            private Value value;
 
             public bool HasColumn => this.column != null;
 
             public string Column => this.column;
 
-            public DbParameter Parameter => this.parameter;
+            public Value Value => this.value;
 
-            public ValueToUpdate(DbParameter parameter, string column)
+            public ValueToUpdate(Value value, string column)
             {
                 this.column = column;
-                this.parameter = parameter;
+                this.value = value;
             }
         }
         private List<ValueToUpdate> values;
@@ -37,15 +38,27 @@ namespace KiwiQuery
             this.values = new();
         }
 
+        public UpdateQuery Set(string column, Value value)
+        {
+            this.values.Add(new ValueToUpdate(value, column));
+            return this;
+        }
+
         public UpdateQuery Set(string column, object? value)
         {
             DbParameter param = this.Command.CreateParameter();
             param.Value = value;
-            this.values.Add(new ValueToUpdate(param, column));
+            this.values.Add(new ValueToUpdate(new Parameter(value), column));
             return this;
         }
 
-        protected override string BuildCommandText(QueryBuilder result)
+        public UpdateQuery Set(string column, SelectQuery value)
+        {
+            this.values.Add(new ValueToUpdate(new SubQuery(value), column));
+            return this;
+        }
+
+        internal override string BuildCommandText(QueryBuilder result)
         {
             result.AppendUpdateKeyword()
                   .AppendTableOrColumnName(this.table)
@@ -68,11 +81,9 @@ namespace KiwiQuery
                     result.AppendComma();
                 }
 
-                string param = result.RegisterParameter(value.Parameter);
-
                 result.AppendTableOrColumnName(value.Column)
-                      .AppendSetClauseAssignment()
-                      .AppendRaw(param);
+                      .AppendSetClauseAssignment();
+                value.Value.WriteTo(result);
             }
 
             this.whereClauseBuilder.WriteClauseTo(result);
