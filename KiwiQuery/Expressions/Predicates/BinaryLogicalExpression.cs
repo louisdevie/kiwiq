@@ -1,4 +1,5 @@
 ﻿using KiwiQuery.Sql;
+using System;
 
 namespace KiwiQuery.Expressions.Predicates
 {
@@ -24,7 +25,7 @@ namespace KiwiQuery.Expressions.Predicates
         public override void WriteTo(QueryBuilder builder)
         {
             bool first = true;
-            foreach (Predicate operand in operands)
+            foreach (Predicate operand in this.operands)
             {
                 if (first)
                 {

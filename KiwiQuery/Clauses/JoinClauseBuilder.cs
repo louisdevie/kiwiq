@@ -1,5 +1,7 @@
 ﻿using KiwiQuery.Expressions;
 using KiwiQuery.Sql;
+using System;
+using System.Collections.Generic;
 
 namespace KiwiQuery.Clauses
 {
@@ -14,12 +16,12 @@ namespace KiwiQuery.Clauses
         public JoinClauseBuilder(Schema schema)
         {
             this.schema = schema;
-            this.joins = new();
+            this.joins = new List<JoinClause>();
         }
 
         public void WriteClauseTo(QueryBuilder qb)
         {
-            foreach (JoinClause joinClause in joins)
+            foreach (JoinClause joinClause in this.joins)
             {
                 joinClause.WriteTo(qb);
             }

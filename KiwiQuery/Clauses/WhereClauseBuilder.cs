@@ -1,5 +1,6 @@
 ﻿using KiwiQuery.Expressions.Predicates;
 using KiwiQuery.Sql;
+using System;
 
 namespace KiwiQuery.Clauses
 {

@@ -1,5 +1,4 @@
 ﻿using KiwiQuery.Sql;
-using System.Data.Common;
 
 namespace KiwiQuery.Expressions
 {

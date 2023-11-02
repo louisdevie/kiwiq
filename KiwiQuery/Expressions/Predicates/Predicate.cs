@@ -1,6 +1,4 @@
-﻿using KiwiQuery.Expressions;
-
-namespace KiwiQuery.Expressions.Predicates
+﻿namespace KiwiQuery.Expressions.Predicates
 {
     /// <summary>
     /// A predicate is a boolean value.

@@ -22,4 +22,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\KiwiQuery\KiwiQuery.csproj" />
+  </ItemGroup>
+
 </Project>

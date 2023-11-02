@@ -20,7 +20,7 @@ namespace KiwiQuery.Expressions
 
         public override void WriteTo(QueryBuilder builder)
         {
-            
+
             builder.OpenBracket();
             this.query.WriteTo(builder);
             builder.CloseBracket();

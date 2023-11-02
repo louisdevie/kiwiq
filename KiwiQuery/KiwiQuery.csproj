@@ -2,7 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net7.0;net6.0;netstandard2.1</TargetFrameworks>
-		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		
 		<PackageId>KiwiQuery</PackageId>

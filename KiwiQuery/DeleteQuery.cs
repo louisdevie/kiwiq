@@ -1,7 +1,6 @@
 ﻿using KiwiQuery.Clauses;
 using KiwiQuery.Expressions.Predicates;
 using KiwiQuery.Sql;
-using System.Runtime.CompilerServices;
 
 namespace KiwiQuery
 {
@@ -19,7 +18,7 @@ namespace KiwiQuery
         /// </summary>
         /// <param name="table">The name of the table to delete rows from.</param>
         /// <param name="schema">The schema to execute this command on.</param>
-        internal DeleteQuery(string table, Schema schema) : base(schema) 
+        internal DeleteQuery(string table, Schema schema) : base(schema)
         {
             this.table = table;
             this.whereClauseBuilder = new WhereClauseBuilder();
@@ -43,7 +42,7 @@ namespace KiwiQuery
         {
             this.BuildCommand();
             int affectedRows = this.Command.ExecuteNonQuery();
-            return affectedRows > 0;            
+            return affectedRows > 0;
         }
 
         #region WHERE clause methods

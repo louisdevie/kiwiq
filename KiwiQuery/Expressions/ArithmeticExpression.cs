@@ -1,16 +1,11 @@
 ﻿using KiwiQuery.Sql;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KiwiQuery.Expressions
 {
     /// <summary>
     /// A binary arithmetic operations between two values.
     /// </summary>
-    internal class ArithmeticExpression: Value
+    internal class ArithmeticExpression : Value
     {
         private Value lhs;
         private Value rhs;

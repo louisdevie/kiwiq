@@ -1,6 +1,9 @@
 ﻿using KiwiQuery.Expressions;
 using KiwiQuery.Sql;
+using System;
+using System.Collections.Generic;
 using System.Data.Common;
+using System.Linq;
 
 namespace KiwiQuery
 {
@@ -30,7 +33,7 @@ namespace KiwiQuery
             }
         }
         private List<ValueToInsert> values;
-        
+
         /// <summary>
         /// Creates a new INSERT command.
         /// </summary>
@@ -51,7 +54,7 @@ namespace KiwiQuery
             this.values.Add(new ValueToInsert(value));
             return this;
         }
-        
+
         /// <summary>
         /// Add a value to be inserted.
         /// </summary>
@@ -108,7 +111,7 @@ namespace KiwiQuery
         protected override string BuildCommandText(QueryBuilder result)
         {
             result.AppendInsertIntoKeywords()
-                  .AppendTableOrColumnName(table);
+                  .AppendTableOrColumnName(this.table);
 
             if (this.values.Count == 0)
             {

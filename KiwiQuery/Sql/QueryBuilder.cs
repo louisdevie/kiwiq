@@ -1,5 +1,7 @@
 ﻿using KiwiQuery.Expressions;
 using KiwiQuery.Expressions.Predicates;
+using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.Text;
 
@@ -28,7 +30,7 @@ namespace KiwiQuery.Sql
             this.command = command;
             this.nextParameterId = 1;
         }
-        
+
         /// <summary>
         /// Generates a name for the given <see cref="DbParameter"/> ands add it to the current command.
         /// </summary>
@@ -63,8 +65,8 @@ namespace KiwiQuery.Sql
         /// </summary>
         public virtual QueryBuilder OpenBracket()
         {
-            openBrackets++;
-            buffer.Append('(');
+            this.openBrackets++;
+            this.buffer.Append('(');
             return this;
         }
 
@@ -76,12 +78,12 @@ namespace KiwiQuery.Sql
         /// </summary>
         public virtual QueryBuilder CloseBracket()
         {
-            if (openBrackets <= 0)
+            if (this.openBrackets <= 0)
             {
                 throw new InvalidOperationException("There is no matching bracket.");
             }
-            openBrackets--;
-            buffer.Append(')');
+            this.openBrackets--;
+            this.buffer.Append(')');
             return this;
         }
 

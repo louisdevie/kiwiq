@@ -5,13 +5,13 @@ VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KiwiQuery", "KiwiQuery\KiwiQuery.csproj", "{3EB40FDE-CFCF-4ECA-A78F-90356A74A440}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", "{1F013EFA-AEF4-44C6-88AE-E5ADA1425609}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Éléments de solution", "Éléments de solution", "{EB510E89-6898-4954-9863-6B3C472C2AF7}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{7D84F204-D5CE-4E4D-8A0F-B0EF662906B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{3EB40FDE-CFCF-4ECA-A78F-90356A74A440}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3EB40FDE-CFCF-4ECA-A78F-90356A74A440}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3EB40FDE-CFCF-4ECA-A78F-90356A74A440}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1F013EFA-AEF4-44C6-88AE-E5ADA1425609}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1F013EFA-AEF4-44C6-88AE-E5ADA1425609}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1F013EFA-AEF4-44C6-88AE-E5ADA1425609}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1F013EFA-AEF4-44C6-88AE-E5ADA1425609}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D84F204-D5CE-4E4D-8A0F-B0EF662906B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D84F204-D5CE-4E4D-8A0F-B0EF662906B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D84F204-D5CE-4E4D-8A0F-B0EF662906B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D84F204-D5CE-4E4D-8A0F-B0EF662906B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

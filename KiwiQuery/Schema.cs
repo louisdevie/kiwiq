@@ -1,6 +1,7 @@
 ﻿using KiwiQuery.Expressions;
-using KiwiQuery.Sql;
+using System;
 using System.Data.Common;
+using System.Linq;
 
 namespace KiwiQuery
 {
@@ -90,6 +91,8 @@ namespace KiwiQuery
         /// <returns>A <see cref="SelectQuery"/> that can be further configurated and then executed.</returns>
         public SelectQuery SelectAll() => new SelectQuery(Array.Empty<Column>(), this);
 
+#pragma warning disable CA1822 // Static members suggestion
+
         /// <summary>
         /// Creates a table from this schema.
         /// </summary>
@@ -112,5 +115,7 @@ namespace KiwiQuery
         /// </summary>
         /// <param name="query">The subquery.</param>
         public SubQuery SubQuery(SelectQuery query) => new SubQuery(query);
+
+#pragma warning restore CA1822
     }
 }

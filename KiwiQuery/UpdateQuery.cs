@@ -2,8 +2,8 @@
 using KiwiQuery.Expressions;
 using KiwiQuery.Expressions.Predicates;
 using KiwiQuery.Sql;
-using System.Data.Common;
-using System.Runtime.ExceptionServices;
+using System;
+using System.Collections.Generic;
 
 namespace KiwiQuery
 {
@@ -34,8 +34,8 @@ namespace KiwiQuery
         public UpdateQuery(string table, Schema schema) : base(schema)
         {
             this.table = table;
-            this.whereClauseBuilder = new();
-            this.values = new();
+            this.whereClauseBuilder = new WhereClauseBuilder();
+            this.values = new List<ValueToUpdate>();
         }
 
         public UpdateQuery Set(string column, Value value)

@@ -23,9 +23,9 @@ namespace KiwiQuery.Expressions.Predicates
 
         public override void WriteTo(QueryBuilder builder)
         {
-            lhs.WriteTo(builder);
-            builder.AppendComparisonOperator(op);
-            rhs.WriteTo(builder);
+            this.lhs.WriteTo(builder);
+            builder.AppendComparisonOperator(this.op);
+            this.rhs.WriteTo(builder);
         }
     }
 }

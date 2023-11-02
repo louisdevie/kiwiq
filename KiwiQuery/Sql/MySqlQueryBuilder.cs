@@ -1,5 +1,6 @@
 ﻿using KiwiQuery.Expressions;
 using KiwiQuery.Expressions.Predicates;
+using System.Collections.Generic;
 using System.Data.Common;
 
 namespace KiwiQuery.Sql
@@ -41,39 +42,39 @@ namespace KiwiQuery.Sql
 
         private QueryBuilder AppendKeywords(string keywords)
         {
-            EnsureWordBoundary();
+            this.EnsureWordBoundary();
             this.Buffer.Append(keywords);
             this.endsWithWordBoundary = false;
             return this;
         }
 
-        public override QueryBuilder AppendInsertIntoKeywords() => AppendKeywords("INSERT INTO");
+        public override QueryBuilder AppendInsertIntoKeywords() => this.AppendKeywords("INSERT INTO");
 
-        public override QueryBuilder AppendValuesKeyword() => AppendKeywords("VALUES");
+        public override QueryBuilder AppendValuesKeyword() => this.AppendKeywords("VALUES");
 
-        public override QueryBuilder AppendDeleteFromKeywords() => AppendKeywords("DELETE FROM");
+        public override QueryBuilder AppendDeleteFromKeywords() => this.AppendKeywords("DELETE FROM");
 
-        public override QueryBuilder AppendWhereKeyword() => AppendKeywords("WHERE");
+        public override QueryBuilder AppendWhereKeyword() => this.AppendKeywords("WHERE");
 
-        public override QueryBuilder AppendUpdateKeyword() => AppendKeywords("UPDATE");
+        public override QueryBuilder AppendUpdateKeyword() => this.AppendKeywords("UPDATE");
 
-        public override QueryBuilder AppendSetKeyword() => AppendKeywords("SET");
+        public override QueryBuilder AppendSetKeyword() => this.AppendKeywords("SET");
 
-        public override QueryBuilder AppendFromKeyword() => AppendKeywords("FROM");
+        public override QueryBuilder AppendFromKeyword() => this.AppendKeywords("FROM");
 
-        public override QueryBuilder AppendAsKeyword() => AppendKeywords("AS");
+        public override QueryBuilder AppendAsKeyword() => this.AppendKeywords("AS");
 
-        public override QueryBuilder AppendSelectKeyword() => AppendKeywords("SELECT");
+        public override QueryBuilder AppendSelectKeyword() => this.AppendKeywords("SELECT");
 
-        public override QueryBuilder AppendJoinKeyword() => AppendKeywords("JOIN");
+        public override QueryBuilder AppendJoinKeyword() => this.AppendKeywords("JOIN");
 
-        public override QueryBuilder AppendInnerKeyword() => AppendKeywords("INNER");
+        public override QueryBuilder AppendInnerKeyword() => this.AppendKeywords("INNER");
 
-        public override QueryBuilder AppendLeftKeyword() => AppendKeywords("LEFT");
+        public override QueryBuilder AppendLeftKeyword() => this.AppendKeywords("LEFT");
 
-        public override QueryBuilder AppendOnKeyword() => AppendKeywords("ON");
+        public override QueryBuilder AppendOnKeyword() => this.AppendKeywords("ON");
 
-        public override QueryBuilder AppendNull() => AppendKeywords("NULL");
+        public override QueryBuilder AppendNull() => this.AppendKeywords("NULL");
 
 
         #endregion
@@ -129,7 +130,7 @@ namespace KiwiQuery.Sql
                     this.Buffer.Append('+');
                     break;
                 case ArithmeticOperator.Substraction:
-                    this.Buffer.Append("-");
+                    this.Buffer.Append('-');
                     break;
                 case ArithmeticOperator.Multiplication:
                     this.Buffer.Append('*');
@@ -185,14 +186,14 @@ namespace KiwiQuery.Sql
 
         public override QueryBuilder AppendTableOrColumnName(string tableOrColumn)
         {
-            EnsureWordBoundary();
+            this.EnsureWordBoundary();
             this.Buffer.Append('`').Append(tableOrColumn).Append('`');
             this.endsWithWordBoundary = false;
             return this;
         }
         public override QueryBuilder AppendNamedParameter(string name)
         {
-            EnsureWordBoundary();
+            this.EnsureWordBoundary();
             this.Buffer.Append('@').Append(name);
             this.endsWithWordBoundary = false;
             return this;
@@ -200,7 +201,7 @@ namespace KiwiQuery.Sql
 
         public override QueryBuilder AppendCommaSeparatedColumnNames(IEnumerable<string> columns)
         {
-            EnsureWordBoundary();
+            this.EnsureWordBoundary();
             this.Buffer.Append('`')
                   .AppendJoin($"`,`", columns)
                   .Append('`');
@@ -210,7 +211,7 @@ namespace KiwiQuery.Sql
 
         public override QueryBuilder AppendCommaSeparatedNamedParameters(IEnumerable<string> parameters)
         {
-            EnsureWordBoundary();
+            this.EnsureWordBoundary();
             this.Buffer.AppendJoin($",", parameters);
             this.endsWithWordBoundary = false;
             return this;
