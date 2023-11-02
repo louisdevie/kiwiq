@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace KiwiQuery.Sql
 {
-    internal class QueryBuilderFactory
+    public class QueryBuilderFactory
     {
         #region Singleton
 
@@ -40,19 +40,9 @@ namespace KiwiQuery.Sql
                 throw new ArgumentException($"The query builder implementation {implementation} does not inherit from KiwiQuery.Sql.QueryBuilder.");
             }
 
-            ConstructorInfo? constructor = implementation
-#if NET6_0_OR_GREATER
-                .GetConstructor(BindingFlags.Public, new Type[1] { typeof(DbCommand) });
-#else
-                .GetConstructor(new Type[1] { typeof(DbCommand) });
-            if (constructor != null && !constructor.IsPublic) constructor = null;
-#endif
-
-            if (constructor is null)
-            {
-                throw new InvalidOperationException($"The query builder implementation {implementation} does not have an accessible constructor with a (DbCommand) signature.");
-            }
-
+            ConstructorInfo? constructor = implementation.GetConstructor(new Type[1] { typeof(DbCommand) })
+                ?? throw new InvalidOperationException($"The query builder implementation {implementation} does not have an accessible constructor with a (DbCommand) signature.");
+            
             this.implementations.Add(mode, constructor);
         }
 
@@ -78,6 +68,16 @@ namespace KiwiQuery.Sql
         where T : QueryBuilder
         {
             return this.RegisterCustomQueryBuilder(typeof(T));
+        }
+
+        /// <summary>
+        /// Check if a query builder implementation is available for a specific mode.
+        /// </summary>
+        /// <param name="mode">The mode to check for.</param>
+        /// <returns><see langword="true"/> if the mode is supported, <see langword="false"/> otherwise.</returns>
+        public bool SupportsMode(Mode mode)
+        {
+            return this.implementations.ContainsKey(mode);
         }
 
         /// <summary>

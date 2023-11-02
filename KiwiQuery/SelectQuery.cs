@@ -38,16 +38,16 @@ namespace KiwiQuery
         /// combining simple string columns with <see cref="Column"/> objects.
         /// </summary>
         /// <param name="columns">The columns and values to select.</param>
-        public SelectQuery And(params Column[] columns)
+        public SelectQuery And(params Value[] columns)
         {
-            foreach (Column column in columns)
+            foreach (Value column in columns)
             {
                 this.projection.Add(column);
             }
             return this;
         }
 
-        /// <inheritdoc cref="And(Column[])"/>
+        /// <inheritdoc cref="And(Value[])"/>
         public SelectQuery And(params string[] columns)
         {
             foreach (string column in columns)
