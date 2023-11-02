@@ -3,7 +3,7 @@ using System.Data.Common;
 
 namespace KiwiQuery.Expressions
 {
-    public class Parameter : Value
+    internal class Parameter : Value
     {
         private object? inner;
 

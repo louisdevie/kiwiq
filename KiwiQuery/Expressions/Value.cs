@@ -1,4 +1,4 @@
-﻿using KiwiQuery.Predicates;
+﻿using KiwiQuery.Expressions.Predicates;
 using KiwiQuery.Sql;
 
 namespace KiwiQuery.Expressions
@@ -68,26 +68,42 @@ namespace KiwiQuery.Expressions
 
         #region operator +
         public static Value operator +(Value lhs, Value rhs)
-            => new ArithmeticExpression(lhs, rhs, ArithmeticOperator.Plus);
+            => new ArithmeticExpression(lhs, rhs, ArithmeticOperator.Addition);
 
         public static Value operator +(Value lhs, object rhs)
-            => new ArithmeticExpression(lhs, new Parameter(rhs), ArithmeticOperator.Plus);
+            => new ArithmeticExpression(lhs, new Parameter(rhs), ArithmeticOperator.Addition);
         #endregion
 
         #region operator -
         public static Value operator -(Value lhs, Value rhs)
-            => new ArithmeticExpression(lhs, rhs, ArithmeticOperator.Minus);
+            => new ArithmeticExpression(lhs, rhs, ArithmeticOperator.Substraction);
 
         public static Value operator -(Value lhs, object rhs)
-            => new ArithmeticExpression(lhs, new Parameter(rhs), ArithmeticOperator.Minus);
+            => new ArithmeticExpression(lhs, new Parameter(rhs), ArithmeticOperator.Substraction);
         #endregion
 
         #region operator *
         public static Value operator *(Value lhs, Value rhs)
-            => new ArithmeticExpression(lhs, rhs, ArithmeticOperator.Times);
+            => new ArithmeticExpression(lhs, rhs, ArithmeticOperator.Multiplication);
 
         public static Value operator *(Value lhs, object rhs)
-            => new ArithmeticExpression(lhs, new Parameter(rhs), ArithmeticOperator.Times);
+            => new ArithmeticExpression(lhs, new Parameter(rhs), ArithmeticOperator.Multiplication);
+        #endregion
+
+        #region operator /
+        public static Value operator /(Value lhs, Value rhs)
+            => new ArithmeticExpression(lhs, rhs, ArithmeticOperator.Division);
+
+        public static Value operator /(Value lhs, object rhs)
+            => new ArithmeticExpression(lhs, new Parameter(rhs), ArithmeticOperator.Division);
+        #endregion
+
+        #region operator %
+        public static Value operator %(Value lhs, Value rhs)
+            => new ArithmeticExpression(lhs, rhs, ArithmeticOperator.Modulo);
+
+        public static Value operator %(Value lhs, object rhs)
+            => new ArithmeticExpression(lhs, new Parameter(rhs), ArithmeticOperator.Modulo);
         #endregion
     }
 }

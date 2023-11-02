@@ -1,6 +1,6 @@
 ﻿using KiwiQuery.Clauses;
 using KiwiQuery.Expressions;
-using KiwiQuery.Predicates;
+using KiwiQuery.Expressions.Predicates;
 using KiwiQuery.Sql;
 using System.Data.Common;
 using System.Runtime.ExceptionServices;

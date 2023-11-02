@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace KiwiQuery.Expressions
 {
-    public class FunctionCall : Value
+    public sealed class FunctionCall : Value
     {
         private string function;
         private Value[] arguments;

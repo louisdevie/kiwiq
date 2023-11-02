@@ -2,7 +2,7 @@
 
 namespace KiwiQuery.Expressions
 {
-    public class Column : Value
+    public sealed class Column : Value
     {
         private string name;
         private Table? table;

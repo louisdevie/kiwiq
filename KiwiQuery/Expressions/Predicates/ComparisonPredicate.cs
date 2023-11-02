@@ -2,7 +2,7 @@
 using KiwiQuery.Expressions;
 using KiwiQuery.Sql;
 
-namespace KiwiQuery.Predicates
+namespace KiwiQuery.Expressions.Predicates
 {
     internal class ComparisonPredicate : Predicate
     {
@@ -19,9 +19,9 @@ namespace KiwiQuery.Predicates
 
         public override void WriteTo(QueryBuilder builder)
         {
-            this.lhs.WriteTo(builder);
-            builder.AppendComparisonOperator(this.op);
-            this.rhs.WriteTo(builder);
+            lhs.WriteTo(builder);
+            builder.AppendComparisonOperator(op);
+            rhs.WriteTo(builder);
         }
     }
 }

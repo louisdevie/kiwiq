@@ -1,4 +1,4 @@
-﻿using KiwiQuery.Predicates;
+﻿using KiwiQuery.Expressions.Predicates;
 using KiwiQuery.Sql;
 
 namespace KiwiQuery.Clauses

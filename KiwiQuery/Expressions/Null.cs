@@ -2,7 +2,7 @@
 
 namespace KiwiQuery.Expressions
 {
-    public class Null : Value
+    public sealed class Null : Value
     {
         public override void WriteTo(QueryBuilder builder)
         {

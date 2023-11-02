@@ -11,6 +11,12 @@
 		<PackRelease>true</PackRelease>
 		<PublishRelease>true</PublishRelease>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<Title>KiwiQuery</Title>
+		<Description>Query builder for MySQL</Description>
+		<RepositoryUrl>https://github.com/louisdevie/kiwiq</RepositoryUrl>
+		<PackageTags>sql;mysql;query-builder;dynamic-query</PackageTags>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<ItemGroup>

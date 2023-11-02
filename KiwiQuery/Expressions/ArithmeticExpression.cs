@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace KiwiQuery.Expressions
 {
-    public class ArithmeticExpression: Value
+    internal class ArithmeticExpression: Value
     {
         private Value lhs;
         private Value rhs;
@@ -22,9 +22,13 @@ namespace KiwiQuery.Expressions
 
         public override void WriteTo(QueryBuilder builder)
         {
+            builder.OpenBracket();
             this.lhs.WriteTo(builder);
-            builder.AppendArithmeticOperator(this.op);
+            builder.CloseBracket()
+                   .AppendArithmeticOperator(this.op)
+                   .OpenBracket();
             this.rhs.WriteTo(builder);
+            builder.CloseBracket();
         }
     }
 }

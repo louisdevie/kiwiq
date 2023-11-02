@@ -2,9 +2,11 @@
 {
     public enum ArithmeticOperator
     {
-        Plus,
-        Minus,
-        Times,
+        Addition,
+        Substraction,
+        Multiplication,
+        Division,
+        Modulo
     }
 
 }

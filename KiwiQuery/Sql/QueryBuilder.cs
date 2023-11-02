@@ -1,5 +1,5 @@
 ﻿using KiwiQuery.Expressions;
-using KiwiQuery.Predicates;
+using KiwiQuery.Expressions.Predicates;
 using System.Data.Common;
 using System.Text;
 
@@ -109,5 +109,6 @@ namespace KiwiQuery.Sql
         public abstract QueryBuilder AppendNamedParameter(string name);
         public abstract QueryBuilder AppendArithmeticOperator(ArithmeticOperator op);
         public abstract QueryBuilder AppendNull();
+        public abstract QueryBuilder AppendLogicalOperator(LogicalOperator op);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace KiwiQuery.Expressions
 {
-    public class Table : IWriteable
+    public sealed class Table : IWriteable
     {
         private string name;
         private Schema schema;

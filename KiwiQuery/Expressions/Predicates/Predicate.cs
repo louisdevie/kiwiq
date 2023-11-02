@@ -1,6 +1,6 @@
 ﻿using KiwiQuery.Expressions;
 
-namespace KiwiQuery.Predicates
+namespace KiwiQuery.Expressions.Predicates
 {
     public abstract class Predicate : Value { }
 }

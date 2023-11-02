@@ -1,5 +1,5 @@
 ﻿using KiwiQuery.Expressions;
-using KiwiQuery.Predicates;
+using KiwiQuery.Expressions.Predicates;
 using System.Data.Common;
 
 namespace KiwiQuery.Sql
@@ -122,17 +122,42 @@ namespace KiwiQuery.Sql
         {
             switch (op)
             {
-                case ArithmeticOperator.Plus:
+                case ArithmeticOperator.Addition:
                     this.Buffer.Append('+');
                     break;
-                case ArithmeticOperator.Minus:
+                case ArithmeticOperator.Substraction:
                     this.Buffer.Append("-");
                     break;
-                case ArithmeticOperator.Times:
+                case ArithmeticOperator.Multiplication:
                     this.Buffer.Append('*');
+                    break;
+                case ArithmeticOperator.Division:
+                    this.Buffer.Append('/');
+                    break;
+                case ArithmeticOperator.Modulo:
+                    this.Buffer.Append('%');
                     break;
             }
             this.endsWithWordBoundary = true;
+            return this;
+        }
+
+        public override QueryBuilder AppendLogicalOperator(LogicalOperator op)
+        {
+            this.EnsureWordBoundary();
+            switch (op)
+            {
+                case LogicalOperator.Not:
+                    this.Buffer.Append("NOT");
+                    break;
+                case LogicalOperator.Or:
+                    this.Buffer.Append("OR");
+                    break;
+                case LogicalOperator.And:
+                    this.Buffer.Append("AND");
+                    break;
+            }
+            this.endsWithWordBoundary = false;
             return this;
         }
 
@@ -200,6 +225,7 @@ namespace KiwiQuery.Sql
             this.Buffer.Append("SELECT LAST_INSERT_ID()");
             return this;
         }
+
         #endregion
     }
 }

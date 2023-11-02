@@ -1,4 +1,4 @@
-﻿namespace KiwiQuery.Predicates
+﻿namespace KiwiQuery.Expressions.Predicates
 {
     public enum ComparisonOperator
     {

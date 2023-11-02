@@ -1,5 +1,5 @@
 ﻿using KiwiQuery.Clauses;
-using KiwiQuery.Predicates;
+using KiwiQuery.Expressions.Predicates;
 using KiwiQuery.Sql;
 using System.Runtime.CompilerServices;
 

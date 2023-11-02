@@ -40,9 +40,5 @@ namespace KiwiQuery
         public Table Table(string name) => new(name, this);
 
         public Column Column(string name) => new(name, this);
-
-        public Null Null => new();
-
-        public FunctionCall Count() => new("COUNT", new All());
     }
 }
