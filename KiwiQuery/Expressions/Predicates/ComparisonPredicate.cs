@@ -1,15 +1,19 @@
-﻿using System.Text.RegularExpressions;
-using KiwiQuery.Expressions;
-using KiwiQuery.Sql;
+﻿using KiwiQuery.Sql;
 
 namespace KiwiQuery.Expressions.Predicates
 {
+    /// <summary>
+    /// A comparison of two values.
+    /// </summary>
     internal class ComparisonPredicate : Predicate
     {
         private Value lhs;
         private Value rhs;
         private ComparisonOperator op;
 
+        /// <param name="lhs">The operand on the left side of the operator.</param>
+        /// <param name="rhs">The operand on the right side of the operator.</param>
+        /// <param name="op">The comparison operator.</param>
         public ComparisonPredicate(Value lhs, Value rhs, ComparisonOperator op)
         {
             this.lhs = lhs;

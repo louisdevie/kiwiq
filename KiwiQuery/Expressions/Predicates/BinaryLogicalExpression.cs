@@ -2,11 +2,17 @@
 
 namespace KiwiQuery.Expressions.Predicates
 {
+    /// <summary>
+    /// A sequence of predicates joined by OR or AND operators.
+    /// </summary>
     internal class BinaryLogicalExpression : Predicate
     {
         private Predicate[] operands;
         private LogicalOperator op;
 
+        /// <param name="op">The operator to join the predicates with.</param>
+        /// <param name="operands">The operands of the expression.</param>
+        /// <exception cref="ArgumentException"/>
         public BinaryLogicalExpression(LogicalOperator op, Predicate[] operands)
         {
             if (operands.Length < 2) throw new ArgumentException("Logical operators need at least two operands.");

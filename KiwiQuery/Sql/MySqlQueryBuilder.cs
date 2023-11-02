@@ -4,6 +4,9 @@ using System.Data.Common;
 
 namespace KiwiQuery.Sql
 {
+    /// <summary>
+    /// A query builder for MySQL.
+    /// </summary>
     internal class MySqlQueryBuilder : QueryBuilder
     {
         private bool endsWithWordBoundary;

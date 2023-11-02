@@ -5,6 +5,10 @@ using System.Text;
 
 namespace KiwiQuery.Sql
 {
+    /// <summary>
+    /// The class responsible for generating SQL. <br/>
+    /// Instances of this class are constructed through the <see cref="QueryBuilderFactory"/>.
+    /// </summary>
     public abstract class QueryBuilder
     {
         private StringBuilder buffer;
@@ -12,7 +16,10 @@ namespace KiwiQuery.Sql
         private DbCommand command;
         private int nextParameterId;
 
-        public StringBuilder Buffer => this.buffer;
+        /// <summary>
+        /// The internal string builder used to write the SQL to.
+        /// </summary>
+        protected StringBuilder Buffer => this.buffer;
 
         public QueryBuilder(DbCommand command)
         {
@@ -22,6 +29,11 @@ namespace KiwiQuery.Sql
             this.nextParameterId = 1;
         }
         
+        /// <summary>
+        /// Generates a name for the given <see cref="DbParameter"/> ands add it to the current command.
+        /// </summary>
+        /// <param name="parameter">The parameter to add. Its name will be overrriden.</param>
+        /// <returns>The generated name for the parameter, <em>including the leading @</em>.</returns>
         public string RegisterParameter(DbParameter parameter)
         {
             string parameterName = $"@p{this.nextParameterId}";
@@ -31,6 +43,11 @@ namespace KiwiQuery.Sql
             return parameterName;
         }
 
+        /// <summary>
+        /// Generates a named parameter containing the given value ands add it to the current command.
+        /// </summary>
+        /// <param name="parameterValue">The value to use for the parameter.</param>
+        /// <returns>The generated name for the parameter, <em>including the leading @</em>.</returns>
         public string ResisterParameterWithValue(object? parameterValue)
         {
             DbParameter param = this.command.CreateParameter();
@@ -38,6 +55,12 @@ namespace KiwiQuery.Sql
             return this.RegisterParameter(param);
         }
 
+        /// <summary>
+        /// Opens a bracket :
+        /// <code>
+        /// (
+        /// </code>
+        /// </summary>
         public virtual QueryBuilder OpenBracket()
         {
             openBrackets++;
@@ -45,6 +68,12 @@ namespace KiwiQuery.Sql
             return this;
         }
 
+        /// <summary>
+        /// Closes a bracket :
+        /// <code>
+        /// )
+        /// </code>
+        /// </summary>
         public virtual QueryBuilder CloseBracket()
         {
             if (openBrackets <= 0)
@@ -56,6 +85,9 @@ namespace KiwiQuery.Sql
             return this;
         }
 
+        /// <summary>
+        /// Writes a list of <see cref="IWriteable"/>s elements separated by commas.
+        /// </summary>
         public QueryBuilder AppendCommaSeparatedElements(IEnumerable<IWriteable> elements)
         {
             bool firstElement = true;
@@ -74,6 +106,10 @@ namespace KiwiQuery.Sql
             return this;
         }
 
+        /// <summary>
+        /// Gets the whole generated SQL command as text.<br/>
+        /// This method will throw an <see cref="InvalidOperationException"/> if not all brackets are closed.
+        /// </summary>
         public override string ToString()
         {
             if (this.openBrackets > 0)

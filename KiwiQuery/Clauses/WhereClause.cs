@@ -3,10 +3,17 @@ using KiwiQuery.Sql;
 
 namespace KiwiQuery.Clauses
 {
+    /// <summary>
+    /// Represents a WHERE statement.
+    /// </summary>
     internal class WhereClause : Clause
     {
         private Predicate predicate;
 
+        /// <summary>
+        /// Creates a new WHERE statement.
+        /// </summary>
+        /// <param name="predicate">The predicate used to filter the query.</param>
         public WhereClause(Predicate predicate)
         {
             this.predicate = predicate;

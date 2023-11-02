@@ -2,6 +2,9 @@
 
 namespace KiwiQuery.Expressions.Predicates
 {
+    /// <summary>
+    /// A logical negation.
+    /// </summary>
     internal class NotExpression : Predicate
     {
         private Predicate rhs;

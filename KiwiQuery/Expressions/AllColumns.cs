@@ -2,7 +2,10 @@
 
 namespace KiwiQuery.Expressions
 {
-    public sealed class All : Value
+    /// <summary>
+    /// A wildcard that represents all the columns in a SELECT statement.
+    /// </summary>
+    public sealed class AllColumns : Value
     {
         public override void WriteTo(QueryBuilder builder)
         {

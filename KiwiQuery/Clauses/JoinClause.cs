@@ -1,14 +1,12 @@
 ﻿using KiwiQuery.Expressions;
 using KiwiQuery.Expressions.Predicates;
 using KiwiQuery.Sql;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KiwiQuery.Clauses
 {
+    /// <summary>
+    /// Represents a JOIN statement.
+    /// </summary>
     internal class JoinClause : Clause
     {
         public enum JoinType { Inner, Left }
@@ -18,6 +16,13 @@ namespace KiwiQuery.Clauses
         private Column secondColumn;
         private JoinType type;
 
+        /// <summary>
+        /// Creates a new JOIN statement.
+        /// </summary>
+        /// <param name="table">The table to join.</param>
+        /// <param name="firstColumn">The column of the first table to join on.</param>
+        /// <param name="secondColumn">The column of the other table to join on.</param>
+        /// <param name="type">The type of join to perform.</param>
         public JoinClause(Table table, Column firstColumn, Column secondColumn, JoinType type)
         {
             this.table = table;

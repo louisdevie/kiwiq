@@ -3,6 +3,9 @@ using KiwiQuery.Sql;
 
 namespace KiwiQuery.Expressions
 {
+    /// <summary>
+    /// A generic SQL value.
+    /// </summary>
     public abstract class Value : IWriteable
     {
         public abstract void WriteTo(QueryBuilder builder);

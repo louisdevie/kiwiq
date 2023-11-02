@@ -2,11 +2,18 @@
 
 namespace KiwiQuery.Expressions
 {
-    internal class SubQuery : Value
+    /// <summary>
+    /// Adapts a <see cref="SelectQuery"/> to be used as a <see cref="Value"/>.
+    /// </summary>
+    public class SubQuery : Value
     {
         private SelectQuery query;
 
-        public SubQuery(SelectQuery query)
+        /// <summary>
+        /// Creates a new subquery from the given SELECT query.
+        /// </summary>
+        /// <param name="query"></param>
+        internal SubQuery(SelectQuery query)
         {
             this.query = query;
         }

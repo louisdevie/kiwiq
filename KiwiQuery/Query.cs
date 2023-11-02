@@ -1,17 +1,25 @@
-﻿using KiwiQuery.Expressions;
-using KiwiQuery.Sql;
+﻿using KiwiQuery.Sql;
 using System.Data.Common;
 
 namespace KiwiQuery
 {
+    /// <summary>
+    /// A generic SQL command.
+    /// </summary>
     public abstract class Query
     {
         private Schema schema;
         private DbCommand command;
 
+        /// <summary>
+        /// The schema this command will be executed on.
+        /// </summary>
         public Schema Schema => this.schema;
 
-        public DbCommand Command => this.command;
+        /// <summary>
+        /// The inner command.
+        /// </summary>
+        protected DbCommand Command => this.command;
 
         public Query(Schema schema)
         {
@@ -19,12 +27,20 @@ namespace KiwiQuery
             this.command = this.schema.Connection.CreateCommand();
         }
 
+        /// <summary>
+        /// Generates the SQL for the command.
+        /// </summary>
+        /// <param name="qb">The query builder to use.</param>
+        /// <returns>A string containing the SQL.</returns>
         protected abstract string BuildCommandText(QueryBuilder qb);
 
+        /// <summary>
+        /// Build the inner command using the appropriate query builder.
+        /// </summary>
         protected void BuildCommand()
         {
             this.Command.CommandText = this.BuildCommandText(
-                this.Schema.QueryBuilderFactory.NewQueryBuilder(this.Command)
+                QueryBuilderFactory.Current.NewQueryBuilder(this.Schema.Mode, this.Command)
             );
         }
     }
