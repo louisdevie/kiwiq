@@ -5,7 +5,7 @@
 		<Nullable>enable</Nullable>
 		
 		<PackageId>KiwiQuery</PackageId>
-		<Version>0.2.0</Version>
+		<Version>0.2.1</Version>
 		<Authors>Louis DEVIE</Authors>
 		<PackRelease>true</PackRelease>
 		<PublishRelease>true</PublishRelease>
@@ -16,7 +16,8 @@
 		<PackageTags>sql;mysql;query-builder;dynamic-query</PackageTags>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<PackageReleaseNotes>Added support of logical operators (NOT, AND and OR)</PackageReleaseNotes>
+		<PackageReleaseNotes>The documentation file is now correctly generated</PackageReleaseNotes>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>
