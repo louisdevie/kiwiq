@@ -39,7 +39,7 @@ namespace KiwiQuery
         internal InsertQuery(string table, Schema schema) : base(schema)
         {
             this.table = table;
-            this.values = new();
+            this.values = new List<ValueToInsert>();
         }
 
         /// <summary>

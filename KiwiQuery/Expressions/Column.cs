@@ -63,13 +63,13 @@ namespace KiwiQuery.Expressions
 
         public override void WriteTo(QueryBuilder builder)
         {
-            if (this.table is not null)
+            if (this.table != null)
             {
                 this.table.WriteTo(builder);
                 builder.AppendAccessor();
             }
             builder.AppendTableOrColumnName(this.name);
-            if (this.alias is not null)
+            if (this.alias != null)
             {
                 builder.AppendAsKeyword()
                        .AppendTableOrColumnName(this.alias);

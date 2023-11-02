@@ -22,7 +22,7 @@ namespace KiwiQuery
         internal DeleteQuery(string table, Schema schema) : base(schema) 
         {
             this.table = table;
-            this.whereClauseBuilder = new();
+            this.whereClauseBuilder = new WhereClauseBuilder();
         }
 
         protected override string BuildCommandText(QueryBuilder result)

@@ -24,8 +24,8 @@ namespace KiwiQuery
         internal SelectQuery(IEnumerable<Value> projection, Schema schema) : base(schema)
         {
             this.table = null;
-            this.whereClauseBuilder = new();
-            this.joinClauseBuilder = new(schema);
+            this.whereClauseBuilder = new WhereClauseBuilder();
+            this.joinClauseBuilder = new JoinClauseBuilder(schema);
             this.projection = projection.ToList();
         }
 

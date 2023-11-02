@@ -54,47 +54,47 @@ namespace KiwiQuery
         /// </summary>
         /// <param name="table">The table to insert values into.</param>
         /// <returns>An <see cref="InsertQuery"/> that can be further configurated and then executed.</returns>
-        public InsertQuery InsertInto(string table) => new(table, this);
+        public InsertQuery InsertInto(string table) => new InsertQuery(table, this);
 
         /// <summary>
         /// Creates a new DELETE command on the given table.
         /// </summary>
         /// <param name="table">The table to delete rows from.</param>
         /// <returns>A <see cref="DeleteQuery"/> that can be further configurated and then executed.</returns>
-        public DeleteQuery DeleteFrom(string table) => new(table, this);
+        public DeleteQuery DeleteFrom(string table) => new DeleteQuery(table, this);
 
         /// <summary>
         /// Creates a new UPDATE command on the given table.
         /// </summary>
         /// <param name="table">The table to update.</param>
         /// <returns>An <see cref="UpdateQuery"/> that can be further configurated and then executed.</returns>
-        public UpdateQuery Update(string table) => new(table, this);
+        public UpdateQuery Update(string table) => new UpdateQuery(table, this);
 
         /// <summary>
         /// Creates a new SELECT command on the given table.
         /// </summary>
         /// <param name="columns">The columns to read.</param>
         /// <returns>A <see cref="SelectQuery"/> that can be further configurated and then executed.</returns>
-        public SelectQuery Select(params string[] columns) => new(columns.Select(this.Column), this);
+        public SelectQuery Select(params string[] columns) => new SelectQuery(columns.Select(this.Column), this);
 
         /// <summary>
         /// Creates a new SELECT command on the given table.
         /// </summary>
         /// <param name="columns">The columns and values to read.</param>
         /// <returns>A <see cref="SelectQuery"/> that can be further configurated and then executed.</returns>
-        public SelectQuery Select(params Value[] columns) => new(columns, this);
+        public SelectQuery Select(params Value[] columns) => new SelectQuery(columns, this);
 
         /// <summary>
         /// Creates a new SELECT * command on the given table.
         /// </summary>
         /// <returns>A <see cref="SelectQuery"/> that can be further configurated and then executed.</returns>
-        public SelectQuery SelectAll() => new(Array.Empty<Column>(), this);
+        public SelectQuery SelectAll() => new SelectQuery(Array.Empty<Column>(), this);
 
         /// <summary>
         /// Creates a table from this schema.
         /// </summary>
         /// <param name="name">The name of the table.</param>
-        public Table Table(string name) => new(name);
+        public Table Table(string name) => new Table(name);
 
         /// <summary>
         /// Creates a column from this schema. <br/>
@@ -105,12 +105,12 @@ namespace KiwiQuery
         /// </code>
         /// </summary>
         /// <param name="name">The name of the column.</param>
-        public Column Column(string name) => new(name);
+        public Column Column(string name) => new Column(name);
 
         /// <summary>
         /// Turns a SELECT command into a subquery that you can then use anywhere a <see cref="Value"/> is expected.
         /// </summary>
         /// <param name="query">The subquery.</param>
-        public SubQuery SubQuery(SelectQuery query) => new(query);
+        public SubQuery SubQuery(SelectQuery query) => new SubQuery(query);
     }
 }

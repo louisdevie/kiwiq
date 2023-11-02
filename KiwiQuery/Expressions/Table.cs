@@ -29,7 +29,7 @@ namespace KiwiQuery.Expressions
         /// </summary>
         /// <param name="name">The name of the column.</param>
         /// <returns>The new column.</returns>
-        public Column Column(string name) => new(name, this);
+        public Column Column(string name) => new Column(name, this);
 
         public void WriteTo(QueryBuilder builder)
         {

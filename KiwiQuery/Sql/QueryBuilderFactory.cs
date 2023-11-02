@@ -15,7 +15,7 @@ namespace KiwiQuery.Sql
             {
                 if (current == null)
                 {
-                    current = new();
+                    current = new QueryBuilderFactory();
                 }
                 return current;
             }
@@ -27,18 +27,24 @@ namespace KiwiQuery.Sql
 
         private QueryBuilderFactory()
         {
-            this.implementations = new();
+            this.implementations = new Dictionary<Mode, ConstructorInfo>();
             this.RegisterQueryBuilder(Mode.MySql, typeof(MySqlQueryBuilder));
         }
 
         private void RegisterQueryBuilder(Mode mode, Type implementation)
         {
-            if (!implementation.IsAssignableTo(typeof(QueryBuilder)))
+            if (!typeof(QueryBuilder).IsAssignableFrom(implementation))
             {
                 throw new ArgumentException($"The query builder implementation {implementation} does not inherit from KiwiQuery.Sql.QueryBuilder.");
             }
 
-            ConstructorInfo? constructor = implementation.GetConstructor(BindingFlags.Public, new Type[1] { typeof(DbCommand) });
+            ConstructorInfo? constructor = implementation
+#if NET6_0_OR_GREATER
+                .GetConstructor(BindingFlags.Public, new Type[1] { typeof(DbCommand) });
+#else
+                .GetConstructor(new Type[1] { typeof(DbCommand) });
+            if (constructor != null && !constructor.IsPublic) constructor = null;
+#endif
 
             if (constructor is null)
             {

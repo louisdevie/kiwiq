@@ -11,7 +11,7 @@ namespace KiwiQuery
         #region Special values
 
         /// <inheritdoc cref="Null"/>
-        public static Null NULL => new();
+        public static Null NULL => new Null();
 
         #endregion
 
@@ -20,7 +20,7 @@ namespace KiwiQuery
         /// <summary>
         /// The SQL COUNT() function.
         /// </summary>
-        public static FunctionCall COUNT() => new("COUNT", new AllColumns());
+        public static FunctionCall COUNT() => new FunctionCall("COUNT", new AllColumns());
 
         #endregion
 
