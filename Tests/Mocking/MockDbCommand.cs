@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using System.Data.Common;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Tests.Mocking
 {
@@ -21,6 +22,8 @@ namespace Tests.Mocking
         protected override DbConnection? DbConnection { get => this.connection; set => throw new InvalidOperationException("Cannot change the connection of a mock command"); }
 
         protected override DbParameterCollection DbParameterCollection => this.parameters;
+
+        public MockDbParameterCollection MockParameters => this.parameters;
 
         protected override DbTransaction? DbTransaction { get; set; }
 
@@ -53,12 +56,12 @@ namespace Tests.Mocking
 
         protected override DbParameter CreateDbParameter()
         {
-            throw new NotImplementedException();
+            return new MockDbParameter();
         }
 
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
         {
-            this.connection.Execute(ExecutionMethod.Reader, this.CommandText);
+            this.connection.Execute(ExecutionMethod.Reader, this);
             return null!;
         }
     }

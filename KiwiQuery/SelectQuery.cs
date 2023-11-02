@@ -40,7 +40,7 @@ namespace KiwiQuery
         /// <param name="columns">The columns and values to select.</param>
         public SelectQuery And(params Value[] columns)
         {
-            foreach (Column column in columns)
+            foreach (Value column in columns)
             {
                 this.projection.Add(column);
             }

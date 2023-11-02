@@ -1,5 +1,5 @@
 ﻿using KiwiQuery;
-using KiwiQuery.Sql;
+using KiwiQuery.Expressions;
 using Tests.Mocking;
 using Xunit;
 
@@ -11,7 +11,7 @@ namespace Tests.QueryLogic
         {
             Assert.Equal(1, connection.ExecutedCommandCount);
 
-            Assert.Equal(expected, connection.LastExecutedCommand);
+            Assert.Equal(expected, connection.LastExecutedCommand.CommandText);
             Assert.Equal(ExecutionMethod.Reader, connection.LastExecutionMethod);
 
             connection.ClearExecutionHistory();
@@ -45,7 +45,73 @@ namespace Tests.QueryLogic
               .And(db.Column("col2") * 2)
               .From("table1")
               .Fetch();
-            CheckSelectQueryExecution("select $col1 , $col2 * 2 from $table1", connection);
+            Assert.Equal(
+                new MockDbParameter[1] {
+                    new MockDbParameter { ParameterName = "@p1", Value = 2 }
+                },
+                connection.LastExecutedCommand.MockParameters
+            );
+            CheckSelectQueryExecution("select $col1 , ( $col2 ) * ( @p1 ) from $table1", connection);
+        }
+
+        [Fact]
+        public void JoinedSelect()
+        {
+            var connection = new MockDbConnection();
+            Schema db = new(connection, MockQueryBuilder.MockMode);
+
+            Table table1 = db.Table("table1");
+            Table table2 = db.Table("table2");
+            Table table3 = db.Table("table3");
+
+            db.SelectAll().From("table1").Join("table2", "fk", "ref").Fetch();
+            CheckSelectQueryExecution("select #all from $table1 inner join $table2 on $fk == $ref", connection);
+
+            db.SelectAll().From("table1").Join(table2, "fk", "ref").Fetch();
+            CheckSelectQueryExecution("select #all from $table1 inner join $table2 on $fk == $ref", connection);
+
+            db.SelectAll().From("table1").Join(table2, db.Column("fk"), db.Column("ref")).Fetch();
+            CheckSelectQueryExecution("select #all from $table1 inner join $table2 on $fk == $ref", connection);
+
+            db.SelectAll().From("table1").Join(table2.Column("ref"), db.Column("fk")).Fetch();
+            CheckSelectQueryExecution("select #all from $table1 inner join $table2 on $table2 -> $ref == $fk", connection);
+
+            db.SelectAll()
+              .From(table1)
+              .Join(table2.Column("id2"), table1.Column("fk2"))
+              .Join(table3.Column("id3"), table1.Column("fk3"))
+              .Fetch();
+            CheckSelectQueryExecution("select #all from $table1 inner join $table2 on $table2 -> $id2 == $table1 -> $fk2 inner join $table3 on $table3 -> $id3 == $table1 -> $fk3", connection);
+        }
+
+        [Fact]
+        public void LeftJoinedSelect()
+        {
+            var connection = new MockDbConnection();
+            Schema db = new(connection, MockQueryBuilder.MockMode);
+
+            Table table1 = db.Table("table1");
+            Table table2 = db.Table("table2");
+            Table table3 = db.Table("table3");
+
+            db.SelectAll().From("table1").LeftJoin("table2", "fk", "ref").Fetch();
+            CheckSelectQueryExecution("select #all from $table1 left join $table2 on $fk == $ref", connection);
+
+            db.SelectAll().From("table1").LeftJoin(table2, "fk", "ref").Fetch();
+            CheckSelectQueryExecution("select #all from $table1 left join $table2 on $fk == $ref", connection);
+
+            db.SelectAll().From("table1").LeftJoin(table2, db.Column("fk"), db.Column("ref")).Fetch();
+            CheckSelectQueryExecution("select #all from $table1 left join $table2 on $fk == $ref", connection);
+
+            db.SelectAll().From("table1").LeftJoin(table2.Column("ref"), db.Column("fk")).Fetch();
+            CheckSelectQueryExecution("select #all from $table1 left join $table2 on $table2 -> $ref == $fk", connection);
+
+            db.SelectAll()
+              .From(table1)
+              .LeftJoin(table2.Column("id2"), table1.Column("fk2"))
+              .LeftJoin(table3.Column("id3"), table1.Column("fk3"))
+              .Fetch();
+            CheckSelectQueryExecution("select #all from $table1 left join $table2 on $table2 -> $id2 == $table1 -> $fk2 left join $table3 on $table3 -> $id3 == $table1 -> $fk3", connection);
         }
     }
 }

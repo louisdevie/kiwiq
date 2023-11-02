@@ -5,7 +5,7 @@ namespace Tests.Mocking
 {
     internal class MockDbConnection : DbConnection
     {
-        List<(ExecutionMethod, string)> executedCommands = new();
+        List<(ExecutionMethod, MockDbCommand)> executedCommands = new();
 
         public override string ConnectionString { get => ""; set { } }
 
@@ -17,13 +17,13 @@ namespace Tests.Mocking
 
         public override ConnectionState State => ConnectionState.Open;
 
-        public string LastExecutedCommand => this.executedCommands[^1].Item2;
+        public MockDbCommand LastExecutedCommand => this.executedCommands[^1].Item2;
 
         public ExecutionMethod LastExecutionMethod => this.executedCommands[^1].Item1;
 
         public int ExecutedCommandCount => this.executedCommands.Count;
 
-        public string GetNthCommandText(int number) => this.executedCommands[number].Item2;
+        public MockDbCommand GetNthCommandText(int number) => this.executedCommands[number].Item2;
 
         public ExecutionMethod GetNthExecutionMethod(int number) => this.executedCommands[number].Item1;
 
@@ -46,7 +46,7 @@ namespace Tests.Mocking
             throw new NotImplementedException();
         }
 
-        public void Execute(ExecutionMethod executionMethod, string commandText)
+        public void Execute(ExecutionMethod executionMethod, MockDbCommand commandText)
         {
             this.executedCommands.Add((executionMethod, commandText));
         }

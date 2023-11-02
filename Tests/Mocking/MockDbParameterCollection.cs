@@ -3,9 +3,9 @@ using System.Data.Common;
 
 namespace Tests.Mocking
 {
-    internal class MockDbParameterCollection : DbParameterCollection
+    internal class MockDbParameterCollection : DbParameterCollection, IEnumerable<MockDbParameter>
     {
-        private List<DbParameter> parameters;
+        private List<MockDbParameter> parameters = new();
 
         public override int Count => this.parameters.Count;
 
@@ -13,7 +13,8 @@ namespace Tests.Mocking
 
         public override int Add(object value)
         {
-            throw new NotImplementedException();
+            this.parameters.Add((MockDbParameter)value);
+            return this.parameters.Count - 1;
         }
 
         public override void AddRange(Array values)
@@ -43,7 +44,7 @@ namespace Tests.Mocking
 
         public override IEnumerator GetEnumerator()
         {
-            throw new NotImplementedException();
+            return this.parameters.GetEnumerator();
         }
 
         public override int IndexOf(object value)
@@ -94,6 +95,11 @@ namespace Tests.Mocking
         protected override void SetParameter(string parameterName, DbParameter value)
         {
             throw new NotImplementedException();
+        }
+
+        IEnumerator<MockDbParameter> IEnumerable<MockDbParameter>.GetEnumerator()
+        {
+            return this.parameters.GetEnumerator();
         }
     }
 }
