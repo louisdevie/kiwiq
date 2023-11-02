@@ -16,7 +16,6 @@ namespace KiwiQuery.Expressions.Predicates
         /// <exception cref="ArgumentException"/>
         public BinaryLogicalExpression(LogicalOperator op, Predicate[] operands)
         {
-            if (operands.Length < 2) throw new ArgumentException("Logical operators need at least two operands.");
             this.operands = operands;
             if (op == LogicalOperator.Not) throw new ArgumentException("NOT is not a logical binary operator.");
             this.op = op;
@@ -24,6 +23,29 @@ namespace KiwiQuery.Expressions.Predicates
 
         public override void WriteTo(QueryBuilder builder)
         {
+            if (this.operands.Length == 0)
+            {
+                switch (this.op)
+                {
+                    case LogicalOperator.And:
+                        builder.AppendRaw("1");
+                        return;
+
+                    case LogicalOperator.Or:
+                        builder.AppendRaw("0");
+                        return;
+
+                    default:
+                        throw new Exception("Should be unreachable, WTH ?");
+                }
+            }
+
+            if (this.operands.Length == 1)
+            {
+                this.operands[1].WriteTo(builder);
+                return;
+            }
+
             bool first = true;
             foreach (Predicate operand in this.operands)
             {
