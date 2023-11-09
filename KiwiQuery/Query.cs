@@ -21,6 +21,10 @@ namespace KiwiQuery
         /// </summary>
         protected DbCommand Command => this.command;
 
+        /// <summary>
+        /// Creates a new query for a schema.
+        /// </summary>
+        /// <param name="schema"></param>
         public Query(Schema schema)
         {
             this.schema = schema;

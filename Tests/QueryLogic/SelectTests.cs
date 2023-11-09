@@ -113,5 +113,42 @@ namespace Tests.QueryLogic
               .Fetch();
             CheckSelectQueryExecution("select #all from $table1 left join $table2 on $table2 -> $id2 == $table1 -> $fk2 left join $table3 on $table3 -> $id3 == $table1 -> $fk3", connection);
         }
+
+        [Fact]
+        public void LimitedSelect()
+        {
+            var connection = new MockDbConnection();
+            Schema db = new(connection, MockQueryBuilder.MockMode);
+
+            db.SelectAll().From("table1").Limit(8).Fetch();
+            Assert.Equal(
+                new MockDbParameter[2] {
+                    new MockDbParameter { ParameterName = "@p1", Value = 8 },
+                    new MockDbParameter { ParameterName = "@p2", Value = 0 }
+                },
+                connection.LastExecutedCommand.MockParameters
+            );
+            CheckSelectQueryExecution("select #all from $table1 limit @p1 offset @p2", connection);
+
+            db.SelectAll().From("table1").Limit(8).Offset(14).Fetch();
+            Assert.Equal(
+                new MockDbParameter[2] {
+                    new MockDbParameter { ParameterName = "@p1", Value = 8 },
+                    new MockDbParameter { ParameterName = "@p2", Value = 14 }
+                },
+                connection.LastExecutedCommand.MockParameters
+            );
+            CheckSelectQueryExecution("select #all from $table1 limit @p1 offset @p2", connection);
+
+            db.SelectAll().From("table1").Limit(8, 14).Fetch();
+            Assert.Equal(
+                new MockDbParameter[2] {
+                    new MockDbParameter { ParameterName = "@p1", Value = 8 },
+                    new MockDbParameter { ParameterName = "@p2", Value = 14 }
+                },
+                connection.LastExecutedCommand.MockParameters
+            );
+            CheckSelectQueryExecution("select #all from $table1 limit @p1 offset @p2", connection);
+        }
     }
 }

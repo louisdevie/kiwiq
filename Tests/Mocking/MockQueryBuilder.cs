@@ -276,5 +276,14 @@ namespace Tests.Mocking
             this.Buffer.Append("where");
             return this;
         }
+
+        public override QueryBuilder AppendLimitClause(int limit, int offset)
+        {
+            this.Space();
+            string limitParam = this.ResisterParameterWithValue(limit);
+            string offsetParam = this.ResisterParameterWithValue(offset);
+            this.Buffer.Append($"limit {limitParam} offset {offsetParam}");
+            return this;
+        }
     }
 }
