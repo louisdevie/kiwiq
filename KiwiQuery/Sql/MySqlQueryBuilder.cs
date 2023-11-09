@@ -76,6 +76,27 @@ namespace KiwiQuery.Sql
 
         public override QueryBuilder AppendNull() => this.AppendKeywords("NULL");
 
+        public override QueryBuilder AppendLimitClause(int limit, int offset)
+        {
+            string limitParameter = this.ResisterParameterWithValue(limit);
+
+            this.AppendKeywords("LIMIT");
+
+            if (offset == 0)
+            {
+                this.AppendRaw(limitParameter);
+            }
+            else
+            {
+                string offsetParameter = this.ResisterParameterWithValue(offset);
+
+                this.AppendRaw(offsetParameter);
+                this.AppendComma();
+                this.AppendRaw(limitParameter);
+            }
+
+            return this;
+        }
 
         #endregion
 
@@ -219,6 +240,7 @@ namespace KiwiQuery.Sql
 
         public override QueryBuilder AppendRaw(string sql)
         {
+            this.EnsureWordBoundary();
             this.Buffer.Append(sql);
             this.endsWithWordBoundary = false;
             return this;

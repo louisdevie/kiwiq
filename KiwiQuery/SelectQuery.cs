@@ -17,6 +17,7 @@ namespace KiwiQuery
         private string? table;
         private WhereClauseBuilder whereClauseBuilder;
         private JoinClauseBuilder joinClauseBuilder;
+        private LimitClauseBuilder limitClauseBuilder;
         private List<Value> projection;
 
         /// <summary>
@@ -29,6 +30,7 @@ namespace KiwiQuery
             this.table = null;
             this.whereClauseBuilder = new WhereClauseBuilder();
             this.joinClauseBuilder = new JoinClauseBuilder(schema);
+            this.limitClauseBuilder = new LimitClauseBuilder();
             this.projection = projection.ToList();
         }
 
@@ -95,6 +97,7 @@ namespace KiwiQuery
 
             this.joinClauseBuilder.WriteClauseTo(result);
             this.whereClauseBuilder.WriteClauseTo(result);
+            this.limitClauseBuilder.WriteClauseTo(result);
         }
 
         protected override string BuildCommandText(QueryBuilder result)
@@ -194,6 +197,31 @@ namespace KiwiQuery
         public SelectQuery Where(Predicate predicate)
         {
             this.whereClauseBuilder.Where(predicate);
+            return this;
+        }
+
+        #endregion
+
+        #region LIMIT clause methods
+
+        /// <inheritdoc cref="LimitClauseBuilder.Limit(int)"/>
+        public SelectQuery Limit(int limit)
+        {
+            this.limitClauseBuilder.Limit(limit);
+            return this;
+        }
+
+        /// <inheritdoc cref="LimitClauseBuilder.Limit(int, int)"/>
+        public SelectQuery Limit(int limit, int offset)
+        {
+            this.limitClauseBuilder.Limit(limit, offset);
+            return this;
+        }
+
+        /// <inheritdoc cref="LimitClauseBuilder.Offset(int)"/>
+        public SelectQuery Offset(int offset)
+        {
+            this.limitClauseBuilder.Offset(offset);
             return this;
         }
 
