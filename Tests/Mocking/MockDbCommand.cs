@@ -34,6 +34,8 @@ namespace Tests.Mocking
             this.CommandText = string.Empty;
         }
 
+        public MockDbCommand(): this(new MockDbConnection()) { }
+
         public override void Cancel()
         {
             throw new NotImplementedException();

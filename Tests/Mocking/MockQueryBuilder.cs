@@ -16,6 +16,8 @@ namespace Tests.Mocking
 
         public MockQueryBuilder(DbCommand command) : base(command) { }
 
+        public MockQueryBuilder() : base(new MockDbCommand()) { }
+
         private void Space()
         {
             if (this.firstToken)
@@ -169,6 +171,20 @@ namespace Tests.Mocking
         }
 
         public override QueryBuilder AppendLastInsertIdQuery()
+        {
+            this.Space();
+            this.Buffer.Append("select #last-insert-id");
+            return this;
+        }
+
+        public override QueryBuilder AppendTruthyConstant()
+        {
+            this.Space();
+            this.Buffer.Append("");
+            return this;
+        }
+
+        public override QueryBuilder AppendFalsyConstant()
         {
             this.Space();
             this.Buffer.Append("select #last-insert-id");

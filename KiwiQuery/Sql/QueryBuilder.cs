@@ -396,6 +396,12 @@ namespace KiwiQuery.Sql
             return this;
         }
 
+        /// <summary>Writes a constant value that is always considered "true".</summary>
+        public abstract QueryBuilder AppendTruthyConstant();
+
+        /// <summary>Writes a constant value that is always considered "false".</summary>
+        public abstract QueryBuilder AppendFalsyConstant();
+
         #endregion
     }
 }

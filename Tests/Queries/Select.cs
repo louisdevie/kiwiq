@@ -1,11 +1,9 @@
 ﻿using KiwiQuery;
 using KiwiQuery.Expressions;
-using Tests.Mocking;
-using Xunit;
 
-namespace Tests.QueryLogic
+namespace Tests.Queries
 {
-    public class SelectTests
+    public class Select
     {
         private static void CheckSelectQueryExecution(string expected, MockDbConnection connection)
         {

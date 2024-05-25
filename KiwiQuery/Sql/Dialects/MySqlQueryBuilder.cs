@@ -47,5 +47,21 @@ namespace KiwiQuery.Sql.Dialects
             this.DoesntEndWithWordBoundary();
             return this;
         }
+
+        public override QueryBuilder AppendTruthyConstant()
+        {
+            this.EnsureWordBoundary();
+            this.Buffer.Append('1');
+            this.DoesntEndWithWordBoundary();
+            return this;
+        }
+
+        public override QueryBuilder AppendFalsyConstant()
+        {
+            this.EnsureWordBoundary();
+            this.Buffer.Append('0');
+            this.DoesntEndWithWordBoundary();
+            return this;
+        }
     }
 }

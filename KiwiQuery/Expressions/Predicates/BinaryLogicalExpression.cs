@@ -1,5 +1,6 @@
-﻿using KiwiQuery.Sql;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using KiwiQuery.Sql;
 
 namespace KiwiQuery.Expressions.Predicates
 {
@@ -8,59 +9,80 @@ namespace KiwiQuery.Expressions.Predicates
     /// </summary>
     internal class BinaryLogicalExpression : Predicate
     {
-        private Predicate[] operands;
-        private LogicalOperator op;
+        private readonly List<Predicate> operands;
+        private readonly LogicalOperator op;
 
         /// <param name="op">The operator to join the predicates with.</param>
         /// <param name="operands">The operands of the expression.</param>
         /// <exception cref="ArgumentException"/>
         public BinaryLogicalExpression(LogicalOperator op, Predicate[] operands)
         {
-            this.operands = operands;
-            if (op == LogicalOperator.Not) throw new ArgumentException("NOT is not a logical binary operator.");
+            if (op == LogicalOperator.Not) throw new ArgumentException("NOT is not a binary operator.");
             this.op = op;
+            this.operands = Flatten(operands, op);
+        }
+
+        private static List<Predicate> Flatten(Predicate[] predicates, LogicalOperator op)
+        {
+            List<Predicate> result = new List<Predicate>();
+
+            foreach (Predicate predicate in predicates)
+            {
+                result.AddRange(predicate.RelativeTo(op));
+            }
+
+            return result;
+        }
+
+        public override IEnumerable<Predicate> RelativeTo(LogicalOperator op)
+        {
+            return op == this.op ? this.operands : base.RelativeTo(op);
         }
 
         public override void WriteTo(QueryBuilder builder)
         {
-            if (this.operands.Length == 0)
+            switch (this.operands.Count)
             {
+            case 0:
                 switch (this.op)
                 {
-                    case LogicalOperator.And:
-                        builder.AppendRaw("1");
-                        return;
+                case LogicalOperator.And:
+                    builder.AppendTruthyConstant();
+                    break;
 
-                    case LogicalOperator.Or:
-                        builder.AppendRaw("0");
-                        return;
+                case LogicalOperator.Or:
+                    builder.AppendFalsyConstant();
+                    break;
 
-                    default:
-                        throw new Exception("Should be unreachable, WTH ?");
+                default:
+                    throw new Exception("Should be unreachable, WTH ?");
                 }
-            }
 
-            if (this.operands.Length == 1)
-            {
+                break;
+
+            case 1:
                 this.operands[1].WriteTo(builder);
                 return;
-            }
 
-            bool first = true;
-            foreach (Predicate operand in this.operands)
+            default:
             {
-                if (first)
+                bool first = true;
+                foreach (Predicate operand in this.operands)
                 {
+                    if (!first)
+                    {
+                        builder.AppendLogicalOperator(this.op);
+                    }
+
+                    builder.OpenBracket();
+                    operand.WriteTo(builder);
+                    builder.CloseBracket();
+
                     first = false;
                 }
-                else
-                {
-                    builder.AppendLogicalOperator(this.op);
-                }
-
-                builder.OpenBracket();
-                operand.WriteTo(builder);
-                builder.CloseBracket();
+            }
+                ;
+                break;
             }
         }
     }
