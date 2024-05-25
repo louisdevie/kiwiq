@@ -44,7 +44,7 @@ namespace Tests.Queries
               .From("table1")
               .Fetch();
             Assert.Equal(
-                new MockDbParameter[1] {
+                new MockDbParameter[] {
                     new MockDbParameter { ParameterName = "@p1", Value = 2 }
                 },
                 connection.LastExecutedCommand.MockParameters
@@ -65,13 +65,13 @@ namespace Tests.Queries
             db.SelectAll().From("table1").Join("table2", "fk", "ref").Fetch();
             CheckSelectQueryExecution("select #all from $table1 inner join $table2 on $fk == $ref", connection);
 
-            db.SelectAll().From("table1").Join(table2, "fk", "ref").Fetch();
+            db.SelectAll().From(table1).Join(table2, "fk", "ref").Fetch();
             CheckSelectQueryExecution("select #all from $table1 inner join $table2 on $fk == $ref", connection);
 
-            db.SelectAll().From("table1").Join(table2, db.Column("fk"), db.Column("ref")).Fetch();
+            db.SelectAll().From(table1).Join(table2, db.Column("fk"), db.Column("ref")).Fetch();
             CheckSelectQueryExecution("select #all from $table1 inner join $table2 on $fk == $ref", connection);
 
-            db.SelectAll().From("table1").Join(table2.Column("ref"), db.Column("fk")).Fetch();
+            db.SelectAll().From(table1).Join(table2.Column("ref"), db.Column("fk")).Fetch();
             CheckSelectQueryExecution("select #all from $table1 inner join $table2 on $table2 -> $ref == $fk", connection);
 
             db.SelectAll()
@@ -120,7 +120,7 @@ namespace Tests.Queries
 
             db.SelectAll().From("table1").Limit(8).Fetch();
             Assert.Equal(
-                new MockDbParameter[2] {
+                new MockDbParameter[] {
                     new MockDbParameter { ParameterName = "@p1", Value = 8 },
                     new MockDbParameter { ParameterName = "@p2", Value = 0 }
                 },
@@ -130,7 +130,7 @@ namespace Tests.Queries
 
             db.SelectAll().From("table1").Limit(8).Offset(14).Fetch();
             Assert.Equal(
-                new MockDbParameter[2] {
+                new MockDbParameter[] {
                     new MockDbParameter { ParameterName = "@p1", Value = 8 },
                     new MockDbParameter { ParameterName = "@p2", Value = 14 }
                 },
@@ -140,13 +140,24 @@ namespace Tests.Queries
 
             db.SelectAll().From("table1").Limit(8, 14).Fetch();
             Assert.Equal(
-                new MockDbParameter[2] {
+                new MockDbParameter[] {
                     new MockDbParameter { ParameterName = "@p1", Value = 8 },
                     new MockDbParameter { ParameterName = "@p2", Value = 14 }
                 },
                 connection.LastExecutedCommand.MockParameters
             );
             CheckSelectQueryExecution("select #all from $table1 limit @p1 offset @p2", connection);
+        }
+        
+        
+        [Fact]
+        public void SelectDistinct()
+        {
+            var connection = new MockDbConnection();
+            Schema db = new(connection, MockQueryBuilder.MockDialect);
+
+            db.Select("col1", "col2", "col3").Distinct().From("table1").Fetch();
+            CheckSelectQueryExecution("select distinct $col1 , $col2 , $col3 from $table1", connection);
         }
     }
 }

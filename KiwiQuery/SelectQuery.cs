@@ -15,6 +15,7 @@ namespace KiwiQuery
     public class SelectQuery : Query, IWriteable
     {
         private string? table;
+        private bool distinct;
         private WhereClauseBuilder whereClauseBuilder;
         private JoinClauseBuilder joinClauseBuilder;
         private LimitClauseBuilder limitClauseBuilder;
@@ -28,6 +29,7 @@ namespace KiwiQuery
         internal SelectQuery(IEnumerable<Value> projection, Schema schema) : base(schema)
         {
             this.table = null;
+            this.distinct = false;
             this.whereClauseBuilder = new WhereClauseBuilder();
             this.joinClauseBuilder = new JoinClauseBuilder(schema);
             this.limitClauseBuilder = new LimitClauseBuilder();
@@ -36,7 +38,7 @@ namespace KiwiQuery
 
         /// <summary>
         /// Add more columns to be selected. <br/>
-        /// This method is useful for breaking down  long select statements and
+        /// This method is useful for breaking down long select statements and
         /// combining simple string columns with <see cref="Column"/> objects.
         /// </summary>
         /// <param name="columns">The columns and values to select.</param>
@@ -76,9 +78,15 @@ namespace KiwiQuery
             return this;
         }
 
+        /// <inheritdoc/>
         public void WriteTo(QueryBuilder result)
         {
             result.AppendSelectKeyword();
+
+            if (this.distinct)
+            {
+                result.AppendDistinctKeyword();
+            }
 
             if (this.projection.Count == 0)
             {
@@ -131,6 +139,15 @@ namespace KiwiQuery
         /// </returns>
         public TReader Fetch<TReader>() where TReader : DbDataReader => (TReader)this.Fetch();
 
+        /// <summary>
+        /// Remove duplicates from the query results.
+        /// </summary>
+        public SelectQuery Distinct()
+        {
+            this.distinct = true;
+            return this;
+        }
+        
         #region JOIN clause methods
 
         /// <inheritdoc cref="JoinClauseBuilder.Join(Table, Column, Column)"/>
@@ -226,5 +243,6 @@ namespace KiwiQuery
         }
 
         #endregion
+
     }
 }

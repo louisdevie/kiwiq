@@ -244,6 +244,9 @@ namespace KiwiQuery.Sql
 
             return this;
         }
+        
+        /// <summary>Writes the DISTINCT keyword.</summary>
+        public virtual QueryBuilder AppendDistinctKeyword() => this.AppendKeywords("DISTINCT");
 
         #endregion
 

@@ -301,5 +301,12 @@ namespace Tests.Mocking
             this.Buffer.Append($"limit {limitParam} offset {offsetParam}");
             return this;
         }
+
+        public override QueryBuilder AppendDistinctKeyword()
+        {
+            this.Space();
+            this.Buffer.Append("distinct");
+            return this;
+        }
     }
 }
