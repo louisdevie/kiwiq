@@ -44,7 +44,7 @@ namespace KiwiQuery
         protected void BuildCommand()
         {
             this.Command.CommandText = this.BuildCommandText(
-                QueryBuilderFactory.Current.NewQueryBuilder(this.Schema.Mode, this.Command)
+                QueryBuilderFactory.Current.NewQueryBuilder(this.Schema.CurrentDialect, this.Command)
             );
         }
     }

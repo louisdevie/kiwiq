@@ -10,17 +10,17 @@ namespace KiwiQuery
     /// </summary>
     public class Schema
     {
-        private static Mode defaultMode = Mode.MySql;
+        private static Dialect defaultDialect = Dialect.MySql;
 
         /// <summary>
         /// Sets the default mode to use when creating instances of this class. <br/>
-        /// The default mode is initially <see cref="Mode.MySql"/>.
+        /// The default mode is initially <see cref="Dialect.MySql"/>.
         /// </summary>
-        /// <param name="mode"></param>
-        public static void SetDefaultMode(Mode mode) => defaultMode = mode;
+        /// <param name="dialect"></param>
+        public static void SetDefaultMode(Dialect dialect) => defaultDialect = dialect;
 
         private DbConnection connection;
-        private Mode mode;
+        private Dialect dialect;
 
         /// <summary>
         /// The connection to the database through which commands are executed.
@@ -30,25 +30,25 @@ namespace KiwiQuery
         /// <summary>
         /// The mode used for this schema.
         /// </summary>
-        internal Mode Mode => this.mode;
+        internal Dialect CurrentDialect => this.dialect;
 
         /// <summary>
         /// Creates a new schema using a specific mode.
         /// </summary>
         /// <param name="connection">The connection to the database through which commands will be executed.</param>
-        /// <param name="mode">The mode to use for this schema.</param>
-        public Schema(DbConnection connection, Mode mode)
+        /// <param name="dialect">The mode to use for this schema.</param>
+        public Schema(DbConnection connection, Dialect dialect)
         {
             this.connection = connection;
-            this.mode = mode;
+            this.dialect = dialect;
         }
 
         /// <summary>
-        /// Creates a new schema using the default mode (<see cref="Mode.MySql"/>
-        /// or the mode set with <see cref="SetDefaultMode(Mode)"/>).
+        /// Creates a new schema using the default mode (<see cref="Dialect.MySql"/>
+        /// or the mode set with <see cref="SetDefaultMode(Dialect)"/>).
         /// </summary>
         /// <param name="connection">The connection to the database through which commands will be executed.</param>
-        public Schema(DbConnection connection) : this(connection, defaultMode) { }
+        public Schema(DbConnection connection) : this(connection, defaultDialect) { }
 
         /// <summary>
         /// Creates a new INSERT command on the given table.

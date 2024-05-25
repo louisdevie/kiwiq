@@ -21,7 +21,7 @@ namespace Tests.QueryLogic
         public void SimpleSelect()
         {
             var connection = new MockDbConnection();
-            Schema db = new(connection, MockQueryBuilder.MockMode);
+            Schema db = new(connection, MockQueryBuilder.MockDialect);
 
             db.SelectAll().From("table1").Fetch();
             CheckSelectQueryExecution("select #all from $table1", connection);
@@ -58,7 +58,7 @@ namespace Tests.QueryLogic
         public void JoinedSelect()
         {
             var connection = new MockDbConnection();
-            Schema db = new(connection, MockQueryBuilder.MockMode);
+            Schema db = new(connection, MockQueryBuilder.MockDialect);
 
             Table table1 = db.Table("table1");
             Table table2 = db.Table("table2");
@@ -88,7 +88,7 @@ namespace Tests.QueryLogic
         public void LeftJoinedSelect()
         {
             var connection = new MockDbConnection();
-            Schema db = new(connection, MockQueryBuilder.MockMode);
+            Schema db = new(connection, MockQueryBuilder.MockDialect);
 
             Table table1 = db.Table("table1");
             Table table2 = db.Table("table2");
@@ -118,7 +118,7 @@ namespace Tests.QueryLogic
         public void LimitedSelect()
         {
             var connection = new MockDbConnection();
-            Schema db = new(connection, MockQueryBuilder.MockMode);
+            Schema db = new(connection, MockQueryBuilder.MockDialect);
 
             db.SelectAll().From("table1").Limit(8).Fetch();
             Assert.Equal(

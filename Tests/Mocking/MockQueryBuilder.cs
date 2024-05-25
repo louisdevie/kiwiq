@@ -8,9 +8,9 @@ namespace Tests.Mocking
 {
     internal class MockQueryBuilder : QueryBuilder
     {
-        private static Mode? mode;
+        private static Dialect? mode;
 
-        public static Mode MockMode => mode ??= QueryBuilderFactory.Current.RegisterCustomQueryBuilder<MockQueryBuilder>();
+        public static Dialect MockDialect => mode ??= QueryBuilderFactory.Current.RegisterCustomQueryBuilder<MockQueryBuilder>();
 
         private bool firstToken = true;
 

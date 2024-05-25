@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Reflection;
+using KiwiQuery.Sql.Dialects;
 
 namespace KiwiQuery.Sql
 {
@@ -25,15 +26,15 @@ namespace KiwiQuery.Sql
 
         #endregion
 
-        private Dictionary<Mode, ConstructorInfo> implementations;
+        private Dictionary<Dialect, ConstructorInfo> implementations;
 
         private QueryBuilderFactory()
         {
-            this.implementations = new Dictionary<Mode, ConstructorInfo>();
-            this.RegisterQueryBuilder(Mode.MySql, typeof(MySqlQueryBuilder));
+            this.implementations = new Dictionary<Dialect, ConstructorInfo>();
+            this.RegisterQueryBuilder(Dialect.MySql, typeof(MySqlQueryBuilder));
         }
 
-        private void RegisterQueryBuilder(Mode mode, Type implementation)
+        private void RegisterQueryBuilder(Dialect dialect, Type implementation)
         {
             if (!typeof(QueryBuilder).IsAssignableFrom(implementation))
             {
@@ -43,28 +44,27 @@ namespace KiwiQuery.Sql
             ConstructorInfo? constructor = implementation.GetConstructor(new Type[1] { typeof(DbCommand) })
                 ?? throw new InvalidOperationException($"The query builder implementation {implementation} does not have an accessible constructor with a (DbCommand) signature.");
             
-            this.implementations.Add(mode, constructor);
+            this.implementations.Add(dialect, constructor);
         }
 
         /// <summary>
         /// Add an implementation of <see cref="QueryBuilder"/> to the factory.
         /// </summary>
         /// <param name="implementation">The type of the query builder to add.</param>
-        /// <returns>The custom <see cref="Mode"/> to use this query builder.</returns>
-        public Mode RegisterCustomQueryBuilder(Type implementation)
+        /// <returns>The custom <see cref="Dialect"/> to use this query builder.</returns>
+        public Dialect RegisterCustomQueryBuilder(Type implementation)
         {
-            int customModeValue = 1;
-            while (this.implementations.ContainsKey((Mode)customModeValue)) customModeValue++;
-            this.RegisterQueryBuilder((Mode)customModeValue, implementation);
-            return (Mode)customModeValue;
+            Dialect newDialect = Dialect.ForClass(implementation);
+            this.RegisterQueryBuilder(newDialect, implementation);
+            return newDialect;
         }
 
         /// <summary>
         /// Add an implementation of <see cref="QueryBuilder"/> to the factory.
         /// </summary>
         /// <typeparam name="T">The type of the query builder to add.</typeparam>
-        /// <returns>The custom <see cref="Mode"/> to use this query builder.</returns>
-        public Mode RegisterCustomQueryBuilder<T>()
+        /// <returns>The custom <see cref="Dialect"/> to use this query builder.</returns>
+        public Dialect RegisterCustomQueryBuilder<T>()
         where T : QueryBuilder
         {
             return this.RegisterCustomQueryBuilder(typeof(T));
@@ -73,29 +73,29 @@ namespace KiwiQuery.Sql
         /// <summary>
         /// Check if a query builder implementation is available for a specific mode.
         /// </summary>
-        /// <param name="mode">The mode to check for.</param>
+        /// <param name="dialect">The mode to check for.</param>
         /// <returns><see langword="true"/> if the mode is supported, <see langword="false"/> otherwise.</returns>
-        public bool SupportsMode(Mode mode)
+        public bool SupportsMode(Dialect dialect)
         {
-            return this.implementations.ContainsKey(mode);
+            return this.implementations.ContainsKey(dialect);
         }
 
         /// <summary>
-        /// Creates a new query builder for the specified <see cref="Mode"/>.
+        /// Creates a new query builder for the specified <see cref="Dialect"/>.
         /// </summary>
-        /// <param name="mode">The mode used to choose the query builder.</param>
+        /// <param name="dialect">The mode used to choose the query builder.</param>
         /// <param name="command">The command to pass to the <see cref="QueryBuilder(DbCommand)"/> constructor.</param>
         /// <returns>A new query builder attached to the given <paramref name="command"/>.</returns>
         /// <exception cref="ArgumentException"/>
-        public QueryBuilder NewQueryBuilder(Mode mode, DbCommand command)
+        public QueryBuilder NewQueryBuilder(Dialect dialect, DbCommand command)
         {
-            if (this.implementations.TryGetValue(mode, out ConstructorInfo? constructor))
+            if (this.implementations.TryGetValue(dialect, out ConstructorInfo? constructor))
             {
                 return (QueryBuilder)constructor.Invoke(new object[1] { command });
             }
             else
             {
-                throw new ArgumentException($"No implementation found for {mode}.");
+                throw new ArgumentException($"No implementation found for {dialect}.");
             }
         }
     }

@@ -144,16 +144,19 @@ namespace KiwiQuery
 
             DbCommand selectIdCommand = this.Schema.Connection.CreateCommand();
             selectIdCommand.CommandText = QueryBuilderFactory.Current
-                .NewQueryBuilder(this.Schema.Mode, this.Command)
+                .NewQueryBuilder(this.Schema.CurrentDialect, this.Command)
                 .AppendLastInsertIdQuery()
                 .ToString();
             object? id = selectIdCommand.ExecuteScalar();
 
-            if (id is int intId) return intId;
-            else if (id is long longId) return (int)longId;
-            else if (id is uint uintId) return (int)uintId;
-            else if (id is ulong ulongId) return (int)ulongId;
-            else return -1;
+            return id switch
+            {
+                int intId => intId,
+                long longId => (int)longId,
+                uint uintId => (int)uintId,
+                ulong ulongId => (int)ulongId,
+                _ => -1
+            };
         }
     }
 }
