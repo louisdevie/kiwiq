@@ -1,6 +1,7 @@
-﻿using KiwiQuery.Sql;
+﻿using KiwiQuery.Expressions;
+using KiwiQuery.Sql;
 
-namespace KiwiQuery.Expressions
+namespace KiwiQuery
 {
     /// <summary>
     /// A table of the schema. <br/>
@@ -38,7 +39,7 @@ namespace KiwiQuery.Expressions
         public Column Column(string name) => new Column(name, this);
 
         /// <summary>
-        /// Use an alias for this table. A separate column with the aliased name must be created to select its columns.
+        /// Use an alias for this table.
         /// </summary>
         /// <param name="alias">The alias for the column.</param>
         /// <returns>The column with its alias.</returns>
@@ -48,13 +49,28 @@ namespace KiwiQuery.Expressions
             return this;
         }
 
+        /// <inheritdoc/>
         public void WriteTo(QueryBuilder builder)
         {
-            builder.AppendTableOrColumnName(this.name);
-            if (this.alias != null)
+            switch (builder.Context.Tables)
             {
-                builder.AppendAsKeyword();
-                builder.AppendTableOrColumnName(this.alias);
+            case NameContext.Canonical:
+                builder.AppendTableOrColumnName(this.name);
+                break;
+
+            case NameContext.Aliased:
+                builder.AppendTableOrColumnName(this.alias ?? this.name);
+                break;
+
+            case NameContext.Declaration:
+                builder.AppendTableOrColumnName(this.name);
+                if (this.alias != null)
+                {
+                    builder.AppendAsKeyword();
+                    builder.AppendTableOrColumnName(this.alias);
+                }
+
+                break;
             }
         }
     }

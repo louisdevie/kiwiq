@@ -81,6 +81,8 @@ namespace KiwiQuery
         /// <inheritdoc/>
         public void WriteTo(QueryBuilder result)
         {
+            if (this.table is null) throw new InvalidOperationException("No table specified.");
+            
             result.AppendSelectKeyword();
 
             if (this.distinct)
@@ -94,18 +96,21 @@ namespace KiwiQuery
             }
             else
             {
+                result.PushContext.WithTableAliases();
                 result.AppendCommaSeparatedElements(this.projection);
+                result.PopContext();
             }
 
+            result.PushContext.DeclaringTables();
             result.AppendFromKeyword();
-
-            if (this.table is null) throw new InvalidOperationException("No table specified.");
-
             this.table.WriteTo(result);
-
             this.joinClauseBuilder.WriteClauseTo(result);
+            result.PopContext();
+            
+            result.PushContext.WithTableAliases();
             this.whereClauseBuilder.WriteClauseTo(result);
             this.limitClauseBuilder.WriteClauseTo(result);
+            result.PopContext();
         }
 
         protected override string BuildCommandText(QueryBuilder result)

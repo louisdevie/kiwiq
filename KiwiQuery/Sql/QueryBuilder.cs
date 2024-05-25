@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Text;
+using KiwiQuery.Sql.Context;
 
 namespace KiwiQuery.Sql
 {
@@ -15,6 +16,7 @@ namespace KiwiQuery.Sql
     {
         private readonly StringBuilder buffer;
         private readonly DbCommand command;
+        private Stack<QueryContext> context;
         private int openBrackets;
         private bool endsWithWordBoundary;
         private int nextParameterId;
@@ -31,6 +33,8 @@ namespace KiwiQuery.Sql
         protected QueryBuilder(DbCommand command)
         {
             this.buffer = new StringBuilder();
+            this.context = new Stack<QueryContext>();
+            this.context.Push(new QueryContext());
             this.openBrackets = 0;
             this.command = command;
             this.nextParameterId = 1;
@@ -116,6 +120,27 @@ namespace KiwiQuery.Sql
             }
 
             return this;
+        }
+
+        /// <summary>
+        /// The current context of the query. 
+        /// </summary>
+        public IQueryContext Context => this.context.Peek();
+        
+        internal QueryContext PushContext
+        {
+            get
+            {
+                QueryContext newFrame = new QueryContext(this.Context);
+                this.context.Push(newFrame);
+                return newFrame;
+            }
+        }
+
+        internal void PopContext()
+        {
+            if (this.context.Count < 1) throw new InvalidOperationException("No context left to pop.");
+            this.context.Pop();
         }
 
         /// <summary>

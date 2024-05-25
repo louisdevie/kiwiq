@@ -46,9 +46,12 @@ namespace KiwiQuery.Clauses
             this.table.WriteTo(builder);
 
             builder.AppendOnKeyword();
+            
+            builder.PushContext.WithTableAliases();
             this.firstColumn.WriteTo(builder);
             builder.AppendComparisonOperator(ComparisonOperator.Equal);
             this.secondColumn.WriteTo(builder);
+            builder.PopContext();
         }
     }
 }
