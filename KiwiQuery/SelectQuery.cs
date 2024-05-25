@@ -14,7 +14,7 @@ namespace KiwiQuery
     /// </summary>
     public class SelectQuery : Query, IWriteable
     {
-        private string? table;
+        private Table? table;
         private WhereClauseBuilder whereClauseBuilder;
         private JoinClauseBuilder joinClauseBuilder;
         private LimitClauseBuilder limitClauseBuilder;
@@ -65,14 +65,14 @@ namespace KiwiQuery
         /// <param name="table">The first table to select from.</param>
         public SelectQuery From(string table)
         {
-            this.table = table;
+            this.table = this.Schema.Table(table);
             return this;
         }
 
         /// <inheritdoc cref="From(string)"/>
         public SelectQuery From(Table table)
         {
-            this.table = table.Name;
+            this.table = table;
             return this;
         }
 
@@ -93,7 +93,7 @@ namespace KiwiQuery
 
             if (this.table is null) throw new InvalidOperationException("No table specified.");
 
-            result.AppendTableOrColumnName(this.table);
+            this.table.WriteTo(result);
 
             this.joinClauseBuilder.WriteClauseTo(result);
             this.whereClauseBuilder.WriteClauseTo(result);
