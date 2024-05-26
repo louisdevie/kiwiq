@@ -1,11 +1,31 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
+        <TargetFrameworks>net7.0;net6.0;netstandard2.1</TargetFrameworks>
         <Nullable>enable</Nullable>
-        <Version>0.0.1</Version>
-        <Authors />
+
+        <PackageId>KiwiQuery.Mapped</PackageId>
+        <Version>0.4.0</Version>
+        <Authors>Louis DEVIE</Authors>
+        <PackRelease>true</PackRelease>
+        <PublishRelease>true</PublishRelease>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <Title>KiwiQuery Mapped</Title>
+        <Description>Object-relational mapping extension KiwiQuery</Description>
+        <RepositoryUrl>https://github.com/louisdevie/kiwiq</RepositoryUrl>
+        <PackageTags>sql;mysql;orm</PackageTags>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <PackageReleaseNotes>Added support for table aliases.</PackageReleaseNotes>
+        <GenerateDocumentationFile>True</GenerateDocumentationFile>
     </PropertyGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="Tests" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\KiwiQuery\KiwiQuery.csproj" />
+    </ItemGroup>
 
 </Project>

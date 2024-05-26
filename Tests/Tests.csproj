@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\KiwiQuery.Mapped\KiwiQuery.Mapped.csproj" />
     <ProjectReference Include="..\KiwiQuery\KiwiQuery.csproj" />
   </ItemGroup>
 

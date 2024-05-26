@@ -10,7 +10,8 @@ using System.Linq;
 namespace KiwiQuery
 {
     /// <summary>
-    /// A SQL SELECT command.
+    /// A SQL SELECT command. <br/>
+    /// Instances of this class should be created from a <see cref="Schema"/>.
     /// </summary>
     public class SelectQuery : Query, IWriteable
     {
