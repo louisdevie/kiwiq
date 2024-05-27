@@ -21,11 +21,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <None Include="README.md" Pack="true" PackagePath="\" />
         <InternalsVisibleTo Include="Tests" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\KiwiQuery\KiwiQuery.csproj" />
+      <PackageReference Include="KiwiQuery" Version="0.4.0" />
     </ItemGroup>
 
 </Project>

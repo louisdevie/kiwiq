@@ -1,8 +1,7 @@
 ﻿using System.Data;
 using System.Data.Common;
-using System.Security.Cryptography.X509Certificates;
 
-namespace Tests.Mocking
+namespace KiwiQuery.Tests.Mocking
 {
     internal class MockDbCommand : DbCommand
     {
@@ -64,7 +63,7 @@ namespace Tests.Mocking
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
         {
             this.connection.Execute(ExecutionMethod.Reader, this);
-            return null!;
+            return this.connection.Results!;
         }
     }
 }

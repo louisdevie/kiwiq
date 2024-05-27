@@ -1,8 +1,7 @@
-using KiwiQuery;
 using KiwiQuery.Mapped;
-using Tests.Queries;
+using KiwiQuery.Tests.Mocking;
 
-namespace Tests.Mapped
+namespace KiwiQuery.Tests.Mapped
 {
     public class Explicit
     {
@@ -11,12 +10,10 @@ namespace Tests.Mapped
         {
             [Column("FRUIT_ID", AutoIncremented = true)]
             private int id;
-            [Column("NAME")]
-            private string name;
-            [Column("COLOR", Default = true)]
-            private string? color;
-            [NotStored]
-            private List<string> somethingElse; 
+
+            [Column("NAME")] private string name;
+            [Column("COLOR", Default = true)] private string? color;
+            [NotStored] private List<string> somethingElse;
 
             [DbConstructor]
             public Fruit(int id, string name, string color)
@@ -34,7 +31,9 @@ namespace Tests.Mapped
             var connection = new MockDbConnection();
             Schema db = new(connection, MockQueryBuilder.MockDialect);
 
-            db.Select<Fruit>().FetchList();
+            List<Fruit> fruits = db.Select<Fruit>().FetchList();
+            connection.CheckSelectQueryExecution("select  from ");
+            Assert.Equal(fruits, new Fruit[] { });
         }
     }
-} 
+}

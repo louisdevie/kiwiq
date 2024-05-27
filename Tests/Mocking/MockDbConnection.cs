@@ -1,11 +1,19 @@
 ﻿using System.Data;
 using System.Data.Common;
 
-namespace Tests.Mocking
+namespace KiwiQuery.Tests.Mocking
 {
     internal class MockDbConnection : DbConnection
     {
         List<(ExecutionMethod, MockDbCommand)> executedCommands = new();
+        private MockDbDataReader? results = null;
+
+        public void MockResults(IEnumerable<string> names, IEnumerable<Row> rows)
+        {
+            this.results = new MockDbDataReader(names, rows);
+        }
+
+        public MockDbDataReader? Results => this.results;
 
         public override string ConnectionString { get => ""; set { } }
 
@@ -54,6 +62,19 @@ namespace Tests.Mocking
         protected override DbCommand CreateDbCommand()
         {
             return new MockDbCommand(this);
+        }
+    }
+
+    internal static class DbConnectionExtensions
+    {
+        public static void CheckSelectQueryExecution(this MockDbConnection connection, string expected)
+        {
+            Assert.Equal(1, connection.ExecutedCommandCount);
+
+            Assert.Equal(expected, connection.LastExecutedCommand.CommandText);
+            Assert.Equal(ExecutionMethod.Reader, connection.LastExecutionMethod);
+
+            connection.ClearExecutionHistory();
         }
     }
 }

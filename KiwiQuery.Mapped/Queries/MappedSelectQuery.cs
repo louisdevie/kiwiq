@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using KiwiQuery.Expressions;
 using KiwiQuery.Expressions.Predicates;
+using KiwiQuery.Mapped.Mappers;
 
 namespace KiwiQuery.Mapped
 {
@@ -14,12 +15,14 @@ namespace KiwiQuery.Mapped
     where T : notnull
     {
         private readonly SelectQuery rawQuery;
-        private bool explicitTable;
+        private readonly IMapper<T> mapper;
+        private bool explicitTables;
 
-        internal MappedSelectQuery(SelectQuery rawQuery)
+        internal MappedSelectQuery(SelectQuery rawQuery, IMapper<T> mapper)
         {
             this.rawQuery = rawQuery;
-            this.explicitTable = false;
+            this.mapper = mapper;
+            this.explicitTables = false;
         }
 
         /// <summary>
@@ -35,8 +38,7 @@ namespace KiwiQuery.Mapped
             {
                 if (column.Alias == null)
                 {
-                    throw new ArgumentException("Only column aliases are allowed in mapped SELECT queries.",
-                        nameof(columns));
+                    throw new ArgumentException("Expected a column alias.", nameof(columns));
                 }
             }
 
@@ -44,18 +46,20 @@ namespace KiwiQuery.Mapped
         }
 
         /// <inheritdoc cref="SelectQuery.From(string)"/>
+        /// <remarks>If this method is used, all tables must be declared explicitly.</remarks>
         public MappedSelectQuery<T> From(string table)
         {
             this.rawQuery.From(table);
-            this.explicitTable = true;
+            this.explicitTables = true;
             return this;
         }
 
         /// <inheritdoc cref="From(string)"/>
+        /// <remarks>If this method is used, all tables must be declared explicitly.</remarks>
         public MappedSelectQuery<T> From(Table table)
         {
             this.rawQuery.From(table);
-            this.explicitTable = true;
+            this.explicitTables = true;
             return this;
         }
 
@@ -68,7 +72,7 @@ namespace KiwiQuery.Mapped
         public IEnumerator<T> Fetch(bool buffered = true)
         {
             IEnumerator<T> enumerator;
-            
+
             if (buffered)
             {
                 enumerator = this.FetchBuffered().GetEnumerator();
@@ -94,24 +98,43 @@ namespace KiwiQuery.Mapped
 
         private List<T> FetchBuffered()
         {
-            throw new NotImplementedException();
-        }
-        
-        private UnbufferedReader<T> FetchUnbuffered()
-        {
-            throw new NotImplementedException();
+            List<T> results = new List<T>();
+            using var reader = this.FetchRaw();
+            {
+                results.Add(this.mapper.RowToObject(reader));
+            }
+            return results;
         }
 
+        private UnbufferedReader<T> FetchUnbuffered()
+        {
+            return new UnbufferedReader<T>(this.FetchRaw());
+        }
+
+        private DbDataReader FetchRaw()
+        {
+            this.FillQuery();
+            return this.rawQuery.Fetch();
+        }
+        
+        private void FillQuery()
+        {
+            
+        }
+
+        #if FUTURE // available from 0.5.0
         /// <inheritdoc cref="SelectQuery.Distinct()"/>
         public MappedSelectQuery<T> Distinct()
         {
             this.rawQuery.Distinct();
             return this;
         }
+        #endif
 
         #region JOIN clause methods
 
         /// <inheritdoc cref="SelectQuery.Join(Table, Column, Column)"/>
+        /// <remarks>If this method is used, all tables must be declared explicitly.</remarks>
         public MappedSelectQuery<T> Join(Table table, Column firstColumn, Column secondColumn)
         {
             this.rawQuery.Join(table, firstColumn, secondColumn);
@@ -119,6 +142,7 @@ namespace KiwiQuery.Mapped
         }
 
         /// <inheritdoc cref="SelectQuery.Join(Table, string, string)"/>
+        /// <remarks>If this method is used, all tables must be declared explicitly.</remarks>
         public MappedSelectQuery<T> Join(Table table, string firstColumn, string secondColumn)
         {
             this.rawQuery.Join(table, firstColumn, secondColumn);
@@ -126,6 +150,7 @@ namespace KiwiQuery.Mapped
         }
 
         /// <inheritdoc cref="SelectQuery.Join(string, string, string)"/>
+        /// <remarks>If this method is used, all tables must be declared explicitly.</remarks>
         public MappedSelectQuery<T> Join(string table, string firstColumn, string secondColumn)
         {
             this.rawQuery.Join(table, firstColumn, secondColumn);
@@ -133,6 +158,7 @@ namespace KiwiQuery.Mapped
         }
 
         /// <inheritdoc cref="SelectQuery.Join(Column, Column)"/>
+        /// <remarks>If this method is used, all tables must be declared explicitly.</remarks>
         public MappedSelectQuery<T> Join(Column columnToJoin, Column matchingColumn)
         {
             this.rawQuery.Join(columnToJoin, matchingColumn);
@@ -140,6 +166,7 @@ namespace KiwiQuery.Mapped
         }
 
         /// <inheritdoc cref="SelectQuery.LeftJoin(Table, Column, Column)"/>
+        /// <remarks>If this method is used, all tables must be declared explicitly.</remarks>
         public MappedSelectQuery<T> LeftJoin(Table table, Column firstColumn, Column secondColumn)
         {
             this.rawQuery.LeftJoin(table, firstColumn, secondColumn);
@@ -147,6 +174,7 @@ namespace KiwiQuery.Mapped
         }
 
         /// <inheritdoc cref="SelectQuery.LeftJoin(Table, string, string)"/>
+        /// <remarks>If this method is used, all tables must be declared explicitly.</remarks>
         public MappedSelectQuery<T> LeftJoin(Table table, string firstColumn, string secondColumn)
         {
             this.rawQuery.LeftJoin(table, firstColumn, secondColumn);
@@ -154,6 +182,7 @@ namespace KiwiQuery.Mapped
         }
 
         /// <inheritdoc cref="SelectQuery.LeftJoin(string, string, string)"/>
+        /// <remarks>If this method is used, all tables must be declared explicitly.</remarks>
         public MappedSelectQuery<T> LeftJoin(string table, string firstColumn, string secondColumn)
         {
             this.rawQuery.LeftJoin(table, firstColumn, secondColumn);
@@ -161,6 +190,7 @@ namespace KiwiQuery.Mapped
         }
 
         /// <inheritdoc cref="SelectQuery.LeftJoin(Column, Column)"/>
+        /// <remarks>If this method is used, all tables must be declared explicitly.</remarks>
         public MappedSelectQuery<T> LeftJoin(Column columnToJoin, Column matchingColumn)
         {
             this.rawQuery.LeftJoin(columnToJoin, matchingColumn);

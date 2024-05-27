@@ -1,10 +1,9 @@
-﻿using KiwiQuery;
+﻿using System.Data.Common;
 using KiwiQuery.Expressions;
 using KiwiQuery.Expressions.Predicates;
 using KiwiQuery.Sql;
-using System.Data.Common;
 
-namespace Tests.Mocking
+namespace KiwiQuery.Tests.Mocking
 {
     internal class MockQueryBuilder : QueryBuilder
     {

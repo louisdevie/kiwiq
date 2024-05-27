@@ -4,6 +4,11 @@
 
 KiwiQuery is a SQL query builder for MySQL. It is compatible with both [`MySql.Data`](https://www.nuget.org/packages/MySql.Data) and [`MySqlConnector`](https://www.nuget.org/packages/MySqlConnector) and can technically work with any ADO.NET connector, though it doesn't support other SQL dialects.
 
+```cs
+var db = new Schema(myDbConnection);
+```
+
+
 The queries are built using a DSL that tries to mimic the way SQL is written, for example :
 
 ```cs
