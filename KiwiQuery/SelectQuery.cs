@@ -10,16 +10,17 @@ using System.Linq;
 namespace KiwiQuery
 {
     /// <summary>
-    /// A SQL SELECT command.
+    /// A SQL SELECT command. <br/>
+    /// Instances of this class should be created from a <see cref="Schema"/>.
     /// </summary>
     public class SelectQuery : Query, IWriteable
     {
         private Table? table;
         private bool distinct;
-        private WhereClauseBuilder whereClauseBuilder;
-        private JoinClauseBuilder joinClauseBuilder;
-        private LimitClauseBuilder limitClauseBuilder;
-        private List<Value> projection;
+        private readonly WhereClauseBuilder whereClauseBuilder;
+        private readonly JoinClauseBuilder joinClauseBuilder;
+        private readonly LimitClauseBuilder limitClauseBuilder;
+        private readonly List<Value> projection;
 
         /// <summary>
         /// Creates a new SELECT command.
@@ -113,6 +114,7 @@ namespace KiwiQuery
             result.PopContext();
         }
 
+        /// <inheritdoc/>
         protected override string BuildCommandText(QueryBuilder result)
         {
             this.WriteTo(result);
@@ -147,6 +149,7 @@ namespace KiwiQuery
         /// <summary>
         /// Remove duplicates from the query results.
         /// </summary>
+        /// <added>0.5.0</added>
         public SelectQuery Distinct()
         {
             this.distinct = true;
