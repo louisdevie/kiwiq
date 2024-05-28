@@ -21,8 +21,6 @@ namespace KiwiQuery
             private string column;
             private Value value;
 
-            public bool HasColumn => this.column != null;
-
             public string Column => this.column;
 
             public Value Value => this.value;
