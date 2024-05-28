@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Linq;
 using KiwiQuery.Expressions;
 using KiwiQuery.Expressions.Predicates;
+using KiwiQuery.Mapped.Helpers;
 using KiwiQuery.Mapped.Mappers;
 
 namespace KiwiQuery.Mapped
@@ -100,7 +102,7 @@ namespace KiwiQuery.Mapped
         {
             List<T> results = new List<T>();
             using var reader = this.FetchRaw();
-            {
+            while (reader.Read()) {
                 results.Add(this.mapper.RowToObject(reader));
             }
             return results;
@@ -113,23 +115,37 @@ namespace KiwiQuery.Mapped
 
         private DbDataReader FetchRaw()
         {
-            this.FillQuery();
+            this.CompleteQuery();
             return this.rawQuery.Fetch();
         }
         
-        private void FillQuery()
+        private void CompleteQuery()
         {
+            IdentifierGenerator identifiers = new IdentifierGenerator();
+            IEnumerable<Column> columns;
             
+            if (!this.explicitTables)
+            {
+                Table implicitTable = this.rawQuery.Schema.Table(this.mapper.TableName);
+                implicitTable.As(identifiers.GetTableAlias());
+                this.rawQuery.From(implicitTable);
+
+                columns = this.mapper.Columns.Select(col => implicitTable.Column(col));
+            }
+            else
+            {
+                columns = this.mapper.Columns.Select(col => this.rawQuery.Schema.Column(col));
+            }
+
+            this.rawQuery.And(columns.ToArray<Value>());
         }
 
-        #if FUTURE // available from 0.5.0
         /// <inheritdoc cref="SelectQuery.Distinct()"/>
         public MappedSelectQuery<T> Distinct()
         {
             this.rawQuery.Distinct();
             return this;
         }
-        #endif
 
         #region JOIN clause methods
 

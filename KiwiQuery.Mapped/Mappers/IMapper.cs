@@ -1,15 +1,21 @@
+using System.Collections.Generic;
 using System.Data.Common;
 
 namespace KiwiQuery.Mapped.Mappers
 {
-    public interface IMapper
+    internal interface IMapper
     {
         object RowToObject(DbDataReader reader);
+        
+        string TableName { get; }
+        
+        IEnumerable<string> Columns { get; }
     }
     
-    public interface IMapper<T> : IMapper
+    internal interface IMapper<T> : IMapper
     where T : notnull
     {
         new T RowToObject(DbDataReader reader);
+        
     }
 }

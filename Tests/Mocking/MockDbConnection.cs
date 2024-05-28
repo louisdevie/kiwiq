@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using System.Data.Common;
+using System.Text.RegularExpressions;
 
 namespace KiwiQuery.Tests.Mocking
 {
@@ -15,7 +16,11 @@ namespace KiwiQuery.Tests.Mocking
 
         public MockDbDataReader? Results => this.results;
 
-        public override string ConnectionString { get => ""; set { } }
+        public override string ConnectionString
+        {
+            get => "";
+            set { }
+        }
 
         public override string Database => "";
 
@@ -45,9 +50,15 @@ namespace KiwiQuery.Tests.Mocking
             throw new NotImplementedException();
         }
 
-        public override void Close() {  throw new NotImplementedException(); }
+        public override void Close()
+        {
+            throw new NotImplementedException();
+        }
 
-        public override void Open() {  throw new NotImplementedException(); }
+        public override void Open()
+        {
+            throw new NotImplementedException();
+        }
 
         protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
         {
@@ -75,6 +86,14 @@ namespace KiwiQuery.Tests.Mocking
             Assert.Equal(ExecutionMethod.Reader, connection.LastExecutionMethod);
 
             connection.ClearExecutionHistory();
+        }
+        
+        public static string GetSingleSelectQuery(this MockDbConnection connection)
+        {
+            Assert.Equal(1, connection.ExecutedCommandCount);
+            string command = connection.LastExecutedCommand.CommandText;
+            connection.ClearExecutionHistory();
+            return command;
         }
     }
 }

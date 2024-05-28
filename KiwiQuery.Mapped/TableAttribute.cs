@@ -11,5 +11,7 @@ namespace KiwiQuery.Mapped
         {
             this.name = name;
         }
+
+        public string Name => this.name;
     }
 }
