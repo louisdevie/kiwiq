@@ -9,7 +9,7 @@ namespace KiwiQuery.Mapped.Mappers
         
         string TableName { get; }
         
-        IEnumerable<string> Columns { get; }
+        IEnumerable<string> Projection { get; }
     }
     
     internal interface IMapper<T> : IMapper

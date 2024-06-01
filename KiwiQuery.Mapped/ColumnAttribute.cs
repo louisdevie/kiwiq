@@ -1,21 +1,48 @@
 using System;
+using KiwiQuery.Mapped.Mappers;
+using KiwiQuery.Mapped.Mappers.Fields;
 
 namespace KiwiQuery.Mapped
 {
+    /// <summary>
+    /// Describes how a field should be mapped.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
-    public class ColumnAttribute: Attribute
+    public class ColumnAttribute: Attribute, IColumnInfos
     {
-        private readonly string name;
-
+        /// <summary>
+        /// Maps this field to a column with a specific name.
+        /// </summary>
+        /// <param name="name">The name of the column </param>
         public ColumnAttribute(string name)
         {
-            this.name = name;
+            this.Name = name;
         }
 
-        public bool AutoIncremented { get; set; }
+        /// <summary>
+        /// Maps this field to a column with the same name.
+        /// </summary>
+        public ColumnAttribute()
+        {
+            this.Name = null;
+        }
 
-        public bool Default { get; set; }
+        internal string? Name { get; }
 
-        public string Name => this.name;
+        /// <summary>
+        /// If set to <see langword="true"/>, this field will never be included in INSERT queries to let the database
+        /// provide an auto-incremented ID or a default value.
+        /// </summary>
+        public bool NotInserted { get; set; } = false;
+
+        /// <summary>
+        /// Provides a format string to map this field.
+        /// </summary>
+        public string? Format { get; set; } = null;
+
+        /// <summary>
+        /// Provides a column that stores the size of this field, commonly used when dealing with byte arrays.
+        /// </summary>
+        public string? Size { get; set; } = null;
     }
 }

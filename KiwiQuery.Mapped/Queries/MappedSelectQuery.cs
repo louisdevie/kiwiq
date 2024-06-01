@@ -130,11 +130,11 @@ namespace KiwiQuery.Mapped
                 implicitTable.As(identifiers.GetTableAlias());
                 this.rawQuery.From(implicitTable);
 
-                columns = this.mapper.Columns.Select(col => implicitTable.Column(col));
+                columns = this.mapper.Projection.Select(col => implicitTable.Column(col));
             }
             else
             {
-                columns = this.mapper.Columns.Select(col => this.rawQuery.Schema.Column(col));
+                columns = this.mapper.Projection.Select(col => this.rawQuery.Schema.Column(col));
             }
 
             this.rawQuery.And(columns.ToArray<Value>());

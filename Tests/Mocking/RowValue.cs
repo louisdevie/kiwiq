@@ -25,7 +25,7 @@ namespace KiwiQuery.Tests.Mocking
             }
 
             Type type = this.GetFieldType()!;
-            if (type.IsAssignableTo(typeof(T)))
+            if (!type.IsAssignableTo(typeof(T)))
             {
                 throw new InvalidCastException($"Cannot cast {type.FullName} to {typeof(T).FullName}");
             }
