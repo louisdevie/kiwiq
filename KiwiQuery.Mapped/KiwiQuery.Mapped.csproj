@@ -6,22 +6,24 @@
 
         <PackageId>KiwiQuery.Mapped</PackageId>
         <Version>0.4.0</Version>
-        <Authors>Louis DEVIE</Authors>
+        <Authors>louisdevie</Authors>
         <PackRelease>true</PackRelease>
         <PublishRelease>true</PublishRelease>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <Title>KiwiQuery Mapped</Title>
-        <Description>Object-relational mapping extension KiwiQuery</Description>
+        <Description>Object-relational mapping extension for KiwiQuery</Description>
         <RepositoryUrl>https://github.com/louisdevie/kiwiq</RepositoryUrl>
         <PackageTags>sql;mysql;orm</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-        <PackageReleaseNotes>Added support for table aliases.</PackageReleaseNotes>
+        <PackageReleaseNotes>First sketch</PackageReleaseNotes>
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
+        <PackageIcon>kiwiq-128.png</PackageIcon>
     </PropertyGroup>
 
     <ItemGroup>
         <None Include="README.md" Pack="true" PackagePath="\" />
+        <None Include="..\kiwiq-128.png" Pack="true" PackagePath="\" />
         <InternalsVisibleTo Include="Tests" />
     </ItemGroup>
 

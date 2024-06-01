@@ -6,7 +6,7 @@
 		
 		<PackageId>KiwiQuery</PackageId>
 		<Version>0.5.0</Version>
-		<Authors>Louis DEVIE</Authors>
+		<Authors>louisdevie</Authors>
 		<PackRelease>true</PackRelease>
 		<PublishRelease>true</PublishRelease>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
@@ -18,10 +18,12 @@
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<PackageReleaseNotes>SELECT DISTINCT queries and easier table aliasing</PackageReleaseNotes>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<PackageIcon>kiwiq-128.png</PackageIcon>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<None Include="..\README.md" Pack="true" PackagePath="\" />
+		<None Include="..\kiwiq-128.png" Pack="true" PackagePath="\" />
 		<InternalsVisibleTo Include="Tests" />
 	</ItemGroup>
 </Project>
