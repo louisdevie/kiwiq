@@ -1,4 +1,4 @@
-# KiwiQuery
+<h1>KiwiQuery <img src="kiwiq-128.png" height="80px"/> </h1>
 
 *Note : this library is still in early development. Lots of features are missing and some parts of the API may change completly in the next updates.*
 
