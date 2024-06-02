@@ -7,6 +7,10 @@ using System.Collections.Generic;
 
 namespace KiwiQuery
 {
+    /// <summary>
+    /// A SQL UPDATE command. <br/>
+    /// Instances of this class should be created from a <see cref="Schema"/>.
+    /// </summary>
     public class UpdateQuery : Query
     {
         private string table;
@@ -16,8 +20,6 @@ namespace KiwiQuery
         {
             private string column;
             private Value value;
-
-            public bool HasColumn => this.column != null;
 
             public string Column => this.column;
 

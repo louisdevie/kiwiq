@@ -10,15 +10,17 @@ using System.Linq;
 namespace KiwiQuery
 {
     /// <summary>
-    /// A SQL SELECT command.
+    /// A SQL SELECT command. <br/>
+    /// Instances of this class should be created from a <see cref="Schema"/>.
     /// </summary>
     public class SelectQuery : Query, IWriteable
     {
-        private string? table;
-        private WhereClauseBuilder whereClauseBuilder;
-        private JoinClauseBuilder joinClauseBuilder;
-        private LimitClauseBuilder limitClauseBuilder;
-        private List<Value> projection;
+        private Table? table;
+        private bool distinct;
+        private readonly WhereClauseBuilder whereClauseBuilder;
+        private readonly JoinClauseBuilder joinClauseBuilder;
+        private readonly LimitClauseBuilder limitClauseBuilder;
+        private readonly List<Value> projection;
 
         /// <summary>
         /// Creates a new SELECT command.
@@ -28,6 +30,7 @@ namespace KiwiQuery
         internal SelectQuery(IEnumerable<Value> projection, Schema schema) : base(schema)
         {
             this.table = null;
+            this.distinct = false;
             this.whereClauseBuilder = new WhereClauseBuilder();
             this.joinClauseBuilder = new JoinClauseBuilder(schema);
             this.limitClauseBuilder = new LimitClauseBuilder();
@@ -36,7 +39,7 @@ namespace KiwiQuery
 
         /// <summary>
         /// Add more columns to be selected. <br/>
-        /// This method is useful for breaking down  long select statements and
+        /// This method is useful for breaking down long select statements and
         /// combining simple string columns with <see cref="Column"/> objects.
         /// </summary>
         /// <param name="columns">The columns and values to select.</param>
@@ -65,20 +68,28 @@ namespace KiwiQuery
         /// <param name="table">The first table to select from.</param>
         public SelectQuery From(string table)
         {
-            this.table = table;
+            this.table = this.Schema.Table(table);
             return this;
         }
 
         /// <inheritdoc cref="From(string)"/>
         public SelectQuery From(Table table)
         {
-            this.table = table.Name;
+            this.table = table;
             return this;
         }
 
+        /// <inheritdoc/>
         public void WriteTo(QueryBuilder result)
         {
+            if (this.table is null) throw new InvalidOperationException("No table specified.");
+            
             result.AppendSelectKeyword();
+
+            if (this.distinct)
+            {
+                result.AppendDistinctKeyword();
+            }
 
             if (this.projection.Count == 0)
             {
@@ -86,20 +97,24 @@ namespace KiwiQuery
             }
             else
             {
+                result.PushContext.WithTableAliases();
                 result.AppendCommaSeparatedElements(this.projection);
+                result.PopContext();
             }
 
+            result.PushContext.DeclaringTables();
             result.AppendFromKeyword();
-
-            if (this.table is null) throw new InvalidOperationException("No table specified.");
-
-            result.AppendTableOrColumnName(this.table);
-
+            this.table.WriteTo(result);
             this.joinClauseBuilder.WriteClauseTo(result);
+            result.PopContext();
+            
+            result.PushContext.WithTableAliases();
             this.whereClauseBuilder.WriteClauseTo(result);
             this.limitClauseBuilder.WriteClauseTo(result);
+            result.PopContext();
         }
 
+        /// <inheritdoc/>
         protected override string BuildCommandText(QueryBuilder result)
         {
             this.WriteTo(result);
@@ -131,6 +146,16 @@ namespace KiwiQuery
         /// </returns>
         public TReader Fetch<TReader>() where TReader : DbDataReader => (TReader)this.Fetch();
 
+        /// <summary>
+        /// Remove duplicates from the query results.
+        /// </summary>
+        /// <added>0.5.0</added>
+        public SelectQuery Distinct()
+        {
+            this.distinct = true;
+            return this;
+        }
+        
         #region JOIN clause methods
 
         /// <inheritdoc cref="JoinClauseBuilder.Join(Table, Column, Column)"/>

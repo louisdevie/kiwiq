@@ -1,11 +1,9 @@
 ﻿using KiwiQuery;
 using KiwiQuery.Expressions;
-using Tests.Mocking;
-using Xunit;
 
-namespace Tests.QueryLogic
+namespace Tests.Queries
 {
-    public class SelectTests
+    public class Select
     {
         private static void CheckSelectQueryExecution(string expected, MockDbConnection connection)
         {
@@ -21,7 +19,7 @@ namespace Tests.QueryLogic
         public void SimpleSelect()
         {
             var connection = new MockDbConnection();
-            Schema db = new(connection, MockQueryBuilder.MockMode);
+            Schema db = new(connection, MockQueryBuilder.MockDialect);
 
             db.SelectAll().From("table1").Fetch();
             CheckSelectQueryExecution("select #all from $table1", connection);
@@ -36,17 +34,18 @@ namespace Tests.QueryLogic
             CheckSelectQueryExecution("select $table1 -> $col1 as $alias from $table1", connection);
 
             db.Select(db.Column("col1").As("alias"))
-              .And("col2", "col3")
-              .From("table1")
-              .Fetch();
+                .And("col2", "col3")
+                .From("table1")
+                .Fetch();
             CheckSelectQueryExecution("select $col1 as $alias , $col2 , $col3 from $table1", connection);
 
             db.Select("col1")
-              .And(db.Column("col2") * 2)
-              .From("table1")
-              .Fetch();
+                .And(db.Column("col2") * 2)
+                .From("table1")
+                .Fetch();
             Assert.Equal(
-                new MockDbParameter[1] {
+                new MockDbParameter[]
+                {
                     new MockDbParameter { ParameterName = "@p1", Value = 2 }
                 },
                 connection.LastExecutedCommand.MockParameters
@@ -58,7 +57,7 @@ namespace Tests.QueryLogic
         public void JoinedSelect()
         {
             var connection = new MockDbConnection();
-            Schema db = new(connection, MockQueryBuilder.MockMode);
+            Schema db = new(connection, MockQueryBuilder.MockDialect);
 
             Table table1 = db.Table("table1");
             Table table2 = db.Table("table2");
@@ -67,28 +66,31 @@ namespace Tests.QueryLogic
             db.SelectAll().From("table1").Join("table2", "fk", "ref").Fetch();
             CheckSelectQueryExecution("select #all from $table1 inner join $table2 on $fk == $ref", connection);
 
-            db.SelectAll().From("table1").Join(table2, "fk", "ref").Fetch();
+            db.SelectAll().From(table1).Join(table2, "fk", "ref").Fetch();
             CheckSelectQueryExecution("select #all from $table1 inner join $table2 on $fk == $ref", connection);
 
-            db.SelectAll().From("table1").Join(table2, db.Column("fk"), db.Column("ref")).Fetch();
+            db.SelectAll().From(table1).Join(table2, db.Column("fk"), db.Column("ref")).Fetch();
             CheckSelectQueryExecution("select #all from $table1 inner join $table2 on $fk == $ref", connection);
 
-            db.SelectAll().From("table1").Join(table2.Column("ref"), db.Column("fk")).Fetch();
-            CheckSelectQueryExecution("select #all from $table1 inner join $table2 on $table2 -> $ref == $fk", connection);
+            db.SelectAll().From(table1).Join(table2.Column("ref"), db.Column("fk")).Fetch();
+            CheckSelectQueryExecution("select #all from $table1 inner join $table2 on $table2 -> $ref == $fk",
+                connection);
 
             db.SelectAll()
-              .From(table1)
-              .Join(table2.Column("id2"), table1.Column("fk2"))
-              .Join(table3.Column("id3"), table1.Column("fk3"))
-              .Fetch();
-            CheckSelectQueryExecution("select #all from $table1 inner join $table2 on $table2 -> $id2 == $table1 -> $fk2 inner join $table3 on $table3 -> $id3 == $table1 -> $fk3", connection);
+                .From(table1)
+                .Join(table2.Column("id2"), table1.Column("fk2"))
+                .Join(table3.Column("id3"), table1.Column("fk3"))
+                .Fetch();
+            CheckSelectQueryExecution(
+                "select #all from $table1 inner join $table2 on $table2 -> $id2 == $table1 -> $fk2 inner join $table3 on $table3 -> $id3 == $table1 -> $fk3",
+                connection);
         }
 
         [Fact]
         public void LeftJoinedSelect()
         {
             var connection = new MockDbConnection();
-            Schema db = new(connection, MockQueryBuilder.MockMode);
+            Schema db = new(connection, MockQueryBuilder.MockDialect);
 
             Table table1 = db.Table("table1");
             Table table2 = db.Table("table2");
@@ -104,25 +106,29 @@ namespace Tests.QueryLogic
             CheckSelectQueryExecution("select #all from $table1 left join $table2 on $fk == $ref", connection);
 
             db.SelectAll().From("table1").LeftJoin(table2.Column("ref"), db.Column("fk")).Fetch();
-            CheckSelectQueryExecution("select #all from $table1 left join $table2 on $table2 -> $ref == $fk", connection);
+            CheckSelectQueryExecution("select #all from $table1 left join $table2 on $table2 -> $ref == $fk",
+                connection);
 
             db.SelectAll()
-              .From(table1)
-              .LeftJoin(table2.Column("id2"), table1.Column("fk2"))
-              .LeftJoin(table3.Column("id3"), table1.Column("fk3"))
-              .Fetch();
-            CheckSelectQueryExecution("select #all from $table1 left join $table2 on $table2 -> $id2 == $table1 -> $fk2 left join $table3 on $table3 -> $id3 == $table1 -> $fk3", connection);
+                .From(table1)
+                .LeftJoin(table2.Column("id2"), table1.Column("fk2"))
+                .LeftJoin(table3.Column("id3"), table1.Column("fk3"))
+                .Fetch();
+            CheckSelectQueryExecution(
+                "select #all from $table1 left join $table2 on $table2 -> $id2 == $table1 -> $fk2 left join $table3 on $table3 -> $id3 == $table1 -> $fk3",
+                connection);
         }
 
         [Fact]
         public void LimitedSelect()
         {
             var connection = new MockDbConnection();
-            Schema db = new(connection, MockQueryBuilder.MockMode);
+            Schema db = new(connection, MockQueryBuilder.MockDialect);
 
             db.SelectAll().From("table1").Limit(8).Fetch();
             Assert.Equal(
-                new MockDbParameter[2] {
+                new MockDbParameter[]
+                {
                     new MockDbParameter { ParameterName = "@p1", Value = 8 },
                     new MockDbParameter { ParameterName = "@p2", Value = 0 }
                 },
@@ -132,7 +138,8 @@ namespace Tests.QueryLogic
 
             db.SelectAll().From("table1").Limit(8).Offset(14).Fetch();
             Assert.Equal(
-                new MockDbParameter[2] {
+                new MockDbParameter[]
+                {
                     new MockDbParameter { ParameterName = "@p1", Value = 8 },
                     new MockDbParameter { ParameterName = "@p2", Value = 14 }
                 },
@@ -142,13 +149,57 @@ namespace Tests.QueryLogic
 
             db.SelectAll().From("table1").Limit(8, 14).Fetch();
             Assert.Equal(
-                new MockDbParameter[2] {
+                new MockDbParameter[]
+                {
                     new MockDbParameter { ParameterName = "@p1", Value = 8 },
                     new MockDbParameter { ParameterName = "@p2", Value = 14 }
                 },
                 connection.LastExecutedCommand.MockParameters
             );
             CheckSelectQueryExecution("select #all from $table1 limit @p1 offset @p2", connection);
+        }
+
+
+        [Fact]
+        public void SelectDistinct()
+        {
+            var connection = new MockDbConnection();
+            Schema db = new(connection, MockQueryBuilder.MockDialect);
+
+            db.Select("col1", "col2", "col3").Distinct().From("table1").Fetch();
+            CheckSelectQueryExecution("select distinct $col1 , $col2 , $col3 from $table1", connection);
+        }
+
+
+        [Fact]
+        public void SelectAliasedTables()
+        {
+            var connection = new MockDbConnection();
+            Schema db = new(connection, MockQueryBuilder.MockDialect);
+
+            // v0.4
+
+            Table table1 = db.Table("table1").As("A");
+            Table table1Alias = db.Table("A");
+            Table table2 = db.Table("table2").As("B");
+            Table table2Alias = db.Table("B");
+
+            db.Select(table1Alias.Column("col1").As("col1A"), table2Alias.Column("col1").As("col1B")).From(table1)
+                .Join(table2, table2Alias.Column("ref"), table1Alias.Column("fk")).Fetch();
+            CheckSelectQueryExecution(
+                "select $A -> $col1 as $col1A , $B -> $col1 as $col1B from $table1 as $A inner join $table2 as $B on $B -> $ref == $A -> $fk",
+                connection);
+
+            // v0.5 and higher
+
+            Table table3 = db.Table("table3").As("A");
+            Table table4 = db.Table("table4").As("B");
+
+            db.Select(table3.Column("col1").As("col1A"), table4.Column("col1").As("col1B")).From(table3)
+                .Join(table4.Column("ref"), table3.Column("fk")).Fetch();
+            CheckSelectQueryExecution(
+                "select $A -> $col1 as $col1A , $B -> $col1 as $col1B from $table3 as $A inner join $table4 as $B on $B -> $ref == $A -> $fk",
+                connection);
         }
     }
 }

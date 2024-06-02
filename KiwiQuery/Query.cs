@@ -25,7 +25,7 @@ namespace KiwiQuery
         /// Creates a new query for a schema.
         /// </summary>
         /// <param name="schema"></param>
-        public Query(Schema schema)
+        protected Query(Schema schema)
         {
             this.schema = schema;
             this.command = this.schema.Connection.CreateCommand();
@@ -44,7 +44,7 @@ namespace KiwiQuery
         protected void BuildCommand()
         {
             this.Command.CommandText = this.BuildCommandText(
-                QueryBuilderFactory.Current.NewQueryBuilder(this.Schema.Mode, this.Command)
+                QueryBuilderFactory.Current.NewQueryBuilder(this.Schema.CurrentDialect, this.Command)
             );
         }
     }

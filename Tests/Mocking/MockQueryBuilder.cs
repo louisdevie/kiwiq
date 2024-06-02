@@ -8,13 +8,15 @@ namespace Tests.Mocking
 {
     internal class MockQueryBuilder : QueryBuilder
     {
-        private static Mode? mode;
+        private static Dialect? mode;
 
-        public static Mode MockMode => mode ??= QueryBuilderFactory.Current.RegisterCustomQueryBuilder<MockQueryBuilder>();
+        public static Dialect MockDialect => mode ??= QueryBuilderFactory.Current.RegisterCustomQueryBuilder<MockQueryBuilder>();
 
         private bool firstToken = true;
 
         public MockQueryBuilder(DbCommand command) : base(command) { }
+
+        public MockQueryBuilder() : base(new MockDbCommand()) { }
 
         private void Space()
         {
@@ -175,6 +177,20 @@ namespace Tests.Mocking
             return this;
         }
 
+        public override QueryBuilder AppendTruthyConstant()
+        {
+            this.Space();
+            this.Buffer.Append("");
+            return this;
+        }
+
+        public override QueryBuilder AppendFalsyConstant()
+        {
+            this.Space();
+            this.Buffer.Append("select #last-insert-id");
+            return this;
+        }
+
         public override QueryBuilder AppendLeftKeyword()
         {
             this.Space();
@@ -283,6 +299,13 @@ namespace Tests.Mocking
             string limitParam = this.ResisterParameterWithValue(limit);
             string offsetParam = this.ResisterParameterWithValue(offset);
             this.Buffer.Append($"limit {limitParam} offset {offsetParam}");
+            return this;
+        }
+
+        public override QueryBuilder AppendDistinctKeyword()
+        {
+            this.Space();
+            this.Buffer.Append("distinct");
             return this;
         }
     }

@@ -5,8 +5,8 @@
 		<Nullable>enable</Nullable>
 		
 		<PackageId>KiwiQuery</PackageId>
-		<Version>0.2.1</Version>
-		<Authors>Louis DEVIE</Authors>
+		<Version>0.5.0</Version>
+		<Authors>louisdevie</Authors>
 		<PackRelease>true</PackRelease>
 		<PublishRelease>true</PublishRelease>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
@@ -16,11 +16,14 @@
 		<PackageTags>sql;mysql;query-builder;dynamic-query</PackageTags>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<PackageReleaseNotes>The documentation file is now correctly generated</PackageReleaseNotes>
+		<PackageReleaseNotes>SELECT DISTINCT queries and easier table aliasing</PackageReleaseNotes>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<PackageIcon>kiwiq-128.png</PackageIcon>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<None Include="..\README.md" Pack="true" PackagePath="\" />
+		<None Include="..\kiwiq-128.png" Pack="true" PackagePath="\" />
+		<InternalsVisibleTo Include="Tests" />
 	</ItemGroup>
 </Project>
