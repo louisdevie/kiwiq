@@ -10,7 +10,7 @@ public class Explicit
     [Table("FRUIT")]
     public class Fruit : IEquatable<Fruit>
     {
-        [Column("FRUIT_ID", NotInserted = true)]
+        [Column("FRUIT_ID", Inserted = false)]
         private int id;
 
         [Column("NAME")]

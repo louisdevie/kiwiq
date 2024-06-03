@@ -28,8 +28,13 @@ public interface IFieldMapper
     /// </summary>
     /// <param name="record">A record from the database.</param>
     /// <param name="offset">The position of the column(s) this field is mapped to.</param>
-    /// <returns></returns>
-    object? GetValue(IDataRecord record, int offset);
+    object? ReadValue(IDataRecord record, int offset);
+
+    /// <summary>
+    /// Maps a value to a parameter.
+    /// </summary>
+    /// <param name="fieldValue">A value from this field.</param>
+    IEnumerable<object?> WriteValue(object? fieldValue);
 
     /// <summary>
     /// Additional columns that complement the value and are required when reading or writing from the database.

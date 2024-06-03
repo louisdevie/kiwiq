@@ -42,7 +42,7 @@ internal static class SpanMapper
 
         public IFieldMapper SpecializeFor(Type fieldType, IColumnInfos infos) => this.Clone(infos.Size);
 
-        public object GetValue(IDataRecord record, int offset)
+        public object ReadValue(IDataRecord record, int offset)
         {
             return this.sizeColumn == null ? this.GetValueDynamic(record, offset) : this.GetValueSized(record, offset);
         }
@@ -52,18 +52,18 @@ internal static class SpanMapper
         private T[] GetValueSized(IDataRecord record, int offset)
         {
             int size = record.GetInt32(offset + 1);
-            T[] array = new T[size];
+            var array = new T[size];
             this.ReadIntoBuffer(record, offset, 0, array, size);
             return array;
         }
         
         private T[] GetValueDynamic(IDataRecord record, int offset)
         {
-            IReadingStream<T> stream = this.GetReadingStream();
+            var stream = this.GetReadingStream();
             int bufferSize = INITIAL_BUFFER_SIZE;
             int read;
             long totalRead = 0;
-            T[] buffer = new T[bufferSize];
+            var buffer = new T[bufferSize];
 
             do
             {
@@ -85,6 +85,17 @@ internal static class SpanMapper
         protected abstract int ReadIntoBuffer(
             IDataRecord record, int ordinal, long readOffset, T[] buffer, int bufferSize
         );
+
+        IEnumerable<object?> IFieldMapper.WriteValue(object? fieldValue)
+        {
+            var values = new List<object?>{ fieldValue };
+            if (this.sizeColumn == null)
+            {
+                var arrayValue = (T[])fieldValue!;
+                values.Add(arrayValue.Length);
+            }
+            return values;
+        }
     }
 
     private class Bytes : ArrayOf<byte>
@@ -134,7 +145,7 @@ internal static class SpanMapper
 
         public void Push(char[] buffer, int count)
         {
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
             {
                 this.list.Add(buffer[i]);
             }

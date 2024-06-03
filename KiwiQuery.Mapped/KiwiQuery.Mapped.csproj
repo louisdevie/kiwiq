@@ -5,7 +5,7 @@
         <Nullable>enable</Nullable>
 
         <PackageId>KiwiQuery.Mapped</PackageId>
-        <Version>0.4.0</Version>
+        <Version>0.5.0</Version>
         <Authors>louisdevie</Authors>
         <PackRelease>true</PackRelease>
         <PublishRelease>true</PublishRelease>
@@ -28,7 +28,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="KiwiQuery" Version="0.5.0" />
+      <ProjectReference Include="..\KiwiQuery\KiwiQuery.csproj" />
     </ItemGroup>
 
 </Project>

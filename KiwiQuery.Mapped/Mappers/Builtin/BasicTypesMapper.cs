@@ -24,47 +24,69 @@ internal static class BasicTypesMapper
     }
 
     private class Boolean : FieldMapper<bool> {
-        public override bool GetValue(IDataRecord record, int offset) => record.GetBoolean(offset);
-     }
+        protected override bool ReadValue(IDataRecord record, int offset) => record.GetBoolean(offset);
+
+        protected override object WriteValue(bool value) => value;
+    }
 
     private class Byte : FieldMapper<byte> {
-        public override byte GetValue(IDataRecord record, int offset) => record.GetByte(offset);
+        protected override byte ReadValue(IDataRecord record, int offset) => record.GetByte(offset);
+
+        protected override object WriteValue(byte value) => value;
      }
 
     private class Char : FieldMapper<char> {
-        public override char GetValue(IDataRecord record, int offset) => record.GetChar(offset);
+        protected override char ReadValue(IDataRecord record, int offset) => record.GetChar(offset);
+
+        protected override object WriteValue(char value) => value;
      }
 
     private class Decimal : FieldMapper<decimal> {
-        public override decimal GetValue(IDataRecord record, int offset) => record.GetDecimal(offset);
+        protected override decimal ReadValue(IDataRecord record, int offset) => record.GetDecimal(offset);
+
+        protected override object WriteValue(decimal value) => value;
      }
 
     private class Double : FieldMapper<double> {
-        public override double GetValue(IDataRecord record, int offset) => record.GetDouble(offset);
+        protected override double ReadValue(IDataRecord record, int offset) => record.GetDouble(offset);
+
+        protected override object WriteValue(double value) => value;
      }
 
     private class Float : FieldMapper<float> {
-        public override float GetValue(IDataRecord record, int offset) => record.GetFloat(offset);
+        protected override float ReadValue(IDataRecord record, int offset) => record.GetFloat(offset);
+
+        protected override object WriteValue(float value) => value;
      }
 
     private class Guid : FieldMapper<System.Guid> {
-        public override System.Guid GetValue(IDataRecord record, int offset) => record.GetGuid(offset);
+        protected override System.Guid ReadValue(IDataRecord record, int offset) => record.GetGuid(offset);
+
+        protected override object WriteValue(System.Guid value) => value;
      }
 
     private class Int16 : FieldMapper<short> {
-        public override short GetValue(IDataRecord record, int offset) => record.GetInt16(offset);
+        protected override short ReadValue(IDataRecord record, int offset) => record.GetInt16(offset);
+
+        protected override object WriteValue(short value) => value;
      }
 
     private class Int32 : FieldMapper<int> {
-        public override int GetValue(IDataRecord record, int offset) => record.GetInt32(offset);
+        protected override int ReadValue(IDataRecord record, int offset) => record.GetInt32(offset);
+
+        protected override object WriteValue(int value) => value;
      }
 
     private class Int64 : FieldMapper<long> {
-        public override long GetValue(IDataRecord record, int offset) => record.GetInt64(offset);
+        protected override long ReadValue(IDataRecord record, int offset) => record.GetInt64(offset);
+
+        protected override object WriteValue(long value) => value;
      }
 
     private class String : FieldMapper<string> {
-        public override string GetValue(IDataRecord record, int offset) => record.GetString(offset);
+        protected override string ReadValue(IDataRecord record, int offset) => record.GetString(offset);
+
+        protected override object WriteValue(string value) => value;
      }
 }
 

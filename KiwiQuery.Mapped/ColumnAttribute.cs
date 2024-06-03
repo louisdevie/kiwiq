@@ -30,10 +30,10 @@ namespace KiwiQuery.Mapped
         internal string? Name { get; }
 
         /// <summary>
-        /// If set to <see langword="true"/>, this field will never be included in INSERT queries to let the database
+        /// If set to <see langword="false"/>, this field will never be included in INSERT queries to let the database
         /// provide an auto-incremented ID or a default value.
         /// </summary>
-        public bool NotInserted { get; set; } = false;
+        public bool Inserted { get; set; } = true;
 
         /// <summary>
         /// Provides a format string to map this field.

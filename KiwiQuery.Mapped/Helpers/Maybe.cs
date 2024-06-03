@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
+using KiwiQuery.Mapped.Exceptions.Internal;
 
 namespace KiwiQuery.Mapped.Helpers
 {
@@ -37,102 +39,56 @@ internal static class Maybe
     }
 }
 
-internal class Maybe<T> : IEnumerable<T>
+internal readonly struct Maybe<T> : IEnumerable<T>
 {
-    private interface IVariant
+    private readonly T value;
+    private readonly bool isSomething;
+
+    public Maybe(T value)
     {
-        IEnumerator<T> GetEnumerator();
+        this.value = value;
+        this.isSomething = true;
     }
 
-#if NET6_0_OR_GREATER
-    private record NothingVariant : IVariant
+    private class Enumerator : IEnumerator<T>
     {
-        public IEnumerator<T> GetEnumerator() => new NothingEnumerator();
-    }
-#else
-    private class NothingVariant : IVariant
-    {
-        public IEnumerator<T> GetEnumerator() => new NothingEnumerator();
-    }
-#endif
-    
-    private class NothingEnumerator : IEnumerator<T>
-    {
-        public bool MoveNext() => false;
+        private readonly Maybe<T> parent;
+        private bool alreadyRead;
 
-        public void Reset() {}
-
-        public T Current => throw new InvalidOperationException("Attempt to read nothing.");
-
-        object? IEnumerator.Current => this.Current;
-
-        public void Dispose() { }
-    }
-
-#if NET6_0_OR_GREATER
-    private record JustVariant(T Value) : IVariant
-    {
-        public IEnumerator<T> GetEnumerator() => new JustEnumerator(this);
-    }
-#else
-    private class JustVariant : IVariant
-    {
-        public JustVariant(T value)
+        public Enumerator(Maybe<T> parent)
         {
-            this.Value = value;
-        }
-
-        public T Value { get; }
-        
-        public IEnumerator<T> GetEnumerator() => new JustEnumerator(this);
-    }
-#endif
-
-    private class JustEnumerator : IEnumerator<T>
-    {
-        private readonly JustVariant wrapped;
-        private bool read;
-
-        public JustEnumerator(JustVariant wrapped)
-        {
-            this.wrapped = wrapped;
-            this.read = false;
+            this.parent = parent;
+            this.alreadyRead = false;
         }
 
         public bool MoveNext()
         {
-            bool notReadYet = !this.read;
-            this.read = true;
-            return notReadYet;
+            bool canRead = this.parent.isSomething && !this.alreadyRead;
+            this.alreadyRead = true;
+            return canRead;
         }
 
         public void Reset()
         {
-            this.read = false;
+            this.alreadyRead = false;
         }
 
-        public T Current => this.wrapped.Value;
+        public T Current => this.parent.Value;
 
-        object? IEnumerator.Current => this.wrapped.Value;
+        object? IEnumerator.Current => this.parent.Value;
 
         public void Dispose() { }
     }
 
-    private readonly IVariant variant;
+    [Pure]
+    public bool IsSomething => this.isSomething;
+    
+    [Pure]
+    public T Value => this.isSomething ? this.value : throw new MaybeHadNoValueException();
 
-    public Maybe()
-    {
-        this.variant = new NothingVariant();
-    }
+    public IEnumerator<T> GetEnumerator() => new Enumerator(this);
 
-    public Maybe(T value)
-    {
-        this.variant = new JustVariant(value);
-    }
-
-    public IEnumerator<T> GetEnumerator() => this.variant.GetEnumerator();
-
-    IEnumerator IEnumerable.GetEnumerator() => this.variant.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
 }
 
 }

@@ -13,7 +13,9 @@ namespace KiwiQuery.Mapped.Mappers.Builtin
 
         public IFieldMapper SpecializeFor(Type fieldType, IColumnInfos infos) => this;
 
-        public object? GetValue(IDataRecord record, int offset) => record.GetValue(offset);
+        public object? ReadValue(IDataRecord record, int offset) => record.GetValue(offset);
+
+        public IEnumerable<object?> WriteValue(object? fieldValue) => Maybe.Just(fieldValue);
 
         public IEnumerable<string> MetaColumns => Maybe.Nothing<string>();
     }

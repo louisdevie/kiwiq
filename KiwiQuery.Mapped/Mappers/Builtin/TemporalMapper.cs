@@ -32,11 +32,26 @@ internal static class TemporalMapper
             return new DateTime(infos.Format);
         }
 
-        public object GetValue(IDataRecord record, int offset)
+        public object ReadValue(IDataRecord record, int offset)
         {
             return this.format == null
                 ? record.GetDateTime(offset)
                 : System.DateTime.ParseExact(record.GetString(offset), this.format, CultureInfo.InvariantCulture);
+        }
+
+        public IEnumerable<object?> WriteValue(object? fieldValue)
+        {
+            object? value;
+            if (this.format == null)
+            {
+                value = fieldValue;
+            }
+            else
+            {
+                var dateTimeValue = (System.DateTime)fieldValue!;
+                value = dateTimeValue.ToString(this.format, CultureInfo.InvariantCulture);
+            }
+            return Maybe.Just(value);
         }
 
         public IEnumerable<string> MetaColumns => Maybe.Nothing<string>();

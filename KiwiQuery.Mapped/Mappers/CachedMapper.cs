@@ -1,9 +1,13 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Reflection;
+using KiwiQuery.Mapped.Exceptions;
 using KiwiQuery.Mapped.Extension;
+using KiwiQuery.Mapped.Helpers;
 using KiwiQuery.Mapped.Mappers.Fields;
 
 namespace KiwiQuery.Mapped.Mappers
@@ -11,30 +15,24 @@ namespace KiwiQuery.Mapped.Mappers
 
 internal abstract class CachedMapper : IMapper
 {
-    private static readonly Dictionary<Type, CachedMapper> Instances = new Dictionary<Type, CachedMapper>();
+    private static readonly ConcurrentDictionary<Type, CachedMapper> Instances = new ConcurrentDictionary<Type, CachedMapper>();
 
     public static CachedMapper<T> For<T>() where T : notnull
     {
-        CachedMapper<T> mapper;
-        if (Instances.TryGetValue(typeof(T), out CachedMapper found))
-        {
-            mapper = (CachedMapper<T>)found;
-        }
-        else
-        {
-            mapper = new CachedMapper<T>();
-            Instances.Add(typeof(T), mapper);
-        }
+        return (CachedMapper<T>)Instances.GetOrAdd(typeof(T), (type) => new CachedMapper<T>());
+    }
 
-        return mapper;
+    internal static void InvalidateAll()
+    {
+        Instances.Clear();
     }
 
     private readonly string tableName;
     private readonly ConstructorInfo constructor;
     private readonly List<MappedField> fields;
-    private readonly List<string> projection;
+    private readonly List<string> allColumns;
 
-    public CachedMapper(Type type)
+    protected CachedMapper(Type type)
     {
         this.constructor = type.GetConstructor(
                                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
@@ -42,9 +40,7 @@ internal abstract class CachedMapper : IMapper
                                Array.Empty<Type>(),
                                null
                            )
-                           ?? throw new ArgumentException(
-                               $"No default constructor found for in {type.FullName ?? type.Name}"
-                           );
+                           ?? throw new NoDefaultConstructorException(type);
 
         this.tableName = GetTableName(type);
 
@@ -55,10 +51,10 @@ internal abstract class CachedMapper : IMapper
             .Select(MapField)
             .ToList();
 
-        this.projection = new List<string>();
+        this.allColumns = new List<string>();
         foreach (var field in this.fields)
         {
-            this.projection.AddRange(field.SetUpProjection(this.projection.Count));
+            this.allColumns.AddRange(field.SetUpColumns(this.allColumns.Count));
         }
     }
 
@@ -79,18 +75,21 @@ internal abstract class CachedMapper : IMapper
     {
         IColumnInfos columnInfos;
         string columnName;
+        bool shouldBeInserted;
         if (GetColumnAttribute(field) is { } columnAttribute)
         {
             columnInfos = columnAttribute;
             columnName = columnAttribute.Name ?? field.Name;
+            shouldBeInserted = columnAttribute.Inserted;
         }
         else
         {
             columnInfos = new NoColumnInfos();
             columnName = field.Name;
+            shouldBeInserted = true;
         }
 
-        return new MappedField(field, columnName, GetMapper(field, columnInfos));
+        return new MappedField(field, columnName, shouldBeInserted, GetMapper(field, columnInfos));
     }
 
     private static ColumnAttribute? GetColumnAttribute(FieldInfo field)
@@ -111,16 +110,33 @@ internal abstract class CachedMapper : IMapper
 
     public string TableName => this.tableName;
 
-    public IEnumerable<string> Projection => this.projection;
+    public IEnumerable<string> Projection => this.allColumns;
 
-    public object RowToObject(DbDataReader reader)
+    public object RowToObject(IDataRecord record)
     {
         object instance = this.constructor.Invoke(Array.Empty<object>());
         foreach (MappedField field in this.fields)
         {
-            field.MapValue(instance, reader);
+            field.ReadInto(instance, record);
         }
         return instance;
+    }
+
+    public IEnumerable<(string, object?)> ObjectToValues(object obj, IColumnFilter filter)
+    {
+        var values = new List<(string, object?)>();
+        foreach (MappedField field in this.fields)
+        {
+            if (filter.FilterOut(field)) continue;
+            
+            int offset = field.Offset;
+            foreach (object? mappedValue in field.WriteFrom(obj))
+            {
+                values.Add((this.allColumns[offset], mappedValue));
+                offset++;
+            }
+        }
+        return values;
     }
 }
 
@@ -128,9 +144,14 @@ internal class CachedMapper<T> : CachedMapper, IMapper<T> where T : notnull
 {
     public CachedMapper() : base(typeof(T)) { }
 
-    public new T RowToObject(DbDataReader reader)
+    public new T RowToObject(IDataRecord record)
     {
-        return (T)base.RowToObject(reader);
+        return (T)base.RowToObject(record);
+    }
+
+    public IEnumerable<(string, object?)> ObjectToValues(T obj, IColumnFilter filter)
+    {
+        return base.ObjectToValues(obj, filter);
     }
 }
 

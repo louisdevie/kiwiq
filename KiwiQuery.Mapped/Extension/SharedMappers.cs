@@ -3,17 +3,18 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using KiwiQuery.Mapped.Extension;
+using KiwiQuery.Mapped.Mappers;
 using KiwiQuery.Mapped.Mappers.Builtin;
+using KiwiQuery.Mapped.Mappers.Fields;
 
-namespace KiwiQuery.Mapped.Mappers.Fields
+namespace KiwiQuery.Mapped.Extension
 {
 
 /// <summary>
-/// A thread-safe, singleton implementation of <see cref="IFieldMapperCollection"/>. You can use it to register mappers
-/// for the whole application.
+/// A thread-safe, singleton implementation of a collection of <see cref="IFieldMapper"/>s. You can use it to register
+/// mappers for the whole application.
 /// </summary>
-public class SharedMappers : IFieldMapperCollection
+public class SharedMappers
 {
     private static SharedMappers? current;
 
@@ -24,26 +25,37 @@ public class SharedMappers : IFieldMapperCollection
 
     private readonly HashSet<string> loadedAssemblies;
     private readonly ConcurrentStack<IFieldMapper> mappers;
-    private readonly ConcurrentDictionary<string, IFieldMapper> resolved;
+    private readonly ConcurrentDictionary<Type, IFieldMapper> resolved;
 
     private SharedMappers()
     {
         this.loadedAssemblies = new HashSet<string>();
         this.mappers = new ConcurrentStack<IFieldMapper>();
-        this.resolved = new ConcurrentDictionary<string, IFieldMapper>();
-        
+        this.resolved = new ConcurrentDictionary<Type, IFieldMapper>();
+
         BasicTypesMapper.RegisterAll(this);
         SpanMapper.RegisterAll(this);
         TemporalMapper.RegisterAll(this);
         UnSignedMapper.RegisterAll(this);
+
+        foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+        {
+            this.LoadMappersFrom(assembly);
+        }
+        AppDomain.CurrentDomain.AssemblyLoad += this.CurrentDomainOnAssemblyLoad;
     }
 
-    internal void LoadMappersFrom(Assembly assembly)
+    private void CurrentDomainOnAssemblyLoad(object? sender, AssemblyLoadEventArgs args)
     {
-        bool shouldLoad = false;
+        this.LoadMappersFrom(args.LoadedAssembly);
+    }
+
+    private void LoadMappersFrom(Assembly assembly)
+    {
+        bool shouldLoad;
         lock (this.loadedAssemblies)
         {
-            shouldLoad = this.loadedAssemblies.Add(assembly.FullName);
+            shouldLoad = this.loadedAssemblies.Add(assembly.FullName ?? assembly.Location);
         }
 
         if (shouldLoad)
@@ -70,6 +82,7 @@ public class SharedMappers : IFieldMapperCollection
             }
             if (!loaded
                 && attr is SharedMapperAttribute
+                && typeof(IFieldMapper).IsAssignableFrom(type)
                 && this.TryInvokeParameterlessConstructor(type, out object? mapper))
             {
                 this.Register((IFieldMapper)mapper);
@@ -110,12 +123,12 @@ public class SharedMappers : IFieldMapperCollection
     public void Register(IFieldMapper mapper)
     {
         this.mappers.Push(mapper);
+        CachedMapper.InvalidateAll();
     }
 
     internal IFieldMapper GetMapper(Type fieldType, IColumnInfos infos)
     {
-        return this.resolved.GetOrAdd(fieldType.FullName ?? fieldType.Name,
-            (key) => this.ResolveMapper(fieldType, infos));
+        return this.resolved.GetOrAdd(fieldType, (key) => this.ResolveMapper(fieldType, infos));
     }
 
     private IFieldMapper ResolveMapper(Type fieldType, IColumnInfos infos)

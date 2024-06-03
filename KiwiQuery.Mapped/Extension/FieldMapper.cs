@@ -13,16 +13,19 @@ namespace KiwiQuery.Mapped.Extension
 /// <typeparam name="T">The type of values handled.</typeparam>
 public abstract class FieldMapper<T> : IFieldMapper
 {
-    private IEnumerable<string> metaColumns;
+    /// <inheritdoc cref="IFieldMapper.ReadValue"/>
+    protected abstract T ReadValue(IDataRecord record, int offset);
 
-    /// <inheritdoc cref="IFieldMapper.GetValue"/>
-    public abstract T GetValue(IDataRecord record, int offset);
+    /// <inheritdoc cref="IFieldMapper.WriteValue"/>
+    protected abstract object? WriteValue(T value);
     
     bool IFieldMapper.CanHandle(Type fieldType) => fieldType == typeof(T);
 
     IFieldMapper IFieldMapper.SpecializeFor(Type fieldType, IColumnInfos infos) => this;
 
-    object? IFieldMapper.GetValue(IDataRecord record, int offset) => this.GetValue(record, offset);
+    object? IFieldMapper.ReadValue(IDataRecord record, int offset) => this.ReadValue(record, offset);
+    
+    IEnumerable<object?> IFieldMapper.WriteValue(object? value) => Maybe.Just(this.WriteValue((T)value!));
 
     IEnumerable<string> IFieldMapper.MetaColumns => Maybe.Nothing<string>();
 }
