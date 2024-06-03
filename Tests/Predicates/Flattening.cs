@@ -1,7 +1,7 @@
 using KiwiQuery.Expressions.Predicates;
-using KiwiQuery.Sql;
+using KiwiQuery.Tests.Mocking;
 
-namespace Tests.Predicates
+namespace KiwiQuery.Tests.Predicates
 {
     public class Flattening
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Data.Common;
 
-namespace Tests.Mocking
+namespace KiwiQuery.Tests.Mocking
 {
     internal class MockDbParameterCollection : DbParameterCollection, IEnumerable<MockDbParameter>
     {
