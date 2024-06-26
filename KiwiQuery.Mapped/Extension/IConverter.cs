@@ -17,9 +17,9 @@ public interface IConverter
 
     /// <summary>
     /// Returns a mapper that is configured specifically to convert values of type <paramref name="fieldType"/> using
-    /// the format described by <paramref name="infos"/>.
+    /// the format described by <paramref name="info"/>.
     /// </summary>
-    IConverter SpecializeFor(Type fieldType, IColumnInfos infos);
+    IConverter SpecializeFor(Type fieldType, IColumnInfo info);
 
     /// <summary>
     /// Extracts the value from a result row at a specified column index.

@@ -30,7 +30,7 @@ public abstract class FormattedConverter<T> : IConverter
 
     bool IConverter.CanHandle(Type fieldType) => fieldType == typeof(T);
 
-    IConverter IConverter.SpecializeFor(Type fieldType, IColumnInfos infos) => this.SpecializeFor(infos.Format);
+    IConverter IConverter.SpecializeFor(Type fieldType, IColumnInfo info) => this.SpecializeFor(info.Format);
 }
 
 }

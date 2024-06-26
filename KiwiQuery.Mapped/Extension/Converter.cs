@@ -23,7 +23,7 @@ public abstract class Converter<T> : IConverter
 
     bool IConverter.CanHandle(Type fieldType) => fieldType == typeof(T);
 
-    IConverter IConverter.SpecializeFor(Type fieldType, IColumnInfos infos) => this;
+    IConverter IConverter.SpecializeFor(Type fieldType, IColumnInfo info) => this;
 }
 
 }

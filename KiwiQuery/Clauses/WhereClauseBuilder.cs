@@ -4,30 +4,43 @@ using System;
 
 namespace KiwiQuery.Clauses
 {
-    /// <summary>
-    /// Provides methods for building WHERE statements.
-    /// </summary>
-    internal class WhereClauseBuilder : IClauseBuilder
+
+/// <summary>
+/// Provides methods for building WHERE statements.
+/// </summary>
+public class WhereClauseBuilder
+{
+    private WhereClause? clause;
+
+    internal void WriteClauseTo(QueryBuilder qb) => this.clause?.WriteTo(qb);
+
+    internal void AddPredicate(Predicate predicate)
     {
-        private WhereClause? clause;
-
-        public void WriteClauseTo(QueryBuilder qb) => this.clause?.WriteTo(qb);
-
-        /// <summary>
-        /// Add a WHERE statement to the query. This method can only be called once.
-        /// </summary>
-        /// <param name="predicate">The predicates </param>
-        /// <exception cref="InvalidOperationException"></exception>
-        public void Where(Predicate predicate)
+        if (this.clause is null)
         {
-            if (this.clause is null)
-            {
-                this.clause = new WhereClause(predicate);
-            }
-            else
-            {
-                throw new InvalidOperationException("A where clause already exists in this query.");
-            }
+            this.clause = new WhereClause(predicate);
+        }
+        else
+        {
+            throw new InvalidOperationException("A where clause already exists in this query.");
         }
     }
+}
+
+/// <summary>
+/// This interface indicates that a query uses a <see cref="WhereClauseBuilder"/>. 
+/// </summary>
+public interface IHasWhereClause<TSelf>
+{
+    /// <summary>
+    /// The <see cref="WhereClauseBuilder"/> used by this query.
+    /// </summary>
+    public WhereClauseBuilder WhereClause { get; }
+
+    /// <summary>
+    /// Downcasts this query into its precise type.
+    /// </summary>
+    public TSelf Downcast();
+}
+
 }

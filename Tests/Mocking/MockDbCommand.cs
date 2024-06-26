@@ -42,12 +42,14 @@ namespace KiwiQuery.Tests.Mocking
 
         public override int ExecuteNonQuery()
         {
-            throw new NotImplementedException();
+            this.connection.Execute(ExecutionMethod.NonQuery, this);
+            return this.connection.LinesAffected;
         }
 
         public override object? ExecuteScalar()
         {
-            throw new NotImplementedException();
+            this.connection.Execute(ExecutionMethod.Scalar, this);
+            return this.connection.ScalarResult;
         }
 
         public override void Prepare()

@@ -1,6 +1,6 @@
 using KiwiQuery.Expressions;
 
-namespace KiwiQuery.Mapped.Queries
+namespace KiwiQuery.Mapped.Queries.ValueOverloads
 {
 
 internal class ValueOverload : IValueOverload

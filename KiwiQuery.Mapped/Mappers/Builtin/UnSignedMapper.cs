@@ -34,6 +34,10 @@ internal static class UnSignedMapper
         protected override uint ReadValue(IDataRecord record, int offset) => (uint)record.GetInt32(offset);
 
         protected override object? WriteValue(uint value) => (int)value;
+
+        public override bool CanMapIntegerKey => true;
+
+        public override object? MapIntegerKey(int key) => (uint)key;
     }
 
     private class UInt64 : FieldMapper<ulong>
@@ -41,6 +45,10 @@ internal static class UnSignedMapper
         protected override ulong ReadValue(IDataRecord record, int offset) => (ulong)record.GetInt64(offset);
 
         protected override object? WriteValue(ulong value) => (long)value;
+
+        public override bool CanMapIntegerKey => true;
+
+        public override object? MapIntegerKey(int key) => (ulong)key;
     }
 }
 

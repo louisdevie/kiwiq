@@ -90,7 +90,7 @@ public class Schema
     /// Creates a new SELECT * command on the given table.
     /// </summary>
     /// <returns>A <see cref="SelectQuery"/> that can be further configured and then executed.</returns>
-    public SelectQuery SelectAll() => new SelectQuery(Array.Empty<Column>(), this);
+    public SelectQuery Select() => new SelectQuery(Array.Empty<Column>(), this);
 
 #pragma warning disable CA1822 // Static members suggestion
 // ReSharper disable MemberCanBeMadeStatic.Global
@@ -110,7 +110,7 @@ public class Schema
     /// </code>
     /// </summary>
     /// <param name="name">The name of the column.</param>
-    public Column Column(string name) => new Column(name);
+    public Column Column(string name) => new Column(name, null);
 
     /// <summary>
     /// Turns a SELECT command into a subquery that you can then use anywhere a <see cref="Value"/> is expected.

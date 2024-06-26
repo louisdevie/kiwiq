@@ -1,13 +1,17 @@
+using System;
+using KiwiQuery.Clauses;
 using KiwiQuery.Expressions.Predicates;
+using KiwiQuery.Mapped.Helpers;
 
 namespace KiwiQuery.Mapped.Queries
 {
 
 /// <summary>
 /// A SQL DELETE command for a mapped class. <br/>
-/// Instances of this class should be created from a <see cref="Schema"/> or a mapped <see cref="Table{T}"/>.
+/// Instances of this class should be created from a <see cref="Schema"/> or a mapped <see cref="Table"/>.
 /// </summary>
-public class MappedDeleteQuery<T>
+public class MappedDeleteQuery<T> : IHasWhereClause<MappedDeleteQuery<T>>
+where T : notnull
 {
     private readonly DeleteQuery rawQuery;
 
@@ -15,7 +19,7 @@ public class MappedDeleteQuery<T>
     {
         this.rawQuery = rawQuery;
     }
-    
+
     /// <summary>
     /// Build and execute the command.
     /// </summary>
@@ -25,16 +29,13 @@ public class MappedDeleteQuery<T>
         return this.rawQuery.Apply();
     }
 
-    #region WHERE clause methods
+    /// <summary>
+    /// Downcasts this query into its precise type.
+    /// </summary>
+    public MappedDeleteQuery<T> Downcast() => this;
 
-    /// <inheritdoc cref="DeleteQuery.Where"/>
-    public MappedDeleteQuery<T> Where(Predicate predicate)
-    {
-        this.rawQuery.Where(predicate);
-        return this;
-    }
-
-    #endregion
+    /// <inheritdoc />
+    public WhereClauseBuilder WhereClause => this.rawQuery.WhereClause;
 }
 
 }

@@ -5,7 +5,7 @@ namespace KiwiQuery.Mapped.Mappers.Filters
 
 internal class InsertColumnFilter : IColumnFilter
 {
-    public bool FilterOut(MappedField field) => !field.Inserted;
+    public bool Filter(MappedField field) => field.Inserted;
 }
 
 }

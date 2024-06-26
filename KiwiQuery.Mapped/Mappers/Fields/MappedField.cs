@@ -1,53 +1,42 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
-using System.Linq;
-using System.Reflection;
-using KiwiQuery.Mapped.Extension;
-using KiwiQuery.Mapped.Helpers;
+using KiwiQuery.Expressions;
+using KiwiQuery.Mapped.Queries;
 
 namespace KiwiQuery.Mapped.Mappers.Fields
 {
 
-internal class MappedField
+internal abstract class MappedField
 {
-    private readonly FieldInfo field;
-    private readonly string column;
-    private readonly bool inserted;
-    private readonly IFieldMapper mapper;
-    private int offset;
+    private readonly FieldFlags flags;
 
-    public MappedField(FieldInfo field, string column, bool inserted, IFieldMapper mapper)
+    protected MappedField(FieldFlags flags)
     {
-        this.field = field;
-        this.column = column;
-        this.inserted = inserted;
-        this.mapper = mapper;
-        this.offset = -1;
+        this.flags = flags;
     }
+    
+    /// <summary>
+    /// The main column containing the value of the field. It is used for comparison when used as a key and for
+    /// selection in <see cref="MappedUpdateQuery{T}.SetOnly" /> and <see cref="MappedUpdateQuery{T}.SetAllExcept" />.
+    /// </summary>
+    public abstract string? Column { get; }
 
-    public bool Inserted => this.inserted;
+    public abstract int Offset { get; }
 
-    public int Offset => this.offset;
+    public bool PrimaryKey => (this.flags & FieldFlags.PrimaryKey) == FieldFlags.PrimaryKey;
 
-    public string Column => this.column;
+    public bool Inserted => (this.flags & FieldFlags.NotInserted) == FieldFlags.None;
 
-    public IEnumerable<string> SetUpColumns(int offset)
-    {
-        this.offset = offset;
-        return Maybe.Just(this.Column).Concat(this.mapper.MetaColumns);
-    }
+    public abstract Type FieldType { get; }
 
-    public void ReadInto(object instance, IDataRecord record)
-    {
-        this.field.SetValue(instance, this.mapper.ReadValue(record, this.offset));
-    }
+    public abstract IEnumerable<Column> SetUpColumns(int offset);
 
-    public IEnumerable<object?> WriteFrom(object instance)
-    {
-        return this.mapper.WriteValue(this.field.GetValue(instance));
-    }
+    public abstract void ReadInto(object instance, IDataRecord record, Schema schema);
+
+    public abstract IEnumerable<object?> WriteFrom(object instance);
+
+    public abstract void PutKeyInto(object instance, int key);
 }
 
 }

@@ -5,7 +5,7 @@ namespace KiwiQuery.Mapped.Mappers.Filters
 
 internal class NoColumnFilter : IColumnFilter
 {
-    public bool FilterOut(MappedField field) => false;
+    public bool Filter(MappedField field) => true;
 }
 
 }

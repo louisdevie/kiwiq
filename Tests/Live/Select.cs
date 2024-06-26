@@ -24,9 +24,9 @@ namespace KiwiQuery.Tests.Live
         {
             DbConnection conn = new SQLiteConnection("Data Source=:memory:");
             SetUpDatabase(conn);
-            Schema db = new Schema(conn);
+            Schema db = new Schema(conn, Dialect.Sqlite);
 
-            using var results = db.SelectAll().From("Fruit").Fetch();
+            using var results = db.Select().From("Fruit").Fetch();
             int id = results.GetOrdinal("id");
             int name = results.GetOrdinal("name");
             
@@ -79,7 +79,7 @@ namespace KiwiQuery.Tests.Live
                 Assert.False(results.Read());
             }
 
-            using (var results = db.SelectAll().From("Fruit").Where(db.Column("name") == "Cherry").Fetch()){
+            using (var results = db.Select().From("Fruit").Where(db.Column("name") == "Cherry").Fetch()){
                 int id = results.GetOrdinal("id");
                 int name = results.GetOrdinal("name");
 

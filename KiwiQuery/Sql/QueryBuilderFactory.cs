@@ -32,6 +32,7 @@ namespace KiwiQuery.Sql
         {
             this.implementations = new Dictionary<Dialect, ConstructorInfo>();
             this.RegisterQueryBuilder(Dialect.MySql, typeof(MySqlQueryBuilder));
+            this.RegisterQueryBuilder(Dialect.Sqlite, typeof(SqliteQueryBuilder));
         }
 
         private void RegisterQueryBuilder(Dialect dialect, Type implementation)

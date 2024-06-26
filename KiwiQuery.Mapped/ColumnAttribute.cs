@@ -1,5 +1,4 @@
 using System;
-using KiwiQuery.Mapped.Mappers;
 using KiwiQuery.Mapped.Mappers.Fields;
 
 namespace KiwiQuery.Mapped
@@ -8,7 +7,7 @@ namespace KiwiQuery.Mapped
     /// Describes how a field should be mapped.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
-    public class ColumnAttribute: Attribute, IColumnInfos
+    public class ColumnAttribute: Attribute, IColumnInfo
     {
         /// <summary>
         /// Maps this field to a column with a specific name.
@@ -28,10 +27,10 @@ namespace KiwiQuery.Mapped
         }
 
         internal string? Name { get; }
-
+        
         /// <summary>
-        /// If set to <see langword="false"/>, this field will never be included in INSERT queries to let the database
-        /// provide an auto-incremented ID or a default value.
+        /// If set to <see langword="false"/>, this field will never be included in INSERT queries, e.g. to let the
+        /// database provide an auto-incremented ID.
         /// </summary>
         public bool Inserted { get; set; } = true;
 

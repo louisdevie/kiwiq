@@ -9,6 +9,9 @@ namespace KiwiQuery.Tests.Mocking
             this.value = value;
         }
 
+        public static implicit operator RowValue(int @int) => new (@int);
+        public static implicit operator RowValue(string @string) => new (@string);
+
         public object? Value => this.value;
 
         public string GetDataTypeName()

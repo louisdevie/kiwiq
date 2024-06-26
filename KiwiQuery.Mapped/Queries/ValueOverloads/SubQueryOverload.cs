@@ -1,4 +1,4 @@
-namespace KiwiQuery.Mapped.Queries
+namespace KiwiQuery.Mapped.Queries.ValueOverloads
 {
 
 internal class SubQueryOverload : IValueOverload

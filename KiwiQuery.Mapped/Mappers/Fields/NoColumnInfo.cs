@@ -3,7 +3,7 @@ using System.Reflection;
 namespace KiwiQuery.Mapped.Mappers.Fields
 {
 
-internal class NoColumnInfos : IColumnInfos
+internal class NoColumnInfo : IColumnInfo
 {
     public string? Format => null;
 

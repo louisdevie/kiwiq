@@ -6,6 +6,8 @@ using KiwiQuery.Mapped.Exceptions;
 using KiwiQuery.Mapped.Helpers;
 using KiwiQuery.Mapped.Mappers;
 using KiwiQuery.Mapped.Mappers.Filters;
+using KiwiQuery.Mapped.Mappers.PrimaryKeys;
+using KiwiQuery.Mapped.Queries.ValueOverloads;
 using KiwiQuery.Sql;
 
 namespace KiwiQuery.Mapped.Queries
@@ -13,18 +15,21 @@ namespace KiwiQuery.Mapped.Queries
 
 /// <summary>
 /// A SQL INSERT INTO command for a mapped class. <br/>
-/// Instances of this class should be created from a <see cref="Schema"/> or a mapped <see cref="Table{T}"/>.
+/// Instances of this class should be created from a <see cref="Schema"/> or a mapped <see cref="Table"/>.
 /// </summary>
-public class MappedInsertQuery<T> where T : notnull
+public class MappedInsertQuery<T>
+where T : notnull
 {
     private readonly InsertQuery rawQuery;
     private readonly IMapper<T> mapper;
+    private readonly IPrimaryKey primaryKey;
     private readonly Dictionary<string, IValueOverload> values;
     private Maybe<T> obj;
 
     internal MappedInsertQuery(InsertQuery rawQuery, IMapper<T> mapper)
     {
         this.mapper = mapper;
+        this.primaryKey = this.mapper.PrimaryKey;
         this.rawQuery = rawQuery;
         this.values = new Dictionary<string, IValueOverload>();
         this.obj = Maybe.Nothing<T>();
@@ -92,7 +97,10 @@ public class MappedInsertQuery<T> where T : notnull
     {
         if (this.obj.IsSomething)
         {
-            foreach ((string column, object? value) in this.mapper.ObjectToValues(this.obj.Value, new InsertColumnFilter()))
+            foreach ((string column, object? value) in this.mapper.ObjectToValues(
+                         this.obj.Value,
+                         new InsertColumnFilter()
+                     ))
             {
                 if (!this.values.ContainsKey(column))
                 {

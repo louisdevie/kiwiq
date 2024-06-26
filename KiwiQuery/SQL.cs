@@ -20,7 +20,7 @@ namespace KiwiQuery
         /// <summary>
         /// The SQL COUNT() function.
         /// </summary>
-        public static FunctionCall COUNT() => new FunctionCall("COUNT", new AllColumns());
+        public static FunctionCall COUNT() => new FunctionCall("COUNT");
 
         #endregion
 

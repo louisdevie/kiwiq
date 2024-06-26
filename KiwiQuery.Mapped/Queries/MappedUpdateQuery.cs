@@ -1,19 +1,22 @@
 using System.Collections.Generic;
+using KiwiQuery.Clauses;
 using KiwiQuery.Expressions;
 using KiwiQuery.Expressions.Predicates;
 using KiwiQuery.Mapped.Exceptions;
 using KiwiQuery.Mapped.Helpers;
 using KiwiQuery.Mapped.Mappers;
 using KiwiQuery.Mapped.Mappers.Filters;
+using KiwiQuery.Mapped.Queries.ValueOverloads;
 
 namespace KiwiQuery.Mapped.Queries
 {
 
 /// <summary>
 /// A SQL UPDATE command for a mapped class. <br/>
-/// Instances of this class should be created from a <see cref="Schema"/> or a mapped <see cref="Table{T}"/>.
+/// Instances of this class should be created from a <see cref="Schema"/> or a mapped <see cref="Table"/>.
 /// </summary>
-public partial class MappedUpdateQuery<T> where T : notnull
+public class MappedUpdateQuery<T> : IHasWhereClause<MappedUpdateQuery<T>>
+where T : notnull
 {
     private readonly UpdateQuery rawQuery;
     private readonly IMapper<T> mapper;
@@ -103,14 +106,14 @@ public partial class MappedUpdateQuery<T> where T : notnull
         return this;
     }
 
-    /// <inheritdoc cref="UpdateQuery.Set(string,KiwiQuery.Expressions.Value)"/> 
+    /// <inheritdoc cref="UpdateQuery.Set(string,object?)"/> 
     public MappedUpdateQuery<T> Set(string column, object? value)
     {
         this.values.Add(column, new ObjectOverload(value));
         return this;
     }
 
-    /// <inheritdoc cref="UpdateQuery.Set(string,KiwiQuery.Expressions.Value)"/> 
+    /// <inheritdoc cref="UpdateQuery.Set(string,KiwiQuery.SelectQuery)"/> 
     public MappedUpdateQuery<T> Set(string column, SelectQuery value)
     {
         this.values.Add(column, new SubQueryOverload(value));
@@ -143,17 +146,13 @@ public partial class MappedUpdateQuery<T> where T : notnull
         }
     }
 
+    /// <summary>
+    /// Downcasts this query into its precise type.
+    /// </summary>
+    public MappedUpdateQuery<T> Downcast() => this;
 
-    #region WHERE clause methods
-
-    /// <inheritdoc cref="UpdateQuery.Where(Predicate)"/>
-    public MappedUpdateQuery<T> Where(Predicate predicate)
-    {
-        this.rawQuery.Where(predicate);
-        return this;
-    }
-
-    #endregion
+    /// <inheritdoc />
+    public WhereClauseBuilder WhereClause => this.rawQuery.WhereClause;
 }
 
 }

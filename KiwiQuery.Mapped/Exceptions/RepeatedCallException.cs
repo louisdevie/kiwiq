@@ -14,7 +14,7 @@ public class RepeatedCallException : KiwiException
     internal static RepeatedCallException BecauseObjectIsAlreadySet()
         => new RepeatedCallException("An object is already set.");
 
-    public static RepeatedCallException BecauseMultipleInsertAreNotSupported()
+    internal static RepeatedCallException BecauseMultipleInsertAreNotSupported()
         => new RepeatedCallException("Multiple INSERT queries are not yet supported");
 }
 

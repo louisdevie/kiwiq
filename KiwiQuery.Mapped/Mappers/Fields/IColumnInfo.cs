@@ -1,6 +1,6 @@
 namespace KiwiQuery.Mapped.Mappers.Fields
 {
-    public interface IColumnInfos
+    public interface IColumnInfo
     {
         /// <summary>
         /// A format string for this field.

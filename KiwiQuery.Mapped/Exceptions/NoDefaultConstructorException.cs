@@ -10,7 +10,7 @@ namespace KiwiQuery.Mapped.Exceptions
 public class NoDefaultConstructorException : KiwiException
 {
     internal NoDefaultConstructorException(Type type) : base(
-        $"No default constructor found for in {type.FullName ?? type.Name}"
+        $"No default constructor found for {type.FullName ?? type.Name}"
     ) { }
 }
 

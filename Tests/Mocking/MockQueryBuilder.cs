@@ -96,7 +96,7 @@ namespace KiwiQuery.Tests.Mocking
         public override QueryBuilder AppendCommaSeparatedColumnNames(IEnumerable<string> columns)
         {
             this.Space();
-            this.Buffer.AppendJoin(',', columns.Select(col => $"${col}"));
+            this.Buffer.AppendJoin(" , ", columns.Select(col => $"${col}"));
             return this;
         }
 

@@ -13,7 +13,7 @@ internal class IntersectColumnFilter : IColumnFilter
         this.columns = columns;
     }
 
-    public bool FilterOut(MappedField field) => this.columns.Any(col => field.Column.Equals(col));
+    public bool Filter(MappedField field) => field.Column != null && this.columns.Contains(field.Column);
 }
 
 }

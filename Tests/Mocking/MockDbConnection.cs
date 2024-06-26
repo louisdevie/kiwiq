@@ -7,14 +7,30 @@ namespace KiwiQuery.Tests.Mocking
     internal class MockDbConnection : DbConnection
     {
         List<(ExecutionMethod, MockDbCommand)> executedCommands = new();
-        private MockDbDataReader? results = null;
+        private MockDbDataReader? results;
+        private int mockLinesAffected = -1;
+        private object? scalarResult;
 
         public void MockResults(IEnumerable<string> names, IEnumerable<Row> rows)
         {
             this.results = new MockDbDataReader(names, rows);
         }
 
+        public void MockScalarResult(object? value)
+        {
+            this.scalarResult = value;
+        }
+        
+        public void MockLinesAffected(int lineCount)
+        {
+            this.mockLinesAffected = lineCount;
+        }
+
         public MockDbDataReader? Results => this.results;
+
+        public object? ScalarResult => this.scalarResult;
+        
+        public int LinesAffected => this.mockLinesAffected;
 
         public override string ConnectionString
         {
@@ -74,25 +90,59 @@ namespace KiwiQuery.Tests.Mocking
         {
             return new MockDbCommand(this);
         }
-    }
-
-    internal static class DbConnectionExtensions
-    {
-        public static void CheckSelectQueryExecution(this MockDbConnection connection, string expected)
+        
+        public void CheckSelectQueryExecution(string expected, params object[] parameters)
         {
-            Assert.Equal(1, connection.ExecutedCommandCount);
+            Assert.Equal(1, this.ExecutedCommandCount);
 
-            Assert.Equal(expected, connection.LastExecutedCommand.CommandText);
-            Assert.Equal(ExecutionMethod.Reader, connection.LastExecutionMethod);
+            Assert.Equal(expected, this.LastExecutedCommand.CommandText);
+            Assert.Equal(ExecutionMethod.Reader, this.LastExecutionMethod);
+            Assert.Equal(parameters, this.LastExecutedCommand.MockParameters.Select(param => param.Value));
 
-            connection.ClearExecutionHistory();
+            this.ClearExecutionHistory();
         }
         
-        public static string GetSingleSelectQuery(this MockDbConnection connection)
+        public void CheckNonQueryExecution(string expected, object[] parameters)
         {
-            Assert.Equal(1, connection.ExecutedCommandCount);
-            string command = connection.LastExecutedCommand.CommandText;
-            connection.ClearExecutionHistory();
+            Assert.Equal(1, this.ExecutedCommandCount);
+
+            Assert.Equal(expected, this.LastExecutedCommand.CommandText);
+            Assert.Equal(ExecutionMethod.NonQuery, this.LastExecutionMethod);
+            Assert.Equal(parameters, this.LastExecutedCommand.MockParameters.Select(param => param.Value));
+
+            this.ClearExecutionHistory();
+        }
+        
+        public void CheckScalarExecution(int number, string expected)
+        {
+            Assert.True(number <= this.ExecutedCommandCount);
+
+            var (method, command) = this.executedCommands[number - 1];
+            Assert.Equal(expected, command.CommandText);
+            Assert.Equal(ExecutionMethod.Scalar, method);
+        }
+        
+        public void CheckNonQueryExecution(int number, string expected, object[] parameters)
+        {
+            Assert.True(number <= this.ExecutedCommandCount);
+
+            var (method, command) = this.executedCommands[number - 1];
+            Assert.Equal(expected, command.CommandText);
+            Assert.Equal(ExecutionMethod.NonQuery, method);
+            Assert.Equal(parameters, command.MockParameters.Select(param => param.Value));
+        }
+
+        public void ExpectNoMoreThan(int count)
+        {
+            Assert.Equal(count, this.ExecutedCommandCount);
+            this.ClearExecutionHistory();
+        }
+        
+        public string GetSingleSelectQuery()
+        {
+            Assert.Equal(1, this.ExecutedCommandCount);
+            string command = this.LastExecutedCommand.CommandText;
+            this.ClearExecutionHistory();
             return command;
         }
     }

@@ -19,9 +19,9 @@ public interface IFieldMapper
 
     /// <summary>
     /// Returns a mapper that is configured specifically to convert values of type <paramref name="fieldType"/> using
-    /// the format described by <paramref name="infos"/>.
+    /// the format described by <paramref name="info"/>.
     /// </summary>
-    IFieldMapper SpecializeFor(Type fieldType, IColumnInfos infos);
+    IFieldMapper SpecializeFor(Type fieldType, IColumnInfo info);
 
     /// <summary>
     /// Maps a value from a record.
@@ -40,6 +40,19 @@ public interface IFieldMapper
     /// Additional columns that complement the value and are required when reading or writing from the database.
     /// </summary>
     IEnumerable<string> MetaColumns { get; }
+
+    /// <summary>
+    /// Indicate if this type of field can be mapped to an integer auto-incremented primary key. If true,
+    /// <see cref="MapIntegerKey"/> must be implemented. This property should always return the same value. 
+    /// </summary>
+    bool CanMapIntegerKey { get; }
+
+    /// <summary>
+    /// Maps an integer generated as a primary key. This method may not be implemented if <see cref="CanMapIntegerKey"/>
+    /// is always false.
+    /// </summary>
+    /// <param name="key">The key value.</param>
+    object? MapIntegerKey(int key) => null;
 }
 
 }

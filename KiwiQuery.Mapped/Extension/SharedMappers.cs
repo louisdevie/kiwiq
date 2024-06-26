@@ -11,10 +11,10 @@ namespace KiwiQuery.Mapped.Extension
 {
 
 /// <summary>
-/// A thread-safe, singleton implementation of a collection of <see cref="IFieldMapper"/>s. You can use it to register
+/// A thread-safe, singleton implementation of <see cref="IFieldMapperCollection"/>. You can use it to register
 /// mappers for the whole application.
 /// </summary>
-public class SharedMappers
+public class SharedMappers : IFieldMapperCollection
 {
     private static SharedMappers? current;
 
@@ -107,43 +107,24 @@ public class SharedMappers
         return success;
     }
 
-    /// <summary>
-    /// Register a new converter.
-    /// </summary>
-    /// <param name="converter">A converter instance.</param>
+    /// <inheritdoc />
     public void Register(IConverter converter)
     {
         this.Register(new ConverterMapper(converter));
     }
 
-    /// <summary>
-    /// Register a new field mapper.
-    /// </summary>
-    /// <param name="mapper">A field mapper instance.</param>
+    /// <inheritdoc />
     public void Register(IFieldMapper mapper)
     {
         this.mappers.Push(mapper);
-        CachedMapper.InvalidateAll();
     }
 
-    internal IFieldMapper GetMapper(Type fieldType, IColumnInfos infos)
+    IFieldMapper IFieldMapperCollection.GetMapper(Type fieldType, IColumnInfo info)
     {
-        return this.resolved.GetOrAdd(fieldType, (key) => this.ResolveMapper(fieldType, infos));
-    }
-
-    private IFieldMapper ResolveMapper(Type fieldType, IColumnInfos infos)
-    {
-        IFieldMapper? found = null;
-
-        foreach (IFieldMapper mapper in this.mappers)
-        {
-            if (found == null && mapper.CanHandle(fieldType))
-            {
-                found = mapper.SpecializeFor(fieldType, infos);
-            }
-        }
-
-        return found ?? new GenericMapper();
+        return this.resolved.GetOrAdd(
+            fieldType,
+            _ => DefaultMapperResolver.ResolveFromList(this.mappers, fieldType, info)
+        );
     }
 }
 

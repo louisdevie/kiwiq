@@ -4,8 +4,8 @@ namespace KiwiQuery.Clauses
 {
     internal class LimitClause : Clause
     {
-        private int limit;
-        private int offset;
+        private readonly int limit;
+        private readonly int offset;
 
         public LimitClause(int limit, int offset)
         {

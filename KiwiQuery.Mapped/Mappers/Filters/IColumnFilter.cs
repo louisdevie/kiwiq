@@ -1,11 +1,11 @@
 using KiwiQuery.Mapped.Mappers.Fields;
 
-namespace KiwiQuery.Mapped.Mappers
+namespace KiwiQuery.Mapped.Mappers.Filters
 {
 
 internal interface IColumnFilter
 {
-    bool FilterOut(MappedField field);
+    bool Filter(MappedField field);
 }
 
 }

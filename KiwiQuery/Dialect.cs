@@ -11,9 +11,14 @@ namespace KiwiQuery
     public sealed class Dialect : IEquatable<Dialect>
     {
         /// <summary>
-        /// The MySQL dialect.
+        /// The built-in MySQL dialect.
         /// </summary>
         public static readonly Dialect MySql = new Dialect("@@mysql");
+        
+        /// <summary>
+        /// The built-in SQLite dialect.
+        /// </summary>
+        public static readonly Dialect Sqlite = new Dialect("@@sqlite");
         
         private readonly String identifier;
 

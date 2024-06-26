@@ -10,7 +10,7 @@ namespace KiwiQuery.Tests.Queries
             var connection = new MockDbConnection();
             Schema db = new(connection, MockQueryBuilder.MockDialect);
 
-            db.SelectAll().From("table1").Fetch();
+            db.Select().From("table1").Fetch();
             connection.CheckSelectQueryExecution("select #all from $table1");
 
             db.Select("col1", "col2", "col3").From("table1").Fetch();
@@ -52,20 +52,20 @@ namespace KiwiQuery.Tests.Queries
             Table table2 = db.Table("table2");
             Table table3 = db.Table("table3");
 
-            db.SelectAll().From("table1").Join("table2", "fk", "ref").Fetch();
+            db.Select().From("table1").Join("table2", "fk", "ref").Fetch();
             connection.CheckSelectQueryExecution("select #all from $table1 inner join $table2 on $fk == $ref");
 
-            db.SelectAll().From(table1).Join(table2, "fk", "ref").Fetch();
+            db.Select().From(table1).Join(table2, "fk", "ref").Fetch();
             connection.CheckSelectQueryExecution("select #all from $table1 inner join $table2 on $fk == $ref");
 
-            db.SelectAll().From(table1).Join(table2, db.Column("fk"), db.Column("ref")).Fetch();
+            db.Select().From(table1).Join(table2, db.Column("fk"), db.Column("ref")).Fetch();
             connection.CheckSelectQueryExecution("select #all from $table1 inner join $table2 on $fk == $ref");
 
-            db.SelectAll().From(table1).Join(table2.Column("ref"), db.Column("fk")).Fetch();
+            db.Select().From(table1).Join(table2.Column("ref"), db.Column("fk")).Fetch();
             connection.CheckSelectQueryExecution(
                 "select #all from $table1 inner join $table2 on $table2 -> $ref == $fk");
 
-            db.SelectAll()
+            db.Select()
                 .From(table1)
                 .Join(table2.Column("id2"), table1.Column("fk2"))
                 .Join(table3.Column("id3"), table1.Column("fk3"))
@@ -84,20 +84,20 @@ namespace KiwiQuery.Tests.Queries
             Table table2 = db.Table("table2");
             Table table3 = db.Table("table3");
 
-            db.SelectAll().From("table1").LeftJoin("table2", "fk", "ref").Fetch();
+            db.Select().From("table1").LeftJoin("table2", "fk", "ref").Fetch();
             connection.CheckSelectQueryExecution("select #all from $table1 left join $table2 on $fk == $ref");
 
-            db.SelectAll().From("table1").LeftJoin(table2, "fk", "ref").Fetch();
+            db.Select().From("table1").LeftJoin(table2, "fk", "ref").Fetch();
             connection.CheckSelectQueryExecution("select #all from $table1 left join $table2 on $fk == $ref");
 
-            db.SelectAll().From("table1").LeftJoin(table2, db.Column("fk"), db.Column("ref")).Fetch();
+            db.Select().From("table1").LeftJoin(table2, db.Column("fk"), db.Column("ref")).Fetch();
             connection.CheckSelectQueryExecution("select #all from $table1 left join $table2 on $fk == $ref");
 
-            db.SelectAll().From("table1").LeftJoin(table2.Column("ref"), db.Column("fk")).Fetch();
+            db.Select().From("table1").LeftJoin(table2.Column("ref"), db.Column("fk")).Fetch();
             connection.CheckSelectQueryExecution(
                 "select #all from $table1 left join $table2 on $table2 -> $ref == $fk");
 
-            db.SelectAll()
+            db.Select()
                 .From(table1)
                 .LeftJoin(table2.Column("id2"), table1.Column("fk2"))
                 .LeftJoin(table3.Column("id3"), table1.Column("fk3"))
@@ -112,7 +112,7 @@ namespace KiwiQuery.Tests.Queries
             var connection = new MockDbConnection();
             Schema db = new(connection, MockQueryBuilder.MockDialect);
 
-            db.SelectAll().From("table1").Limit(8).Fetch();
+            db.Select().From("table1").Limit(8).Fetch();
             Assert.Equal(
                 new MockDbParameter[]
                 {
@@ -123,7 +123,7 @@ namespace KiwiQuery.Tests.Queries
             );
             connection.CheckSelectQueryExecution("select #all from $table1 limit @p1 offset @p2");
 
-            db.SelectAll().From("table1").Limit(8).Offset(14).Fetch();
+            db.Select().From("table1").Limit(8).Offset(14).Fetch();
             Assert.Equal(
                 new MockDbParameter[]
                 {
@@ -134,7 +134,7 @@ namespace KiwiQuery.Tests.Queries
             );
             connection.CheckSelectQueryExecution("select #all from $table1 limit @p1 offset @p2");
 
-            db.SelectAll().From("table1").Limit(8, 14).Fetch();
+            db.Select().From("table1").Limit(8, 14).Fetch();
             Assert.Equal(
                 new MockDbParameter[]
                 {

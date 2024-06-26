@@ -27,9 +27,9 @@ internal static class TemporalMapper
 
         public bool CanHandle(Type fieldType) => fieldType == typeof(System.DateTime);
 
-        public IFieldMapper SpecializeFor(Type fieldType, IColumnInfos infos)
+        public IFieldMapper SpecializeFor(Type fieldType, IColumnInfo info)
         {
-            return new DateTime(infos.Format);
+            return new DateTime(info.Format);
         }
 
         public object ReadValue(IDataRecord record, int offset)
@@ -55,6 +55,8 @@ internal static class TemporalMapper
         }
 
         public IEnumerable<string> MetaColumns => Maybe.Nothing<string>();
+
+        public bool CanMapIntegerKey => false;
     }
 }
 

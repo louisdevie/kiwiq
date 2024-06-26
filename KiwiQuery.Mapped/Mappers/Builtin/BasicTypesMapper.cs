@@ -69,18 +69,26 @@ internal static class BasicTypesMapper
         protected override short ReadValue(IDataRecord record, int offset) => record.GetInt16(offset);
 
         protected override object WriteValue(short value) => value;
-     }
+    }
 
     private class Int32 : FieldMapper<int> {
         protected override int ReadValue(IDataRecord record, int offset) => record.GetInt32(offset);
 
         protected override object WriteValue(int value) => value;
+
+        public override bool CanMapIntegerKey => true;
+
+        public override object MapIntegerKey(int key) => key;
      }
 
     private class Int64 : FieldMapper<long> {
         protected override long ReadValue(IDataRecord record, int offset) => record.GetInt64(offset);
 
         protected override object WriteValue(long value) => value;
+
+        public override bool CanMapIntegerKey => true;
+
+        public override object MapIntegerKey(int key) => (long)key;
      }
 
     private class String : FieldMapper<string> {

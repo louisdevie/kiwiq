@@ -21,13 +21,19 @@ public abstract class FieldMapper<T> : IFieldMapper
     
     bool IFieldMapper.CanHandle(Type fieldType) => fieldType == typeof(T);
 
-    IFieldMapper IFieldMapper.SpecializeFor(Type fieldType, IColumnInfos infos) => this;
+    IFieldMapper IFieldMapper.SpecializeFor(Type fieldType, IColumnInfo info) => this;
 
     object? IFieldMapper.ReadValue(IDataRecord record, int offset) => this.ReadValue(record, offset);
     
     IEnumerable<object?> IFieldMapper.WriteValue(object? value) => Maybe.Just(this.WriteValue((T)value!));
 
     IEnumerable<string> IFieldMapper.MetaColumns => Maybe.Nothing<string>();
+    
+    /// <inheritdoc />
+    public virtual bool CanMapIntegerKey => false;
+
+    /// <inheritdoc />
+    public virtual object? MapIntegerKey(int key) => null;
 }
 
 }

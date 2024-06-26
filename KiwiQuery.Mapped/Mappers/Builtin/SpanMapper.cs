@@ -40,7 +40,7 @@ internal static class SpanMapper
 
         public bool CanHandle(Type fieldType) => fieldType == typeof(T[]);
 
-        public IFieldMapper SpecializeFor(Type fieldType, IColumnInfos infos) => this.Clone(infos.Size);
+        public IFieldMapper SpecializeFor(Type fieldType, IColumnInfo info) => this.Clone(info.Size);
 
         public object ReadValue(IDataRecord record, int offset)
         {
@@ -48,6 +48,8 @@ internal static class SpanMapper
         }
 
         public IEnumerable<string> MetaColumns => Maybe.FromNullable(this.sizeColumn);
+
+        public bool CanMapIntegerKey => false;
 
         private T[] GetValueSized(IDataRecord record, int offset)
         {

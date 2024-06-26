@@ -4,7 +4,7 @@ namespace KiwiQuery.Tests
 {
     public static class AssertThat
     {
-        public static void GroupsAreEqual(Match match, params int[] groups)
+        public static void GroupsAreTheSame(Match match, params int[] groups)
         {
             foreach (int i in groups.Skip(1))
             {

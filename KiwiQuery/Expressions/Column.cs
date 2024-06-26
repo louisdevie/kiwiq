@@ -4,12 +4,12 @@ namespace KiwiQuery.Expressions
 {
     /// <summary>
     /// The column of a table. <br/>
-    /// Instances of this class should be created from a <see cref="Expressions.Table"/> or a <see cref="Schema"/>.
+    /// Instances of this class should be created from a <see cref="KiwiQuery.Table"/> or a <see cref="Schema"/>.
     /// </summary>
     public sealed class Column : Value
     {
-        private string name;
-        private Table? table;
+        private readonly string name;
+        private readonly Table? table;
         private string? alias;
 
         /// <summary>
@@ -32,20 +32,10 @@ namespace KiwiQuery.Expressions
         /// </summary>
         /// <param name="name">The name of the column.</param>
         /// <param name="table">The table it belongs to.</param>
-        internal Column(string name, Table table) : this(name)
-        {
-            this.table = table;
-        }
-
-        /// <summary>
-        /// Creates a new column without an explicit table.
-        /// </summary>
-        /// <param name="name">The name of the column.</param>
-        /// <param name="schema">Teh schema </param>
-        internal Column(string name)
+        internal Column(string name, Table? table)
         {
             this.name = name;
-            this.table = null;
+            this.table = table;
             this.alias = null;
         }
 
@@ -61,6 +51,7 @@ namespace KiwiQuery.Expressions
             return this;
         }
 
+        /// <inheritdoc />
         public override void WriteTo(QueryBuilder builder)
         {
             if (this.table != null)
@@ -74,6 +65,17 @@ namespace KiwiQuery.Expressions
                 builder.AppendAsKeyword()
                        .AppendTableOrColumnName(this.alias);
             }
+        }
+
+        /// <summary>
+        /// Creates a column that belongs to the same <see cref="KiwiQuery.Table"/>, or the same <see cref="Schema"/> if it
+        /// doesn't have a parent table.
+        /// </summary>
+        /// <param name="name">The name of the new column.</param>
+        /// <returns>A new <see cref="Column"/> that inherits its <see cref="Table"/> property.</returns>
+        public Column Sibling(string name)
+        {
+            return new Column(name, this.table);
         }
     }
 }
