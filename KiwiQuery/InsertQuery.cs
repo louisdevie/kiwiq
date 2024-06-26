@@ -13,6 +13,11 @@ namespace KiwiQuery
     /// </summary>
     public class InsertQuery : Query
     {
+        /// <summary>
+        /// The value returned by <see cref="Apply"/> when the table doesn't use an auto-incremented primary key. 
+        /// </summary>
+        public const int NO_AUTO_ID = -1;
+        
         private string table;
 
         private class ValueToInsert
@@ -136,7 +141,10 @@ namespace KiwiQuery
         /// <summary>
         /// Build and execute the command.
         /// </summary>
-        /// <returns>The ID (value of the primary key) of the inserted row, or -1 of the primary key is not an integer.</returns>
+        /// <returns>
+        /// The ID (value of the primary key) of the inserted row, or <see cref="NO_AUTO_ID"/> if the primary  key is
+        /// not an integer.
+        /// </returns>
         public int Apply()
         {
             this.BuildCommand();
@@ -155,7 +163,7 @@ namespace KiwiQuery
                 long longId => (int)longId,
                 uint uintId => (int)uintId,
                 ulong ulongId => (int)ulongId,
-                _ => -1
+                _ => NO_AUTO_ID
             };
         }
     }

@@ -1,7 +1,7 @@
 using KiwiQuery.Expressions.Predicates;
 using KiwiQuery.Sql;
 
-namespace Tests.Mocking
+namespace KiwiQuery.Tests.Mocking
 {
     public class MockPredicate: Predicate
     {

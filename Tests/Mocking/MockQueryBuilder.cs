@@ -1,10 +1,9 @@
-﻿using KiwiQuery;
+﻿using System.Data.Common;
 using KiwiQuery.Expressions;
 using KiwiQuery.Expressions.Predicates;
 using KiwiQuery.Sql;
-using System.Data.Common;
 
-namespace Tests.Mocking
+namespace KiwiQuery.Tests.Mocking
 {
     internal class MockQueryBuilder : QueryBuilder
     {
@@ -97,7 +96,7 @@ namespace Tests.Mocking
         public override QueryBuilder AppendCommaSeparatedColumnNames(IEnumerable<string> columns)
         {
             this.Space();
-            this.Buffer.AppendJoin(',', columns.Select(col => $"${col}"));
+            this.Buffer.AppendJoin(" , ", columns.Select(col => $"${col}"));
             return this;
         }
 

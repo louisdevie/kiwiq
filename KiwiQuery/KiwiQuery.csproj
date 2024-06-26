@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net7.0;net6.0;netstandard2.1</TargetFrameworks>
+		<TargetFrameworks>net8.0;netstandard2.1</TargetFrameworks>
 		<Nullable>enable</Nullable>
 		
 		<PackageId>KiwiQuery</PackageId>
-		<Version>0.5.0</Version>
+		<Version>0.6.0</Version>
 		<Authors>louisdevie</Authors>
 		<PackRelease>true</PackRelease>
 		<PublishRelease>true</PublishRelease>
@@ -16,7 +16,7 @@
 		<PackageTags>sql;mysql;query-builder;dynamic-query</PackageTags>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<PackageReleaseNotes>SELECT DISTINCT queries and easier table aliasing</PackageReleaseNotes>
+		<PackageReleaseNotes>Added support for SQLite</PackageReleaseNotes>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<PackageIcon>kiwiq-128.png</PackageIcon>
 	</PropertyGroup>
