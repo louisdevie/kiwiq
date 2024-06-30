@@ -14,8 +14,8 @@ namespace KiwiQuery
 /// A SQL SELECT command. <br/>
 /// Instances of this class should be created from a <see cref="Schema"/>.
 /// </summary>
-public class SelectQuery : Query, IWriteable, IHasJoinClause<SelectQuery>, IHasWhereClause<SelectQuery>,
-    IHasLimitClause<SelectQuery>
+public class SelectCommand : Command, IWriteable, IHasJoinClause<SelectCommand>, IHasWhereClause<SelectCommand>,
+    IHasLimitClause<SelectCommand>
 {
     private Table? table;
     private bool distinct;
@@ -29,7 +29,7 @@ public class SelectQuery : Query, IWriteable, IHasJoinClause<SelectQuery>, IHasW
     /// </summary>
     /// <param name="projection">The columns to select.</param>
     /// <param name="schema">The schema to execute the command on.</param>
-    internal SelectQuery(IEnumerable<Value> projection, Schema schema) : base(schema)
+    internal SelectCommand(IEnumerable<Value> projection, Schema schema) : base(schema)
     {
         this.table = null;
         this.distinct = false;
@@ -45,7 +45,7 @@ public class SelectQuery : Query, IWriteable, IHasJoinClause<SelectQuery>, IHasW
     /// combining simple string columns with <see cref="Column"/> objects.
     /// </summary>
     /// <param name="columns">The columns and values to select.</param>
-    public SelectQuery And(params Value[] columns)
+    public SelectCommand And(params Value[] columns)
     {
         foreach (Value column in columns)
         {
@@ -55,7 +55,7 @@ public class SelectQuery : Query, IWriteable, IHasJoinClause<SelectQuery>, IHasW
     }
 
     /// <inheritdoc cref="And(Value[])"/>
-    public SelectQuery And(params string[] columns)
+    public SelectCommand And(params string[] columns)
     {
         foreach (string column in columns)
         {
@@ -68,14 +68,14 @@ public class SelectQuery : Query, IWriteable, IHasJoinClause<SelectQuery>, IHasW
     /// Chooses the first table to select from. Other tables can be joined later.
     /// </summary>
     /// <param name="table">The first table to select from.</param>
-    public SelectQuery From(string table)
+    public SelectCommand From(string table)
     {
         this.table = this.Schema.Table(table);
         return this;
     }
 
     /// <inheritdoc cref="From(string)"/>
-    public SelectQuery From(Table table)
+    public SelectCommand From(Table table)
     {
         this.table = table;
         return this;
@@ -134,7 +134,7 @@ public class SelectQuery : Query, IWriteable, IHasJoinClause<SelectQuery>, IHasW
     public DbDataReader Fetch()
     {
         this.BuildCommand();
-        return this.Command.ExecuteReader();
+        return this.DbCommand.ExecuteReader();
     }
 
     /// <summary>
@@ -152,8 +152,7 @@ public class SelectQuery : Query, IWriteable, IHasJoinClause<SelectQuery>, IHasW
     /// <summary>
     /// Remove duplicates from the query results.
     /// </summary>
-    /// <added>0.5.0</added>
-    public SelectQuery Distinct()
+    public SelectCommand Distinct()
     {
         this.distinct = true;
         return this;
@@ -162,7 +161,7 @@ public class SelectQuery : Query, IWriteable, IHasJoinClause<SelectQuery>, IHasW
     /// <summary>
     /// Downcasts this query into its precise type.
     /// </summary>
-    public SelectQuery Downcast() => this;
+    public SelectCommand Downcast() => this;
 
     /// <inheritdoc />
     public JoinClauseBuilder JoinClause => this.joinClauseBuilder;

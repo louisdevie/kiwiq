@@ -9,7 +9,7 @@ namespace KiwiQuery
 /// A SQL DELETE command. <br/>
 /// Instances of this class should be created from a <see cref="Schema"/>.
 /// </summary>
-public class DeleteQuery : Query, IHasWhereClause<DeleteQuery>
+public class DeleteCommand : Command, IHasWhereClause<DeleteCommand>
 {
     private readonly string table;
     private readonly WhereClauseBuilder whereClauseBuilder;
@@ -19,7 +19,7 @@ public class DeleteQuery : Query, IHasWhereClause<DeleteQuery>
     /// </summary>
     /// <param name="table">The name of the table to delete rows from.</param>
     /// <param name="schema">The schema to execute this command on.</param>
-    internal DeleteQuery(string table, Schema schema) : base(schema)
+    internal DeleteCommand(string table, Schema schema) : base(schema)
     {
         this.table = table;
         this.whereClauseBuilder = new WhereClauseBuilder();
@@ -44,14 +44,14 @@ public class DeleteQuery : Query, IHasWhereClause<DeleteQuery>
     public bool Apply()
     {
         this.BuildCommand();
-        int affectedRows = this.Command.ExecuteNonQuery();
+        int affectedRows = this.DbCommand.ExecuteNonQuery();
         return affectedRows > 0;
     }
 
     /// <summary>
     /// Downcasts this query into its precise type.
     /// </summary>
-    public DeleteQuery Downcast() => this;
+    public DeleteCommand Downcast() => this;
 
     /// <inheritdoc />
     public WhereClauseBuilder WhereClause => this.whereClauseBuilder;

@@ -12,7 +12,7 @@ namespace KiwiQuery
 /// A SQL UPDATE command. <br/>
 /// Instances of this class should be created from a <see cref="Schema"/>.
 /// </summary>
-public class UpdateQuery : Query, IHasWhereClause<UpdateQuery>
+public class UpdateCommand : Command, IHasWhereClause<UpdateCommand>
 {
     private readonly string table;
     private readonly WhereClauseBuilder whereClauseBuilder;
@@ -36,7 +36,7 @@ public class UpdateQuery : Query, IHasWhereClause<UpdateQuery>
     private readonly List<ValueToUpdate> values;
 
     /// <inheritdoc />
-    public UpdateQuery(string table, Schema schema) : base(schema)
+    public UpdateCommand(string table, Schema schema) : base(schema)
     {
         this.table = table;
         this.whereClauseBuilder = new WhereClauseBuilder();
@@ -48,21 +48,21 @@ public class UpdateQuery : Query, IHasWhereClause<UpdateQuery>
     /// </summary>
     /// <param name="column">The name of the column to update.</param>
     /// <param name="value">The new value to put in the database.</param>
-    public UpdateQuery Set(string column, Value value)
+    public UpdateCommand Set(string column, Value value)
     {
         this.values.Add(new ValueToUpdate(value, column));
         return this;
     }
 
     /// <inheritdoc cref="Set(string,KiwiQuery.Expressions.Value)"/>
-    public UpdateQuery Set(string column, object? value)
+    public UpdateCommand Set(string column, object? value)
     {
         this.values.Add(new ValueToUpdate(new Parameter(value), column));
         return this;
     }
 
     /// <inheritdoc cref="Set(string,KiwiQuery.Expressions.Value)"/>
-    public UpdateQuery Set(string column, SelectQuery value)
+    public UpdateCommand Set(string column, SelectCommand value)
     {
         this.values.Add(new ValueToUpdate(new SubQuery(value), column));
         return this;
@@ -108,14 +108,14 @@ public class UpdateQuery : Query, IHasWhereClause<UpdateQuery>
     public bool Apply()
     {
         this.BuildCommand();
-        int affectedRows = this.Command.ExecuteNonQuery();
+        int affectedRows = this.DbCommand.ExecuteNonQuery();
         return affectedRows > 0;
     }
 
     /// <summary>
     /// Downcasts this query into its precise type.
     /// </summary>
-    public UpdateQuery Downcast() => this;
+    public UpdateCommand Downcast() => this;
 
     /// <inheritdoc />
     public WhereClauseBuilder WhereClause => this.whereClauseBuilder;

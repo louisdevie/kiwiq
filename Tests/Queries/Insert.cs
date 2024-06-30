@@ -12,7 +12,7 @@ public class Insert
 
         int id = db.InsertInto("table1").Value("col1", 1).Value("col2", 2).Value("col3", 3).Apply();
 
-        Assert.Equal(InsertQuery.NO_AUTO_ID, id);
+        Assert.Equal(InsertCommand.NO_AUTO_ID, id);
 
         connection.CheckNonQueryExecution(
             1,
