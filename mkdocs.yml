@@ -1,0 +1,30 @@
+site_name: KiwiQuery
+copyright: 2024 Louis DEVIE
+nav:
+  - index.md
+  - getting-started.md
+  - Writing queries:
+    - SELECT: kiwiq/select.md
+    - WHERE: kiwiq/where.md
+    - JOIN: kiwiq/join.md
+    - GROUP BY: kiwiq/group-by.md
+  - Mapping to objects: mapped/index.md
+  - Extending the library:
+    - Adding a dialect: extension/dialects.md
+  - API reference:
+    - api/changelog.md
+  - about.md
+    
+repo_url: https://github.com/louisdevie/kiwiq/
+edit_uri: blob/main/docs/
+
+theme:
+  name: cinder
+  custom_dir: docs/theme/cinder-ext
+extra_css:
+  - "theme/style.css"
+markdown_extensions: 
+  - admonition
+  - attr_list
+  - toc:
+      permalink: ""
