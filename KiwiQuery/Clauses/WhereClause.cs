@@ -8,7 +8,7 @@ namespace KiwiQuery.Clauses
     /// </summary>
     internal class WhereClause : Clause
     {
-        private Predicate predicate;
+        private readonly Predicate predicate;
 
         /// <summary>
         /// Creates a new WHERE statement.

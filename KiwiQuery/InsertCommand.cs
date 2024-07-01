@@ -11,8 +11,13 @@ namespace KiwiQuery
     /// A SQL INSERT command. <br/>
     /// Instances of this class should be created from a <see cref="Schema"/>.
     /// </summary>
-    public class InsertQuery : Query
+    public class InsertCommand : Command
     {
+        /// <summary>
+        /// The value returned by <see cref="Apply"/> when the table doesn't use an auto-incremented primary key. 
+        /// </summary>
+        public const int NO_AUTO_ID = -1;
+        
         private string table;
 
         private class ValueToInsert
@@ -39,7 +44,7 @@ namespace KiwiQuery
         /// </summary>
         /// <param name="table">The table to insert into.</param>
         /// <param name="schema">The schema to execute the command on.</param>
-        internal InsertQuery(string table, Schema schema) : base(schema)
+        internal InsertCommand(string table, Schema schema) : base(schema)
         {
             this.table = table;
             this.values = new List<ValueToInsert>();
@@ -49,7 +54,7 @@ namespace KiwiQuery
         /// Add a value to be inserted.
         /// </summary>
         /// <param name="value">The value to insert.</param>
-        public InsertQuery Value(Value value)
+        public InsertCommand Value(Value value)
         {
             this.values.Add(new ValueToInsert(value));
             return this;
@@ -59,7 +64,7 @@ namespace KiwiQuery
         /// Add a value to be inserted.
         /// </summary>
         /// <param name="value">The value to insert.</param>
-        public InsertQuery Value(object? value)
+        public InsertCommand Value(object? value)
         {
             this.values.Add(new ValueToInsert(new Parameter(value)));
             return this;
@@ -69,7 +74,7 @@ namespace KiwiQuery
         /// Add a value to be inserted.
         /// </summary>
         /// <param name="subQuery">The subquery to insert as a value.</param>
-        public InsertQuery Value(SelectQuery subQuery)
+        public InsertCommand Value(SelectCommand subQuery)
         {
             this.values.Add(new ValueToInsert(new SubQuery(subQuery)));
             return this;
@@ -80,7 +85,7 @@ namespace KiwiQuery
         /// </summary>
         /// <param name="column">The name of the column to insert the value into.</param>
         /// <param name="value">The value to insert.</param>
-        public InsertQuery Value(string column, Value value)
+        public InsertCommand Value(string column, Value value)
         {
             this.values.Add(new ValueToInsert(value, column));
             return this;
@@ -91,7 +96,7 @@ namespace KiwiQuery
         /// </summary>
         /// <param name="column">The name of the column to insert the value into.</param>
         /// <param name="value">The value to insert.</param>
-        public InsertQuery Value(string column, object? value)
+        public InsertCommand Value(string column, object? value)
         {
             this.values.Add(new ValueToInsert(new Parameter(value), column));
             return this;
@@ -102,7 +107,7 @@ namespace KiwiQuery
         /// </summary>
         /// <param name="column">The name of the column to insert the value into.</param>
         /// <param name="subQuery">The subquery to insert as a value.</param>
-        public InsertQuery Value(string column, SelectQuery subQuery)
+        public InsertCommand Value(string column, SelectCommand subQuery)
         {
             this.values.Add(new ValueToInsert(new SubQuery(subQuery), column));
             return this;
@@ -136,15 +141,18 @@ namespace KiwiQuery
         /// <summary>
         /// Build and execute the command.
         /// </summary>
-        /// <returns>The ID (value of the primary key) of the inserted row, or -1 of the primary key is not an integer.</returns>
+        /// <returns>
+        /// The ID (value of the primary key) of the inserted row, or <see cref="NO_AUTO_ID"/> if the primary  key is
+        /// not an integer.
+        /// </returns>
         public int Apply()
         {
             this.BuildCommand();
-            this.Command.ExecuteNonQuery();
+            this.DbCommand.ExecuteNonQuery();
 
             DbCommand selectIdCommand = this.Schema.Connection.CreateCommand();
             selectIdCommand.CommandText = QueryBuilderFactory.Current
-                .NewQueryBuilder(this.Schema.CurrentDialect, this.Command)
+                .NewQueryBuilder(this.Schema.CurrentDialect, this.DbCommand)
                 .AppendLastInsertIdQuery()
                 .ToString();
             object? id = selectIdCommand.ExecuteScalar();
@@ -155,7 +163,7 @@ namespace KiwiQuery
                 long longId => (int)longId,
                 uint uintId => (int)uintId,
                 ulong ulongId => (int)ulongId,
-                _ => -1
+                _ => NO_AUTO_ID
             };
         }
     }

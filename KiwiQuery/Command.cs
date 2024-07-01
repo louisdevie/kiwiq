@@ -6,7 +6,7 @@ namespace KiwiQuery
     /// <summary>
     /// A generic SQL command.
     /// </summary>
-    public abstract class Query
+    public abstract class Command
     {
         private Schema schema;
         private DbCommand command;
@@ -19,13 +19,13 @@ namespace KiwiQuery
         /// <summary>
         /// The inner command.
         /// </summary>
-        protected DbCommand Command => this.command;
+        protected DbCommand DbCommand => this.command;
 
         /// <summary>
         /// Creates a new query for a schema.
         /// </summary>
         /// <param name="schema"></param>
-        protected Query(Schema schema)
+        protected Command(Schema schema)
         {
             this.schema = schema;
             this.command = this.schema.Connection.CreateCommand();
@@ -43,8 +43,8 @@ namespace KiwiQuery
         /// </summary>
         protected void BuildCommand()
         {
-            this.Command.CommandText = this.BuildCommandText(
-                QueryBuilderFactory.Current.NewQueryBuilder(this.Schema.CurrentDialect, this.Command)
+            this.DbCommand.CommandText = this.BuildCommandText(
+                QueryBuilderFactory.Current.NewQueryBuilder(this.Schema.CurrentDialect, this.DbCommand)
             );
         }
     }

@@ -1,2 +1,2 @@
 global using Xunit;
-global using Tests.Mocking;
+global using KiwiQuery.Tests.Mocking;

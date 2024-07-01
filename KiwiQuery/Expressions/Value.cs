@@ -8,15 +8,19 @@ namespace KiwiQuery.Expressions
     /// </summary>
     public abstract class Value : IWriteable
     {
+        /// <inheritdoc />
         public abstract void WriteTo(QueryBuilder builder);
 
+        /// <inheritdoc />
         public override bool Equals(object? obj)
         {
             return ReferenceEquals(this, obj);
         }
 
+        /// <inheritdoc />
         public override int GetHashCode()
         {
+            // ReSharper disable once BaseObjectGetHashCodeCallInGetHashCode
             return base.GetHashCode();
         }
 

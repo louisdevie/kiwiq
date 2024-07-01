@@ -1,5 +1,7 @@
 ﻿using KiwiQuery.Expressions;
 using KiwiQuery.Expressions.Predicates;
+// ReSharper disable InconsistentNaming
+// Allow full caps for this class and its methods 
 
 namespace KiwiQuery
 {
@@ -20,7 +22,7 @@ namespace KiwiQuery
         /// <summary>
         /// The SQL COUNT() function.
         /// </summary>
-        public static FunctionCall COUNT() => new FunctionCall("COUNT", new AllColumns());
+        public static FunctionCall COUNT() => new FunctionCall("COUNT");
 
         #endregion
 
@@ -40,7 +42,7 @@ namespace KiwiQuery
         /// that is <em>always false</em> will be the result.
         /// </summary>
         /// <param name="predicates">The predicates to join with OR operators.</param>
-        /// <returns>A new predicate that is true when <em>any</em> of the input predicates are true.</returns>
+        /// <returns>A new predicate that is true when <em>any</em> input predicates are true.</returns>
         public static Predicate OR(params Predicate[] predicates)
         {
             return new BinaryLogicalExpression(LogicalOperator.Or, predicates);
@@ -54,7 +56,7 @@ namespace KiwiQuery
         /// that is <em>always true</em> will be the result.
         /// </summary>
         /// <param name="predicates">The predicates to join with AND operators.</param>
-        /// <returns>A new predicate that is true when <em>all</em> of the input predicates are true.</returns>
+        /// <returns>A new predicate that is true when <em>all</em> the input predicates are true.</returns>
         public static Predicate AND(params Predicate[] predicates)
         {
             return new BinaryLogicalExpression(LogicalOperator.And, predicates);

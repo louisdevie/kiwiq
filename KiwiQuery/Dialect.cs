@@ -8,12 +8,17 @@ namespace KiwiQuery
     /// The different modes that can be used. Currently, only MySQL is supported,
     /// but you can add your own backend using <see cref="QueryBuilderFactory.RegisterCustomQueryBuilder(Type)"/>.
     /// </summary>
-    public sealed class Dialect : IEquatable<Dialect>
+    public readonly struct Dialect : IEquatable<Dialect>
     {
         /// <summary>
-        /// The MySQL dialect.
+        /// The built-in MySQL dialect.
         /// </summary>
         public static readonly Dialect MySql = new Dialect("@@mysql");
+        
+        /// <summary>
+        /// The built-in SQLite dialect.
+        /// </summary>
+        public static readonly Dialect Sqlite = new Dialect("@@sqlite");
         
         private readonly String identifier;
 
@@ -23,32 +28,17 @@ namespace KiwiQuery
         }
 
         /// <inheritdoc/>
-        public bool Equals(Dialect? other)
+        public bool Equals(Dialect other)
         {
-            if (ReferenceEquals(null, other))
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, other))
-            {
-                return true;
-            }
-
             return this.identifier == other.identifier;
         }
 
         /// <inheritdoc/>
         public override bool Equals(object? obj)
         {
-            if (ReferenceEquals(null, obj))
+            if (obj is null)
             {
                 return false;
-            }
-
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
             }
 
             return obj.GetType() == this.GetType() && this.Equals((Dialect)obj);
@@ -61,17 +51,17 @@ namespace KiwiQuery
         }
 
         /// <summary>
-        /// Compare two <see cref="Dialect"/>s through their <see cref="Equals(KiwiQuery.Dialect?)"/> method.
+        /// Compare two <see cref="Dialect"/>s through their <see cref="Equals(KiwiQuery.Dialect)"/> method.
         /// </summary>
-        public static bool operator ==(Dialect? left, Dialect? right)
+        public static bool operator ==(Dialect left, Dialect right)
         {
             return Equals(left, right);
         }
 
         /// <summary>
-        /// Compare two <see cref="Dialect"/>s through their <see cref="Equals(KiwiQuery.Dialect?)"/> method.
+        /// Compare two <see cref="Dialect"/>s through their <see cref="Equals(KiwiQuery.Dialect)"/> method.
         /// </summary>
-        public static bool operator !=(Dialect? left, Dialect? right)
+        public static bool operator !=(Dialect left, Dialect right)
         {
             return !Equals(left, right);
         }

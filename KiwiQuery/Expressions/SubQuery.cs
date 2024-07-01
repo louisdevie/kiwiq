@@ -3,26 +3,26 @@
 namespace KiwiQuery.Expressions
 {
     /// <summary>
-    /// Adapts a <see cref="SelectQuery"/> to be used as a <see cref="Value"/>.
+    /// Adapts a <see cref="SelectCommand"/> to be used as a <see cref="Value"/>.
     /// </summary>
     public class SubQuery : Value
     {
-        private SelectQuery query;
+        private SelectCommand command;
 
         /// <summary>
         /// Creates a new subquery from the given SELECT query.
         /// </summary>
-        /// <param name="query"></param>
-        internal SubQuery(SelectQuery query)
+        /// <param name="command</param>
+        internal SubQuery(SelectCommand command)
         {
-            this.query = query;
+            this.command = command;
         }
 
         public override void WriteTo(QueryBuilder builder)
         {
 
             builder.OpenBracket();
-            this.query.WriteTo(builder);
+            this.command.WriteTo(builder);
             builder.CloseBracket();
         }
     }
