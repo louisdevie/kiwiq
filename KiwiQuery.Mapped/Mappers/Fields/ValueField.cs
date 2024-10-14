@@ -18,7 +18,7 @@ internal class ValueField : MappedField
     private readonly IFieldMapper mapper;
     private int offset;
 
-    public ValueField(FieldInfo field, Column column, FieldFlags flags, IFieldMapper mapper) : base(flags)
+    public ValueField(FieldInfo field, Column column, FieldFlags flags, IFieldMapper mapper, int constructorArgumentPosition) : base(flags, constructorArgumentPosition)
     {
         this.field = field;
         this.column = column;
@@ -38,9 +38,14 @@ internal class ValueField : MappedField
         return Maybe.Just(this.column).Concat(this.mapper.MetaColumns.Select(col => this.column.Sibling(col)));
     }
 
+    public override object? ReadArgument(IDataRecord record, Schema schema)
+    {
+        return this.mapper.ReadValue(record, this.offset);
+    }
+
     public override void ReadInto(object instance, IDataRecord record, Schema schema)
     {
-        this.field.SetValue(instance, this.mapper.ReadValue(record, this.offset));
+        this.field.SetValue(instance, this.ReadArgument(record, schema));
     }
 
     public override IEnumerable<object?> WriteFrom(object instance)

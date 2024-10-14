@@ -12,7 +12,7 @@ namespace KiwiQuery.Mapped
 /// </remarks>
 [AttributeUsage(AttributeTargets.Constructor)]
 // ReSharper disable once UnusedType.Global
-public class DbConstructorAttribute : Attribute
+public class PersistenceConstructorAttribute : Attribute
 {
     
 }

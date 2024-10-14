@@ -10,10 +10,12 @@ namespace KiwiQuery.Mapped.Mappers.Fields
 internal abstract class MappedField
 {
     private readonly FieldFlags flags;
+    private readonly int constructorArgumentPosition;
 
-    protected MappedField(FieldFlags flags)
+    protected MappedField(FieldFlags flags, int constructorArgumentPosition)
     {
         this.flags = flags;
+        this.constructorArgumentPosition = constructorArgumentPosition;
     }
     
     /// <summary>
@@ -28,9 +30,13 @@ internal abstract class MappedField
 
     public bool Inserted => (this.flags & FieldFlags.NotInserted) == FieldFlags.None;
 
+    public int ConstructorArgumentPosition => this.constructorArgumentPosition;
+
     public abstract Type FieldType { get; }
 
     public abstract IEnumerable<Column> SetUpColumns(int offset);
+    
+    public abstract object? ReadArgument(IDataRecord record, Schema schema);
 
     public abstract void ReadInto(object instance, IDataRecord record, Schema schema);
 

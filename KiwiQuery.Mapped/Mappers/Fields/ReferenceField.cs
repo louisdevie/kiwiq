@@ -18,8 +18,8 @@ internal class ReferenceField : MappedField
     private int offset;
 
     public ReferenceField(
-        FieldInfo field, string columnName, FieldFlags flags, IRelationship relationship, IMapper nestedMapper
-    ): base(flags)
+        FieldInfo field, string columnName, FieldFlags flags, IRelationship relationship, IMapper nestedMapper, int constructorArgumentPosition
+    ): base(flags, constructorArgumentPosition)
     {
         this.field = field;
         this.columnName = columnName;
@@ -40,9 +40,14 @@ internal class ReferenceField : MappedField
         return this.nestedMapper.Projection;
     }
 
+    public override object? ReadArgument(IDataRecord record, Schema schema)
+    {
+        return this.nestedMapper.RowToObject(new OffsetRecord(record, this.offset), schema);
+    }
+
     public override void ReadInto(object instance, IDataRecord record, Schema schema)
     {
-        this.field.SetValue(instance, this.nestedMapper.RowToObject(new OffsetRecord(record, this.offset), schema));
+        this.field.SetValue(instance, this.ReadArgument(record, schema));
     }
 
     public override IEnumerable<object?> WriteFrom(object instance)

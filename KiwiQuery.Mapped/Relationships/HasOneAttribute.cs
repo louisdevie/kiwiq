@@ -19,7 +19,7 @@ public class HasOneAttribute : Attribute
         this.foreignColumn = foreignColumn;
     }
 
-    internal IRelationship AsRelationship()
+    internal IRelationship ToRelationship()
     {
         return new HasOne(this.foreignColumn);
     }

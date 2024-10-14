@@ -51,10 +51,21 @@ internal class GenericMapper : IMapper
 
     public object RowToObject(IDataRecord record, Schema schema)
     {
-        object instance = this.constructor.Invoke(Array.Empty<object>());
+        var arguments = new object?[this.constructor.GetParameters().Length];
         foreach (MappedField field in this.fields)
         {
-            field.ReadInto(instance, record, schema);
+            if (field.ConstructorArgumentPosition != -1)
+            {
+                arguments[field.ConstructorArgumentPosition] = field.ReadArgument(record, schema);
+            }
+        }
+        object instance = this.constructor.Invoke(arguments);
+        foreach (MappedField field in this.fields)
+        {
+            if (field.ConstructorArgumentPosition == -1)
+            {
+                field.ReadInto(instance, record, schema);
+            }
         }
         return instance;
     }

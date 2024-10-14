@@ -12,7 +12,7 @@ public class InvalidFieldTypeException : KiwiException
     internal InvalidFieldTypeException(Type problematicType) : base(
         $"Fields of type ${problematicType.FullName ?? problematicType.Name} cannot be mapped to the database. "
         + "You can define a converter for it with a [Column(..., Converter = new MyConverter())] attribute or choose "
-        + "to ignore it with a [NotStored] attribute."
+        + "to ignore it with a [Transient] attribute."
     ) { }
 }
 

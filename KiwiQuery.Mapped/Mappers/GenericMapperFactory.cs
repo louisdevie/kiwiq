@@ -79,8 +79,37 @@ internal class GenericMapperFactory
 
     private GenericMapperInit Init(Type type, string tableAlias)
     {
-        ConstructorInfo constructor = type.GetConstructor(CONSTRUCTOR_BINDING_FLAGS, null, Array.Empty<Type>(), null)
-                                      ?? throw new NoDefaultConstructorException(type);
+        ConstructorInfo[] constructors = type.GetConstructors(CONSTRUCTOR_BINDING_FLAGS);
+        ConstructorInfo? constructor = null;
+        if (constructors.Length > 1)
+        {
+            foreach (ConstructorInfo ctor in constructors)
+            {
+                if (ctor.GetCustomAttributes<PersistenceConstructorAttribute>().Any())
+                {
+                    constructor = ctor;
+                }
+            }
+            if (constructor == null)
+            {
+                foreach (ConstructorInfo ctor in constructors)
+                {
+                    if (ctor.GetParameters().Length == 0)
+                    {
+                        constructor = ctor;
+                    }
+                }
+            }
+        }
+        else if (constructors.Length == 1)
+        {
+            constructor = constructors[0];
+        }
+
+        if (constructor == null)
+        {
+            throw new NoDefaultConstructorException(type);
+        }
 
         var init = new GenericMapperInit(this.GetTable(type).As(tableAlias), this.GetFreeJoins(type), constructor);
 
@@ -89,22 +118,22 @@ internal class GenericMapperFactory
         foreach (FieldInfo field in type.GetFields(FIELDS_BINDING_FLAGS))
         {
             IRelationship? relationship = null;
-            var isStored = true;
+            var isPersistent = true;
             foreach (Attribute attr in field.GetCustomAttributes())
             {
                 switch (attr)
                 {
                 case HasOneAttribute hasOne:
-                    relationship = hasOne.AsRelationship();
+                    relationship = hasOne.ToRelationship();
                     break;
 
-                case NotStoredAttribute _:
-                    isStored = false;
+                case TransientAttribute _:
+                    isPersistent = false;
                     break;
                 }
             }
 
-            if (isStored)
+            if (isPersistent)
             {
                 if (relationship != null)
                 {
@@ -203,6 +232,27 @@ internal class GenericMapperFactory
         return info;
     }
 
+    private static int FindConstructorArgumentPosition(ConstructorInfo constructor, FieldInfo field)
+    {
+        int position = -1;
+        ParameterInfo[] parameters = constructor.GetParameters();
+        for (int i = 0; i < parameters.Length; i++)
+        {
+            if (parameters[i].Name == field.Name)
+            {
+                if (!parameters[i].ParameterType.IsAssignableFrom(field.FieldType))
+                {
+                    throw new FieldTypeMismatchException(field.Name, field.FieldType, parameters[i].ParameterType);
+                }
+                else
+                {
+                    position = i;
+                }
+            }
+        }
+        return position;
+    }
+
     // TODO remove table parameter
     private void MapValueField(Table table, FieldInfo field, GenericMapperInit init)
     {
@@ -212,7 +262,8 @@ internal class GenericMapperFactory
                 field,
                 table.Column(info.ColumnName),
                 info.Flags,
-                this.provider.GetMapper(field.FieldType, info.ColumnInfo)
+                this.provider.GetMapper(field.FieldType, info.ColumnInfo),
+                FindConstructorArgumentPosition(init.Constructor, field)
             )
         );
     }
@@ -245,7 +296,8 @@ internal class GenericMapperFactory
                     relationship.IsReferencing,
                     relationship.FindForeignColumn(nestedMapper.FirstTable, init.FirstTable),
                     nestedMapper,
-                    relationship.GetRefActivator(wrappedType)
+                    relationship.GetRefActivator(wrappedType),
+                    FindConstructorArgumentPosition(init.Constructor, field)
                 )
             );
         }
@@ -259,7 +311,16 @@ internal class GenericMapperFactory
                     nestedMapper.Joins
                 )
             );
-            init.Fields.Add(new ReferenceField(field, info.ColumnName, info.Flags, relationship, nestedMapper));
+            init.Fields.Add(
+                new ReferenceField(
+                    field,
+                    info.ColumnName,
+                    info.Flags,
+                    relationship,
+                    nestedMapper,
+                    FindConstructorArgumentPosition(init.Constructor, field)
+                )
+            );
         }
     }
 }

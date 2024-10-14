@@ -17,7 +17,7 @@ public class Insert
         connection.CheckNonQueryExecution(
             1,
             "insert-into $table1 ( $col1 , $col2 , $col3 ) values ( @p1 , @p2 , @p3 )",
-            new object[] { 1, 2, 3 }
+            [1, 2, 3]
         );
         connection.CheckScalarExecution(2, "select #last-insert-id");
         connection.ExpectNoMoreThan(2);

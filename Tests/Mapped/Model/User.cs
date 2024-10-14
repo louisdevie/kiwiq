@@ -14,7 +14,7 @@ internal static class User
             [HasOne]
             private readonly Phone.NoInverse phone;
 
-            [DbConstructor]
+            [PersistenceConstructor]
             private ImplicitRef() { }
 
             public ImplicitRef(int id, string name, Phone.NoInverse phone)
@@ -49,7 +49,7 @@ internal static class User
             [HasOne("userId")]
             private readonly Phone.NoInverse phone;
 
-            [DbConstructor]
+            [PersistenceConstructor]
             private ExplicitRef() { }
 
             public ExplicitRef(int id, string name, Phone.NoInverse phone)
@@ -84,7 +84,7 @@ internal static class User
             [HasOne("userId")]
             private readonly Ref<Phone.NoInverse> phone;
 
-            [DbConstructor]
+            [PersistenceConstructor]
             private LazyRef() { }
 
             public LazyRef(int id, string name)

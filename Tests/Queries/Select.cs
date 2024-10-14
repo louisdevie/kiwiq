@@ -32,14 +32,7 @@ namespace KiwiQuery.Tests.Queries
                 .And(db.Column("col2") * 2)
                 .From("table1")
                 .Fetch();
-            Assert.Equal(
-                new MockDbParameter[]
-                {
-                    new MockDbParameter { ParameterName = "@p1", Value = 2 }
-                },
-                connection.LastExecutedCommand.MockParameters
-            );
-            connection.CheckSelectQueryExecution("select $col1 , ( $col2 ) * ( @p1 ) from $table1");
+            connection.CheckSelectQueryExecution("select $col1 , ( $col2 ) * ( @p1 ) from $table1", [2]);
         }
 
         [Fact]
@@ -113,37 +106,13 @@ namespace KiwiQuery.Tests.Queries
             Schema db = new(connection, MockQueryBuilder.MockDialect);
 
             db.Select().From("table1").Limit(8).Fetch();
-            Assert.Equal(
-                new MockDbParameter[]
-                {
-                    new MockDbParameter { ParameterName = "@p1", Value = 8 },
-                    new MockDbParameter { ParameterName = "@p2", Value = 0 }
-                },
-                connection.LastExecutedCommand.MockParameters
-            );
-            connection.CheckSelectQueryExecution("select #all from $table1 limit @p1 offset @p2");
+            connection.CheckSelectQueryExecution("select #all from $table1 limit @p1 offset @p2", [8, 0]);
 
             db.Select().From("table1").Limit(8).Offset(14).Fetch();
-            Assert.Equal(
-                new MockDbParameter[]
-                {
-                    new MockDbParameter { ParameterName = "@p1", Value = 8 },
-                    new MockDbParameter { ParameterName = "@p2", Value = 14 }
-                },
-                connection.LastExecutedCommand.MockParameters
-            );
-            connection.CheckSelectQueryExecution("select #all from $table1 limit @p1 offset @p2");
+            connection.CheckSelectQueryExecution("select #all from $table1 limit @p1 offset @p2", [8, 14]);
 
             db.Select().From("table1").Limit(8, 14).Fetch();
-            Assert.Equal(
-                new MockDbParameter[]
-                {
-                    new MockDbParameter { ParameterName = "@p1", Value = 8 },
-                    new MockDbParameter { ParameterName = "@p2", Value = 14 }
-                },
-                connection.LastExecutedCommand.MockParameters
-            );
-            connection.CheckSelectQueryExecution("select #all from $table1 limit @p1 offset @p2");
+            connection.CheckSelectQueryExecution("select #all from $table1 limit @p1 offset @p2", [8, 14]);
         }
 
 

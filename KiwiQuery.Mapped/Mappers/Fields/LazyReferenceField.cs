@@ -24,8 +24,8 @@ internal class LazyReferenceField : MappedField
 
     public LazyReferenceField(
         FieldInfo field, Column column, FieldFlags flags, IFieldMapper mapper,
-        bool isReferencing, Column foreignColumn, IMapper nestedMapper, RefActivator activator
-    ) : base(flags)
+        bool isReferencing, Column foreignColumn, IMapper nestedMapper, RefActivator activator, int constructorArgumentPosition
+    ) : base(flags, constructorArgumentPosition)
     {
         this.field = field;
         this.column = column;
@@ -49,11 +49,15 @@ internal class LazyReferenceField : MappedField
         return Maybe.Just(this.column);
     }
 
-    public override void ReadInto(object instance, IDataRecord record, Schema schema)
+    public override object? ReadArgument(IDataRecord record, Schema schema)
     {
         object? refValue = this.mapper.ReadValue(record, this.offset);
-        object? refObject = this.activator.Activate(this.nestedMapper, this.foreignColumn == refValue!, schema);
-        this.field.SetValue(instance, refObject);
+        return this.activator.Activate(this.nestedMapper, this.foreignColumn == refValue!, schema);
+    }
+
+    public override void ReadInto(object instance, IDataRecord record, Schema schema)
+    {
+        this.field.SetValue(instance, this.ReadArgument(record, schema));
     }
 
     public override IEnumerable<object?> WriteFrom(object instance)

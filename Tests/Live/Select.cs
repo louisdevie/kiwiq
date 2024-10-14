@@ -1,7 +1,6 @@
 using System.Data.Common;
 using System.Data.SQLite;
 using KiwiQuery.Mapped;
-using KiwiQuery.Tests.Mapped;
 
 namespace KiwiQuery.Tests.Live
 {
@@ -22,7 +21,7 @@ namespace KiwiQuery.Tests.Live
         [Fact]
         public void SelectAll()
         {
-            DbConnection conn = new SQLiteConnection("Data Source=:memory:");
+            DbConnection conn = null;//new SQLiteConnection("Data Source=:memory:");
             SetUpDatabase(conn);
             Schema db = new Schema(conn, Dialect.Sqlite);
 
@@ -51,7 +50,7 @@ namespace KiwiQuery.Tests.Live
         [Fact]
         public void SelectAllMapped()
         {
-            DbConnection conn = new SQLiteConnection("Data Source=:memory:");
+            DbConnection conn = null;//new SQLiteConnection("Data Source=:memory:");
             SetUpDatabase(conn);
             Schema db = new Schema(conn);
 
