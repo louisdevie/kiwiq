@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block footer %}
+<hr>
+<p>
+    <small>
+        Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a> using the
+        <a href="https://sourcefoundry.org/cinder">Cinder</a> theme.
+    </small>
+{% if config.copyright %}
+    <small>Copyright &copy; {{ config.copyright }}</small>
+{% endif %}
+</p>
+{% endblock %}

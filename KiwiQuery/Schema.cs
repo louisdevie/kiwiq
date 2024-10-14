@@ -14,11 +14,10 @@ public class Schema
     private static Dialect defaultDialect = Dialect.MySql;
 
     /// <summary>
-    /// Sets the default mode to use when creating instances of this class. <br/>
-    /// The default mode is initially <see cref="Dialect.MySql"/>.
+    /// Sets the default dialect to use when creating instances of this class. <br/>
+    /// The default dialect is initially <see cref="Dialect.MySql"/>.
     /// </summary>
-    /// <param name="dialect"></param>
-    public static void SetDefaultMode(Dialect dialect) => defaultDialect = dialect;
+    public static void SetDefaultDialect(Dialect dialect) => defaultDialect = dialect;
 
     private readonly DbConnection connection;
     private readonly Dialect dialect;
@@ -45,8 +44,8 @@ public class Schema
     }
 
     /// <summary>
-    /// Creates a new schema using the default mode (<see cref="Dialect.MySql"/>
-    /// or the mode set with <see cref="SetDefaultMode(Dialect)"/>).
+    /// Creates a new schema using the default dialect (<see cref="Dialect.MySql"/>
+    /// or the dialect set with <see cref="SetDefaultDialect"/>).
     /// </summary>
     /// <param name="connection">The connection to the database through which commands will be executed.</param>
     public Schema(DbConnection connection) : this(connection, defaultDialect) { }
@@ -55,42 +54,42 @@ public class Schema
     /// Creates a new INSERT command on the given table.
     /// </summary>
     /// <param name="table">The table to insert values into.</param>
-    /// <returns>An <see cref="InsertQuery"/> that can be further configured and then executed.</returns>
-    public InsertQuery InsertInto(string table) => new InsertQuery(table, this);
+    /// <returns>An <see cref="InsertCommand"/> that can be further configured and then executed.</returns>
+    public InsertCommand InsertInto(string table) => new InsertCommand(table, this);
 
     /// <summary>
     /// Creates a new DELETE command on the given table.
     /// </summary>
     /// <param name="table">The table to delete rows from.</param>
-    /// <returns>A <see cref="DeleteQuery"/> that can be further configured and then executed.</returns>
-    public DeleteQuery DeleteFrom(string table) => new DeleteQuery(table, this);
+    /// <returns>A <see cref="DeleteCommand"/> that can be further configured and then executed.</returns>
+    public DeleteCommand DeleteFrom(string table) => new DeleteCommand(table, this);
 
     /// <summary>
     /// Creates a new UPDATE command on the given table.
     /// </summary>
     /// <param name="table">The table to update.</param>
-    /// <returns>An <see cref="UpdateQuery"/> that can be further configured and then executed.</returns>
-    public UpdateQuery Update(string table) => new UpdateQuery(table, this);
+    /// <returns>An <see cref="UpdateCommand"/> that can be further configured and then executed.</returns>
+    public UpdateCommand Update(string table) => new UpdateCommand(table, this);
 
     /// <summary>
     /// Creates a new SELECT command on the given table.
     /// </summary>
     /// <param name="columns">The columns to read.</param>
-    /// <returns>A <see cref="SelectQuery"/> that can be further configured and then executed.</returns>
-    public SelectQuery Select(params string[] columns) => new SelectQuery(columns.Select(this.Column), this);
+    /// <returns>A <see cref="SelectCommand"/> that can be further configured and then executed.</returns>
+    public SelectCommand Select(params string[] columns) => new SelectCommand(columns.Select(this.Column), this);
 
     /// <summary>
     /// Creates a new SELECT command on the given table.
     /// </summary>
     /// <param name="columns">The columns and values to read.</param>
-    /// <returns>A <see cref="SelectQuery"/> that can be further configured and then executed.</returns>
-    public SelectQuery Select(params Value[] columns) => new SelectQuery(columns, this);
+    /// <returns>A <see cref="SelectCommand"/> that can be further configured and then executed.</returns>
+    public SelectCommand Select(params Value[] columns) => new SelectCommand(columns, this);
 
     /// <summary>
     /// Creates a new SELECT * command on the given table.
     /// </summary>
-    /// <returns>A <see cref="SelectQuery"/> that can be further configured and then executed.</returns>
-    public SelectQuery Select() => new SelectQuery(Array.Empty<Column>(), this);
+    /// <returns>A <see cref="SelectCommand"/> that can be further configured and then executed.</returns>
+    public SelectCommand Select() => new SelectCommand(Array.Empty<Column>(), this);
 
 #pragma warning disable CA1822 // Static members suggestion
 // ReSharper disable MemberCanBeMadeStatic.Global
@@ -116,7 +115,7 @@ public class Schema
     /// Turns a SELECT command into a subquery that you can then use anywhere a <see cref="Value"/> is expected.
     /// </summary>
     /// <param name="query">The subquery.</param>
-    public SubQuery SubQuery(SelectQuery query) => new SubQuery(query);
+    public SubQuery SubQuery(SelectCommand query) => new SubQuery(query);
 
 #pragma warning restore CA1822
 // ReSharper restore MemberCanBeMadeStatic.Global

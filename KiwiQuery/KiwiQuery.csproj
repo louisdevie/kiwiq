@@ -1,29 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFrameworks>net8.0;netstandard2.1</TargetFrameworks>
-		<Nullable>enable</Nullable>
-		
-		<PackageId>KiwiQuery</PackageId>
-		<Version>0.5.0</Version>
-		<Authors>louisdevie</Authors>
-		<PackRelease>true</PackRelease>
-		<PublishRelease>true</PublishRelease>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<Title>KiwiQuery</Title>
-		<Description>Query builder for MySQL</Description>
-		<RepositoryUrl>https://github.com/louisdevie/kiwiq</RepositoryUrl>
-		<PackageTags>sql;mysql;query-builder;dynamic-query</PackageTags>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<PackageReleaseNotes>SELECT DISTINCT queries and easier table aliasing</PackageReleaseNotes>
-		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-		<PackageIcon>kiwiq-128.png</PackageIcon>
-	</PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>net8.0;netstandard2.1</TargetFrameworks>
+        <Nullable>enable</Nullable>
 
-	<ItemGroup>
-		<None Include="..\README.md" Pack="true" PackagePath="\" />
-		<None Include="..\kiwiq-128.png" Pack="true" PackagePath="\" />
-		<InternalsVisibleTo Include="Tests" />
-	</ItemGroup>
+        <PackageId>KiwiQuery</PackageId>
+        <Version>0.6.0</Version>
+        <Authors>louisdevie</Authors>
+        <PackRelease>true</PackRelease>
+        <PublishRelease>true</PublishRelease>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <Title>KiwiQuery</Title>
+        <Description>Query builder for MySQL</Description>
+        <RepositoryUrl>https://github.com/louisdevie/kiwiq</RepositoryUrl>
+        <PackageTags>sql;mysql;query-builder;dynamic-query</PackageTags>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <PackageReleaseNotes>Added support for SQLite</PackageReleaseNotes>
+        <GenerateDocumentationFile>True</GenerateDocumentationFile>
+        <PackageIcon>kiwiq-128.png</PackageIcon>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\README.md" Pack="true" PackagePath="\" />
+        <None Include="..\kiwiq-128.png" Pack="true" PackagePath="\" />
+        <InternalsVisibleTo Include="Tests" />
+    </ItemGroup>
 </Project>

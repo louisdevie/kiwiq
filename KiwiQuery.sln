@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Éléments de solution", "�
 		README.md = README.md
 		kiwiq-128.png = kiwiq-128.png
 		.gitignore = .gitignore
+		mkdocs.yml = mkdocs.yml
+		.readthedocs.yaml = .readthedocs.yaml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{7D84F204-D5CE-4E4D-8A0F-B0EF662906B2}"

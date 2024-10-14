@@ -32,7 +32,7 @@ namespace KiwiQuery.Tests.Queries
                 .And(db.Column("col2") * 2)
                 .From("table1")
                 .Fetch();
-            connection.CheckSelectQueryExecution("select $col1 , ( $col2 ) * ( @p1 ) from $table1", [2]);
+            connection.CheckSelectQueryExecution("select $col1 , ( $col2 ) * ( @p1 ) from $table1", 2);
         }
 
         [Fact]
@@ -106,15 +106,33 @@ namespace KiwiQuery.Tests.Queries
             Schema db = new(connection, MockQueryBuilder.MockDialect);
 
             db.Select().From("table1").Limit(8).Fetch();
-            connection.CheckSelectQueryExecution("select #all from $table1 limit @p1 offset @p2", [8, 0]);
+            connection.CheckSelectQueryExecution("select #all from $table1 limit @p1 offset @p2", 8, 0);
 
             db.Select().From("table1").Limit(8).Offset(14).Fetch();
-            connection.CheckSelectQueryExecution("select #all from $table1 limit @p1 offset @p2", [8, 14]);
+            connection.CheckSelectQueryExecution("select #all from $table1 limit @p1 offset @p2", 8, 14);
 
             db.Select().From("table1").Limit(8, 14).Fetch();
-            connection.CheckSelectQueryExecution("select #all from $table1 limit @p1 offset @p2", [8, 14]);
+            connection.CheckSelectQueryExecution("select #all from $table1 limit @p1 offset @p2", 8, 14);
         }
 
+        [Fact]
+        public void SelectWhere()
+        {
+            var connection = new MockDbConnection();
+            Schema db = new(connection, MockQueryBuilder.MockDialect);
+
+            db.Select().From("table1").Where(db.Column("col1") == 4).Fetch();
+            connection.CheckSelectQueryExecution("select #all from $table1 where $col1 == @p1", 4);
+
+            db.Select().From("table1").WhereNot(db.Column("col1") == 4).Fetch();
+            connection.CheckSelectQueryExecution("select #all from $table1 where ! ( $col1 == @p1 )", 4);
+
+            db.Select().From("table1").WhereAll(db.Column("col1") == 4, db.Column("col2") < 5).Fetch();
+            connection.CheckSelectQueryExecution("select #all from $table1 where ( $col1 == @p1 ) && ( $col2 < @p2 )", 4, 5);
+
+            db.Select().From("table1").WhereAny(db.Column("col1") == 4, db.Column("col2") < 5).Fetch();
+            connection.CheckSelectQueryExecution("select #all from $table1 where ( $col1 == @p1 ) || ( $col2 < @p2 )", 4, 5);
+        }
 
         [Fact]
         public void SelectDistinct()
