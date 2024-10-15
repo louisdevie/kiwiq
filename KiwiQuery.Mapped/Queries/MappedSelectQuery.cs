@@ -16,14 +16,14 @@ namespace KiwiQuery.Mapped.Queries
 /// Instances of this class should be created from a <see cref="Schema"/> or a mapped <see cref="Table"/>.
 /// </summary>
 // TODO expose this API
-internal class MappedSelectQuery : IHasJoinClause<MappedSelectQuery>, IHasWhereClause<MappedSelectQuery>,
-    IHasLimitClause<MappedSelectQuery>
+internal class MappedSelectCommand : IHasJoinClause<MappedSelectCommand>, IHasWhereClause<MappedSelectCommand>,
+    IHasLimitClause<MappedSelectCommand>
 {
-    private readonly SelectQuery rawQuery;
+    private readonly SelectCommand rawQuery;
     private readonly IMapper mapper;
     private bool explicitTables;
 
-    internal MappedSelectQuery(SelectQuery rawQuery, IMapper mapper)
+    internal MappedSelectCommand(SelectCommand rawQuery, IMapper mapper)
     {
         this.rawQuery = rawQuery;
         this.mapper = mapper;
@@ -37,7 +37,7 @@ internal class MappedSelectQuery : IHasJoinClause<MappedSelectQuery>, IHasWhereC
     /// </summary>
     /// <param name="columns">The columns and values to select.</param>
     /// <exception cref="ArgumentException">If a column without alias was given.</exception>
-    public MappedSelectQuery With(params Column[] columns)
+    public MappedSelectCommand With(params Column[] columns)
     {
         foreach (Column column in columns)
         {
@@ -50,9 +50,9 @@ internal class MappedSelectQuery : IHasJoinClause<MappedSelectQuery>, IHasWhereC
         return this;
     }
 
-    /// <inheritdoc cref="SelectQuery.From(string)"/>
+    /// <inheritdoc cref="SelectCommand.From(string)"/>
     /// <remarks>If this method is used, all tables must be declared explicitly.</remarks>
-    public MappedSelectQuery From(string table)
+    public MappedSelectCommand From(string table)
     {
         this.rawQuery.From(table);
         this.explicitTables = true;
@@ -61,7 +61,7 @@ internal class MappedSelectQuery : IHasJoinClause<MappedSelectQuery>, IHasWhereC
 
     /// <inheritdoc cref="From(string)"/>
     /// <remarks>If this method is used, all tables must be declared explicitly.</remarks>
-    public MappedSelectQuery From(Table table)
+    public MappedSelectCommand From(Table table)
     {
         this.rawQuery.From(table);
         this.explicitTables = true;
@@ -135,8 +135,8 @@ internal class MappedSelectQuery : IHasJoinClause<MappedSelectQuery>, IHasWhereC
         this.rawQuery.And(this.mapper.Projection.ToArray<Value>());
     }
 
-    /// <inheritdoc cref="SelectQuery.Distinct()"/>
-    public MappedSelectQuery Distinct()
+    /// <inheritdoc cref="SelectCommand.Distinct()"/>
+    public MappedSelectCommand Distinct()
     {
         this.rawQuery.Distinct();
         return this;
@@ -145,7 +145,7 @@ internal class MappedSelectQuery : IHasJoinClause<MappedSelectQuery>, IHasWhereC
     /// <summary>
     /// Downcasts this query into its precise type.
     /// </summary>
-    public MappedSelectQuery Downcast() => this;
+    public MappedSelectCommand Downcast() => this;
 
     /// <inheritdoc />
     public JoinClauseBuilder JoinClause => this.rawQuery.JoinClause;
@@ -161,15 +161,15 @@ internal class MappedSelectQuery : IHasJoinClause<MappedSelectQuery>, IHasWhereC
 /// A SQL SELECT command with its results mapped to objects. <br/>
 /// Instances of this class should be created from a <see cref="Schema"/> or a mapped <see cref="Table"/>.
 /// </summary>
-public class MappedSelectQuery<T> : IHasJoinClause<MappedSelectQuery<T>>, IHasWhereClause<MappedSelectQuery<T>>,
-    IHasLimitClause<MappedSelectQuery<T>>
+public class MappedSelectCommand<T> : IHasJoinClause<MappedSelectCommand<T>>, IHasWhereClause<MappedSelectCommand<T>>,
+    IHasLimitClause<MappedSelectCommand<T>>
 where T : notnull
 {
-    private readonly SelectQuery rawQuery;
+    private readonly SelectCommand rawQuery;
     private readonly IMapper<T> mapper;
     private bool explicitTables;
 
-    internal MappedSelectQuery(SelectQuery rawQuery, IMapper<T> mapper)
+    internal MappedSelectCommand(SelectCommand rawQuery, IMapper<T> mapper)
     {
         this.rawQuery = rawQuery;
         this.mapper = mapper;
@@ -183,7 +183,7 @@ where T : notnull
     /// </summary>
     /// <param name="columns">The columns and values to select.</param>
     /// <exception cref="ArgumentException">If a column without alias was given.</exception>
-    public MappedSelectQuery<T> With(params Column[] columns)
+    public MappedSelectCommand<T> With(params Column[] columns)
     {
         foreach (Column column in columns)
         {
@@ -196,9 +196,9 @@ where T : notnull
         return this;
     }
 
-    /// <inheritdoc cref="SelectQuery.From(string)"/>
+    /// <inheritdoc cref="SelectCommand.From(string)"/>
     /// <remarks>If this method is used, all tables must be declared explicitly.</remarks>
-    public MappedSelectQuery<T> From(string table)
+    public MappedSelectCommand<T> From(string table)
     {
         this.rawQuery.From(table);
         this.explicitTables = true;
@@ -207,7 +207,7 @@ where T : notnull
 
     /// <inheritdoc cref="From(string)"/>
     /// <remarks>If this method is used, all tables must be declared explicitly.</remarks>
-    public MappedSelectQuery<T> From(Table table)
+    public MappedSelectCommand<T> From(Table table)
     {
         this.rawQuery.From(table);
         this.explicitTables = true;
@@ -281,8 +281,8 @@ where T : notnull
         this.rawQuery.And(this.mapper.Projection.ToArray<Value>());
     }
 
-    /// <inheritdoc cref="SelectQuery.Distinct()"/>
-    public MappedSelectQuery<T> Distinct()
+    /// <inheritdoc cref="SelectCommand.Distinct()"/>
+    public MappedSelectCommand<T> Distinct()
     {
         this.rawQuery.Distinct();
         return this;
@@ -291,7 +291,7 @@ where T : notnull
     /// <summary>
     /// Downcasts this query into its precise type.
     /// </summary>
-    public MappedSelectQuery<T> Downcast() => this;
+    public MappedSelectCommand<T> Downcast() => this;
 
     /// <inheritdoc />
     public JoinClauseBuilder JoinClause => this.rawQuery.JoinClause;

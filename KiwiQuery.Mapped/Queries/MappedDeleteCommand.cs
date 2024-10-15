@@ -10,12 +10,12 @@ namespace KiwiQuery.Mapped.Queries
 /// A SQL DELETE command for a mapped class. <br/>
 /// Instances of this class should be created from a <see cref="Schema"/> or a mapped <see cref="Table"/>.
 /// </summary>
-public class MappedDeleteQuery<T> : IHasWhereClause<MappedDeleteQuery<T>>
+public class MappedDeleteCommand<T> : IHasWhereClause<MappedDeleteCommand<T>>
 where T : notnull
 {
-    private readonly DeleteQuery rawQuery;
+    private readonly DeleteCommand rawQuery;
 
-    internal MappedDeleteQuery(DeleteQuery rawQuery)
+    internal MappedDeleteCommand(DeleteCommand rawQuery)
     {
         this.rawQuery = rawQuery;
     }
@@ -32,7 +32,7 @@ where T : notnull
     /// <summary>
     /// Downcasts this query into its precise type.
     /// </summary>
-    public MappedDeleteQuery<T> Downcast() => this;
+    public MappedDeleteCommand<T> Downcast() => this;
 
     /// <inheritdoc />
     public WhereClauseBuilder WhereClause => this.rawQuery.WhereClause;

@@ -12,62 +12,62 @@ namespace KiwiQuery.Mapped
 public static class SchemaExtensions
 {
     /// <inheritdoc cref="ExtendedSchema.Select{T}()" />
-    public static MappedSelectQuery<T> Select<T>(this Schema @this)
+    public static MappedSelectCommand<T> Select<T>(this Schema @this)
     where T : notnull
     {
-        return new MappedSelectQuery<T>(
+        return new MappedSelectCommand<T>(
             @this.Select(),
             new GenericMapperFactory(@this, SharedMappers.Current).MakeMapper<T>()
         );
     }
 
     /// <inheritdoc cref="ExtendedSchema.InsertInto{T}()" />
-    public static MappedInsertQuery<T> InsertInto<T>(this Schema @this)
+    public static MappedInsertCommand<T> InsertInto<T>(this Schema @this)
     where T : notnull
     {
         var mapper = new GenericMapperFactory(@this, SharedMappers.Current).MakeMapper<T>();
-        return new MappedInsertQuery<T>(@this.InsertInto(mapper.FirstTable.Name), mapper);
+        return new MappedInsertCommand<T>(@this.InsertInto(mapper.FirstTable.Name), mapper);
     }
 
     /// <inheritdoc cref="ExtendedSchema.InsertInto{T}(string)" />
-    public static MappedInsertQuery<T> InsertInto<T>(this Schema @this, string table)
+    public static MappedInsertCommand<T> InsertInto<T>(this Schema @this, string table)
     where T : notnull
     {
-        return new MappedInsertQuery<T>(
+        return new MappedInsertCommand<T>(
             @this.InsertInto(table),
             new GenericMapperFactory(@this, SharedMappers.Current).MakeMapper<T>()
         );
     }
 
     /// <inheritdoc cref="ExtendedSchema.DeleteFrom{T}()" />
-    public static MappedDeleteQuery<T> DeleteFrom<T>(this Schema @this)
+    public static MappedDeleteCommand<T> DeleteFrom<T>(this Schema @this)
     where T : notnull
     {
         var mapper = new GenericMapperFactory(@this, SharedMappers.Current).MakeMapper<T>();
-        return new MappedDeleteQuery<T>(@this.DeleteFrom(mapper.FirstTable.Name));
+        return new MappedDeleteCommand<T>(@this.DeleteFrom(mapper.FirstTable.Name));
     }
 
     /// <inheritdoc cref="ExtendedSchema.DeleteFrom{T}(string)" />
-    public static MappedDeleteQuery<T> DeleteFrom<T>(this Schema @this, string table)
+    public static MappedDeleteCommand<T> DeleteFrom<T>(this Schema @this, string table)
     where T : notnull
     {
         new GenericMapperFactory(@this, SharedMappers.Current).MakeMapper<T>();
-        return new MappedDeleteQuery<T>(@this.DeleteFrom(table));
+        return new MappedDeleteCommand<T>(@this.DeleteFrom(table));
     }
 
     /// <inheritdoc cref="ExtendedSchema.Update{T}()" />
-    public static MappedUpdateQuery<T> Update<T>(this Schema @this)
+    public static MappedUpdateCommand<T> Update<T>(this Schema @this)
     where T : notnull
     {
         var mapper = new GenericMapperFactory(@this, SharedMappers.Current).MakeMapper<T>();
-        return new MappedUpdateQuery<T>(@this.Update(mapper.FirstTable.Name), mapper);
+        return new MappedUpdateCommand<T>(@this.Update(mapper.FirstTable.Name), mapper);
     }
 
     /// <inheritdoc cref="ExtendedSchema.Update{T}(string)" />
-    public static MappedUpdateQuery<T> Update<T>(this Schema @this, string table)
+    public static MappedUpdateCommand<T> Update<T>(this Schema @this, string table)
     where T : notnull
     {
-        return new MappedUpdateQuery<T>(
+        return new MappedUpdateCommand<T>(
             @this.Update(table),
             new GenericMapperFactory(@this, SharedMappers.Current).MakeMapper<T>()
         );

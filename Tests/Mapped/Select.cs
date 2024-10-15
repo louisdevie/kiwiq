@@ -23,7 +23,7 @@ public class Select
 
         List<Fruit.Explicit> explicitFruits = db.Select<Fruit.Explicit>().FetchList();
 
-        string query = connection.GetSingleSelectQuery();
+        string query = connection.GetSingleSelectCommand();
         Match match = Regex.Match(query, @"select (.+) -> (.+) , (.+) -> (.+) , (.+) -> (.+) from \$FRUIT as (.+)");
         Assert.True(match.Success, $"Actual: {query}");
         AssertThat.GroupsAreTheSame(match, 1, 3, 5, 7);
@@ -53,7 +53,7 @@ public class Select
 
         List<Fruit.Implicit> explicitFruits = db.Select<Fruit.Implicit>().FetchList();
 
-        string query = connection.GetSingleSelectQuery();
+        string query = connection.GetSingleSelectCommand();
         Match match = Regex.Match(query, @"select (.+) -> (.+) , (.+) -> (.+) , (.+) -> (.+) from \$Implicit as (.+)");
         Assert.True(match.Success, $"Actual: {query}");
         AssertThat.GroupsAreTheSame(match, 1, 3, 5, 7);
@@ -78,7 +78,7 @@ public class Select
 
         db.Select<Fruit.Explicit>().Where(db.Column("NAME") == "Apricot").FetchList();
 
-        string query = connection.GetSingleSelectQuery();
+        string query = connection.GetSingleSelectCommand();
         Match match = Regex.Match(query, @"select (.+) from \$FRUIT as (.+) where \$NAME == @p1");
         Assert.True(match.Success, $"Actual: {query}");
     }
@@ -98,7 +98,7 @@ public class Select
 
         List<Fruit.NoEmptyConstructor> fruits = db.Select<Fruit.NoEmptyConstructor>().FetchList();
         
-        string query = connection.GetSingleSelectQuery();
+        string query = connection.GetSingleSelectCommand();
         Match match = Regex.Match(query, @"select (.+) -> (.+) , (.+) -> (.+) , (.+) -> (.+) from \$NoEmptyConstructor as (.+)");
         Assert.True(match.Success, $"Actual: {query}");
         AssertThat.GroupsAreTheSame(match, 1, 3, 5, 7);
@@ -128,7 +128,7 @@ public class Select
 
         List<Fruit.Explicit> explicitFruits = db.Select<Fruit.Explicit>().FetchList();
 
-        string query = connection.GetSingleSelectQuery();
+        string query = connection.GetSingleSelectCommand();
         Match match = Regex.Match(query, @"select (.+) -> (.+) , (.+) -> (.+) , (.+) -> (.+) from \$FRUIT as (.+)");
         Assert.True(match.Success, $"Actual: {query}");
         AssertThat.GroupsAreTheSame(match, 1, 3, 5, 7);

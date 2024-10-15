@@ -17,16 +17,16 @@ namespace KiwiQuery.Mapped.Queries
 /// A SQL INSERT INTO command for a mapped class. <br/>
 /// Instances of this class should be created from a <see cref="Schema"/> or a mapped <see cref="Table"/>.
 /// </summary>
-public class MappedInsertQuery<T>
+public class MappedInsertCommand<T>
 where T : notnull
 {
-    private readonly InsertQuery rawQuery;
+    private readonly InsertCommand rawQuery;
     private readonly IMapper<T> mapper;
     private readonly IPrimaryKey primaryKey;
     private readonly Dictionary<string, IValueOverload> values;
     private Maybe<T> obj;
 
-    internal MappedInsertQuery(InsertQuery rawQuery, IMapper<T> mapper)
+    internal MappedInsertCommand(InsertCommand rawQuery, IMapper<T> mapper)
     {
         this.mapper = mapper;
         this.primaryKey = this.mapper.PrimaryKey;
@@ -39,7 +39,7 @@ where T : notnull
     /// Set the values to be inserted from an object. This method can only be called once.
     /// </summary>
     /// <param name="obj">The object to insert.</param>
-    public MappedInsertQuery<T> Values(T obj)
+    public MappedInsertCommand<T> Values(T obj)
     {
         if (this.obj.IsSomething)
         {
@@ -55,7 +55,7 @@ where T : notnull
     /// </summary>
     /// <param name="column">The name of the column to insert the value into.</param>
     /// <param name="value">The value to insert.</param>
-    public MappedInsertQuery<T> Value(string column, Value value)
+    public MappedInsertCommand<T> Value(string column, Value value)
     {
         this.values.Add(column, new ValueOverload(value));
         return this;
@@ -66,7 +66,7 @@ where T : notnull
     /// </summary>
     /// <param name="column">The name of the column to insert the value into.</param>
     /// <param name="value">The value to insert.</param>
-    public MappedInsertQuery<T> Value(string column, object? value)
+    public MappedInsertCommand<T> Value(string column, object? value)
     {
         this.values.Add(column, new ObjectOverload(value));
         return this;
@@ -77,7 +77,7 @@ where T : notnull
     /// </summary>
     /// <param name="column">The name of the column to insert the value into.</param>
     /// <param name="subQuery">The subquery to insert as a value.</param>
-    public MappedInsertQuery<T> Value(string column, SelectQuery subQuery)
+    public MappedInsertCommand<T> Value(string column, SelectCommand subQuery)
     {
         this.values.Add(column, new SubQueryOverload(subQuery));
         return this;

@@ -19,7 +19,7 @@ public class MultipleTablesSingleEntity
 
         List<AB> results = db.Select<AB>().FetchList();
 
-        string query = connection.GetSingleSelectQuery();
+        string query = connection.GetSingleSelectCommand();
         Match match = Regex.Match(
             query,
             @"select (.+) , (.+) from \$A as (.+) inner join \$B as (.+) on (.+) -> \$bId == \$aId"

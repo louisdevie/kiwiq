@@ -38,9 +38,9 @@ where TKey : notnull
     /// <summary>
     /// Creates a SELECT query for this table.
     /// </summary>
-    public MappedSelectQuery<TEntity> Select()
+    public MappedSelectCommand<TEntity> Select()
     {
-        return new MappedSelectQuery<TEntity>(this.schema.Select(), this.mapper);
+        return new MappedSelectCommand<TEntity>(this.schema.Select(), this.mapper);
     }
 
     /// <summary>
@@ -83,9 +83,9 @@ where TKey : notnull
     /// <summary>
     /// Creates an INSERT query for this table.
     /// </summary>
-    public MappedInsertQuery<TEntity> Insert()
+    public MappedInsertCommand<TEntity> Insert()
     {
-        return new MappedInsertQuery<TEntity>(this.schema.InsertInto(this.mapper.FirstTable.Name), this.mapper);
+        return new MappedInsertCommand<TEntity>(this.schema.InsertInto(this.mapper.FirstTable.Name), this.mapper);
     }
 
     /// <summary>
@@ -98,16 +98,16 @@ where TKey : notnull
     public virtual TEntity InsertOne(TEntity entity)
     {
         int autoId = this.Insert().Values(entity).Apply();
-        if (autoId != InsertQuery.NO_AUTO_ID) this.mapper.PrimaryKey.ReplaceAutoIncrementedValue(entity, autoId);
+        if (autoId != InsertCommand.NO_AUTO_ID) this.mapper.PrimaryKey.ReplaceAutoIncrementedValue(entity, autoId);
         return entity;
     }
 
     /// <summary>
     /// Create an UPDATE query for this table.
     /// </summary>
-    public MappedUpdateQuery<TEntity> Update()
+    public MappedUpdateCommand<TEntity> Update()
     {
-        return new MappedUpdateQuery<TEntity>(this.schema.Update(this.mapper.FirstTable.Name), this.mapper);
+        return new MappedUpdateCommand<TEntity>(this.schema.Update(this.mapper.FirstTable.Name), this.mapper);
     }
 
     /// <summary>
@@ -127,9 +127,9 @@ where TKey : notnull
     /// <summary>
     /// Create a DELETE query for this table.
     /// </summary>
-    public MappedDeleteQuery<TEntity> Delete()
+    public MappedDeleteCommand<TEntity> Delete()
     {
-        return new MappedDeleteQuery<TEntity>(this.schema.DeleteFrom(this.mapper.FirstTable.Name));
+        return new MappedDeleteCommand<TEntity>(this.schema.DeleteFrom(this.mapper.FirstTable.Name));
     }
 
     /// <summary>

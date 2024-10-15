@@ -11,28 +11,28 @@ namespace KiwiQuery.Tests.Queries
             Schema db = new(connection, MockQueryBuilder.MockDialect);
 
             db.Select().From("table1").Fetch();
-            connection.CheckSelectQueryExecution("select #all from $table1");
+            connection.CheckSelectCommandExecution("select #all from $table1");
 
             db.Select("col1", "col2", "col3").From("table1").Fetch();
-            connection.CheckSelectQueryExecution("select $col1 , $col2 , $col3 from $table1");
+            connection.CheckSelectCommandExecution("select $col1 , $col2 , $col3 from $table1");
 
             db.Select(db.Table("table1").Column("col1")).From("table1").Fetch();
-            connection.CheckSelectQueryExecution("select $table1 -> $col1 from $table1");
+            connection.CheckSelectCommandExecution("select $table1 -> $col1 from $table1");
 
             db.Select(db.Table("table1").Column("col1").As("alias")).From("table1").Fetch();
-            connection.CheckSelectQueryExecution("select $table1 -> $col1 as $alias from $table1");
+            connection.CheckSelectCommandExecution("select $table1 -> $col1 as $alias from $table1");
 
             db.Select(db.Column("col1").As("alias"))
                 .And("col2", "col3")
                 .From("table1")
                 .Fetch();
-            connection.CheckSelectQueryExecution("select $col1 as $alias , $col2 , $col3 from $table1");
+            connection.CheckSelectCommandExecution("select $col1 as $alias , $col2 , $col3 from $table1");
 
             db.Select("col1")
                 .And(db.Column("col2") * 2)
                 .From("table1")
                 .Fetch();
-            connection.CheckSelectQueryExecution("select $col1 , ( $col2 ) * ( @p1 ) from $table1", 2);
+            connection.CheckSelectCommandExecution("select $col1 , ( $col2 ) * ( @p1 ) from $table1", 2);
         }
 
         [Fact]
@@ -46,16 +46,16 @@ namespace KiwiQuery.Tests.Queries
             Table table3 = db.Table("table3");
 
             db.Select().From("table1").Join("table2", "fk", "ref").Fetch();
-            connection.CheckSelectQueryExecution("select #all from $table1 inner join $table2 on $fk == $ref");
+            connection.CheckSelectCommandExecution("select #all from $table1 inner join $table2 on $fk == $ref");
 
             db.Select().From(table1).Join(table2, "fk", "ref").Fetch();
-            connection.CheckSelectQueryExecution("select #all from $table1 inner join $table2 on $fk == $ref");
+            connection.CheckSelectCommandExecution("select #all from $table1 inner join $table2 on $fk == $ref");
 
             db.Select().From(table1).Join(table2, db.Column("fk"), db.Column("ref")).Fetch();
-            connection.CheckSelectQueryExecution("select #all from $table1 inner join $table2 on $fk == $ref");
+            connection.CheckSelectCommandExecution("select #all from $table1 inner join $table2 on $fk == $ref");
 
             db.Select().From(table1).Join(table2.Column("ref"), db.Column("fk")).Fetch();
-            connection.CheckSelectQueryExecution(
+            connection.CheckSelectCommandExecution(
                 "select #all from $table1 inner join $table2 on $table2 -> $ref == $fk");
 
             db.Select()
@@ -63,7 +63,7 @@ namespace KiwiQuery.Tests.Queries
                 .Join(table2.Column("id2"), table1.Column("fk2"))
                 .Join(table3.Column("id3"), table1.Column("fk3"))
                 .Fetch();
-            connection.CheckSelectQueryExecution(
+            connection.CheckSelectCommandExecution(
                 "select #all from $table1 inner join $table2 on $table2 -> $id2 == $table1 -> $fk2 inner join $table3 on $table3 -> $id3 == $table1 -> $fk3");
         }
 
@@ -78,16 +78,16 @@ namespace KiwiQuery.Tests.Queries
             Table table3 = db.Table("table3");
 
             db.Select().From("table1").LeftJoin("table2", "fk", "ref").Fetch();
-            connection.CheckSelectQueryExecution("select #all from $table1 left join $table2 on $fk == $ref");
+            connection.CheckSelectCommandExecution("select #all from $table1 left join $table2 on $fk == $ref");
 
             db.Select().From("table1").LeftJoin(table2, "fk", "ref").Fetch();
-            connection.CheckSelectQueryExecution("select #all from $table1 left join $table2 on $fk == $ref");
+            connection.CheckSelectCommandExecution("select #all from $table1 left join $table2 on $fk == $ref");
 
             db.Select().From("table1").LeftJoin(table2, db.Column("fk"), db.Column("ref")).Fetch();
-            connection.CheckSelectQueryExecution("select #all from $table1 left join $table2 on $fk == $ref");
+            connection.CheckSelectCommandExecution("select #all from $table1 left join $table2 on $fk == $ref");
 
             db.Select().From("table1").LeftJoin(table2.Column("ref"), db.Column("fk")).Fetch();
-            connection.CheckSelectQueryExecution(
+            connection.CheckSelectCommandExecution(
                 "select #all from $table1 left join $table2 on $table2 -> $ref == $fk");
 
             db.Select()
@@ -95,7 +95,7 @@ namespace KiwiQuery.Tests.Queries
                 .LeftJoin(table2.Column("id2"), table1.Column("fk2"))
                 .LeftJoin(table3.Column("id3"), table1.Column("fk3"))
                 .Fetch();
-            connection.CheckSelectQueryExecution(
+            connection.CheckSelectCommandExecution(
                 "select #all from $table1 left join $table2 on $table2 -> $id2 == $table1 -> $fk2 left join $table3 on $table3 -> $id3 == $table1 -> $fk3");
         }
 
@@ -106,13 +106,13 @@ namespace KiwiQuery.Tests.Queries
             Schema db = new(connection, MockQueryBuilder.MockDialect);
 
             db.Select().From("table1").Limit(8).Fetch();
-            connection.CheckSelectQueryExecution("select #all from $table1 limit @p1 offset @p2", 8, 0);
+            connection.CheckSelectCommandExecution("select #all from $table1 limit @p1 offset @p2", 8, 0);
 
             db.Select().From("table1").Limit(8).Offset(14).Fetch();
-            connection.CheckSelectQueryExecution("select #all from $table1 limit @p1 offset @p2", 8, 14);
+            connection.CheckSelectCommandExecution("select #all from $table1 limit @p1 offset @p2", 8, 14);
 
             db.Select().From("table1").Limit(8, 14).Fetch();
-            connection.CheckSelectQueryExecution("select #all from $table1 limit @p1 offset @p2", 8, 14);
+            connection.CheckSelectCommandExecution("select #all from $table1 limit @p1 offset @p2", 8, 14);
         }
 
         [Fact]
@@ -122,16 +122,16 @@ namespace KiwiQuery.Tests.Queries
             Schema db = new(connection, MockQueryBuilder.MockDialect);
 
             db.Select().From("table1").Where(db.Column("col1") == 4).Fetch();
-            connection.CheckSelectQueryExecution("select #all from $table1 where $col1 == @p1", 4);
+            connection.CheckSelectCommandExecution("select #all from $table1 where $col1 == @p1", 4);
 
             db.Select().From("table1").WhereNot(db.Column("col1") == 4).Fetch();
-            connection.CheckSelectQueryExecution("select #all from $table1 where ! ( $col1 == @p1 )", 4);
+            connection.CheckSelectCommandExecution("select #all from $table1 where ! ( $col1 == @p1 )", 4);
 
             db.Select().From("table1").WhereAll(db.Column("col1") == 4, db.Column("col2") < 5).Fetch();
-            connection.CheckSelectQueryExecution("select #all from $table1 where ( $col1 == @p1 ) && ( $col2 < @p2 )", 4, 5);
+            connection.CheckSelectCommandExecution("select #all from $table1 where ( $col1 == @p1 ) && ( $col2 < @p2 )", 4, 5);
 
             db.Select().From("table1").WhereAny(db.Column("col1") == 4, db.Column("col2") < 5).Fetch();
-            connection.CheckSelectQueryExecution("select #all from $table1 where ( $col1 == @p1 ) || ( $col2 < @p2 )", 4, 5);
+            connection.CheckSelectCommandExecution("select #all from $table1 where ( $col1 == @p1 ) || ( $col2 < @p2 )", 4, 5);
         }
 
         [Fact]
@@ -141,7 +141,7 @@ namespace KiwiQuery.Tests.Queries
             Schema db = new(connection, MockQueryBuilder.MockDialect);
 
             db.Select("col1", "col2", "col3").Distinct().From("table1").Fetch();
-            connection.CheckSelectQueryExecution("select distinct $col1 , $col2 , $col3 from $table1");
+            connection.CheckSelectCommandExecution("select distinct $col1 , $col2 , $col3 from $table1");
         }
 
 
@@ -160,7 +160,7 @@ namespace KiwiQuery.Tests.Queries
 
             db.Select(table1Alias.Column("col1").As("col1A"), table2Alias.Column("col1").As("col1B")).From(table1)
                 .Join(table2, table2Alias.Column("ref"), table1Alias.Column("fk")).Fetch();
-            connection.CheckSelectQueryExecution(
+            connection.CheckSelectCommandExecution(
                 "select $A -> $col1 as $col1A , $B -> $col1 as $col1B from $table1 as $A inner join $table2 as $B on $B -> $ref == $A -> $fk");
 
             // v0.5 and higher
@@ -170,7 +170,7 @@ namespace KiwiQuery.Tests.Queries
 
             db.Select(table3.Column("col1").As("col1A"), table4.Column("col1").As("col1B")).From(table3)
                 .Join(table4.Column("ref"), table3.Column("fk")).Fetch();
-            connection.CheckSelectQueryExecution(
+            connection.CheckSelectCommandExecution(
                 "select $A -> $col1 as $col1A , $B -> $col1 as $col1B from $table3 as $A inner join $table4 as $B on $B -> $ref == $A -> $fk");
         }
     }

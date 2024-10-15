@@ -5,7 +5,7 @@ namespace KiwiQuery.Mapped.Mappers
 
 internal interface IJoin
 {
-    void AddTo(SelectQuery query);
+    void AddTo(SelectCommand query);
 }
 
 }

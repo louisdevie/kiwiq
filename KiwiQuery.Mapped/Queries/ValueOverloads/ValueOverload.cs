@@ -12,9 +12,9 @@ internal class ValueOverload : IValueOverload
         this.value = value;
     }
 
-    public void AddTo(InsertQuery insertQuery, string column) => insertQuery.Value(column, this.value);
+    public void AddTo(InsertCommand insertCommand, string column) => insertCommand.Value(column, this.value);
 
-    public void AddTo(UpdateQuery updateQuery, string column) => updateQuery.Set(column, this.value);
+    public void AddTo(UpdateCommand updateCommand, string column) => updateCommand.Set(column, this.value);
 }
 
 }

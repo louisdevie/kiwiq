@@ -21,7 +21,7 @@ namespace KiwiQuery.Tests.Live
         [Fact]
         public void SelectAll()
         {
-            DbConnection conn = null;//new SQLiteConnection("Data Source=:memory:");
+            DbConnection conn = new SQLiteConnection("Data Source=:memory:");
             SetUpDatabase(conn);
             Schema db = new Schema(conn, Dialect.Sqlite);
 
@@ -50,7 +50,7 @@ namespace KiwiQuery.Tests.Live
         [Fact]
         public void SelectAllMapped()
         {
-            DbConnection conn = null;//new SQLiteConnection("Data Source=:memory:");
+            DbConnection conn = new SQLiteConnection("Data Source=:memory:");
             SetUpDatabase(conn);
             Schema db = new Schema(conn);
 

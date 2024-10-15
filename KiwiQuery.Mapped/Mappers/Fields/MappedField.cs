@@ -20,7 +20,7 @@ internal abstract class MappedField
     
     /// <summary>
     /// The main column containing the value of the field. It is used for comparison when used as a key and for
-    /// selection in <see cref="MappedUpdateQuery{T}.SetOnly" /> and <see cref="MappedUpdateQuery{T}.SetAllExcept" />.
+    /// selection in <see cref="MappedUpdateCommand{T}.SetOnly" /> and <see cref="MappedUpdateCommand{T}.SetAllExcept" />.
     /// </summary>
     public abstract string? Column { get; }
 

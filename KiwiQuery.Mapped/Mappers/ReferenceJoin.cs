@@ -19,7 +19,7 @@ internal class ReferenceJoin : IJoin
         this.additionalJoins = additionalJoins.ToArray();
     }
 
-    public void AddTo(SelectQuery query)
+    public void AddTo(SelectCommand query)
     {
         query.LeftJoin(this.joinedColumn, this.referencedColumn);
 

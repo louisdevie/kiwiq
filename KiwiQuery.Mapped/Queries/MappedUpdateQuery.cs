@@ -15,16 +15,16 @@ namespace KiwiQuery.Mapped.Queries
 /// A SQL UPDATE command for a mapped class. <br/>
 /// Instances of this class should be created from a <see cref="Schema"/> or a mapped <see cref="Table"/>.
 /// </summary>
-public class MappedUpdateQuery<T> : IHasWhereClause<MappedUpdateQuery<T>>
+public class MappedUpdateCommand<T> : IHasWhereClause<MappedUpdateCommand<T>>
 where T : notnull
 {
-    private readonly UpdateQuery rawQuery;
+    private readonly UpdateCommand rawQuery;
     private readonly IMapper<T> mapper;
     private readonly Dictionary<string, IValueOverload> values;
     private Maybe<T> obj;
     private IColumnFilter filter;
 
-    internal MappedUpdateQuery(UpdateQuery rawQuery, IMapper<T> mapper)
+    internal MappedUpdateCommand(UpdateCommand rawQuery, IMapper<T> mapper)
     {
         this.mapper = mapper;
         this.rawQuery = rawQuery;
@@ -38,7 +38,7 @@ where T : notnull
     /// <see cref="SetInserted"/>, <see cref="SetOnly"/> and <see cref="SetAllExcept"/> only once.
     /// </summary>
     /// <param name="obj">The object to insert.</param>
-    public MappedUpdateQuery<T> SetAll(T obj)
+    public MappedUpdateCommand<T> SetAll(T obj)
     {
         if (this.obj.IsSomething)
         {
@@ -54,7 +54,7 @@ where T : notnull
     /// one of <see cref="SetAll"/>, <see cref="SetOnly"/> and <see cref="SetAllExcept"/> only once.
     /// </summary>
     /// <param name="obj">The object to insert.</param>
-    public MappedUpdateQuery<T> SetInserted(T obj)
+    public MappedUpdateCommand<T> SetInserted(T obj)
     {
         if (this.obj.IsSomething)
         {
@@ -71,7 +71,7 @@ where T : notnull
     /// </summary>
     /// <param name="obj">The object to insert.</param>
     /// <param name="columns">The object to insert.</param>
-    public MappedUpdateQuery<T> SetOnly(T obj, params string[] columns)
+    public MappedUpdateCommand<T> SetOnly(T obj, params string[] columns)
     {
         if (this.obj.IsSomething)
         {
@@ -88,7 +88,7 @@ where T : notnull
     /// </summary>
     /// <param name="obj">The object to insert.</param>
     /// <param name="columns">The object to insert.</param>
-    public MappedUpdateQuery<T> SetAllExcept(T obj, params string[] columns)
+    public MappedUpdateCommand<T> SetAllExcept(T obj, params string[] columns)
     {
         if (this.obj.IsSomething)
         {
@@ -99,28 +99,28 @@ where T : notnull
         return this;
     }
 
-    /// <inheritdoc cref="UpdateQuery.Set(string,KiwiQuery.Expressions.Value)"/> 
-    public MappedUpdateQuery<T> Set(string column, Value value)
+    /// <inheritdoc cref="UpdateCommand.Set(string,KiwiQuery.Expressions.Value)"/> 
+    public MappedUpdateCommand<T> Set(string column, Value value)
     {
         this.values.Add(column, new ValueOverload(value));
         return this;
     }
 
-    /// <inheritdoc cref="UpdateQuery.Set(string,object?)"/> 
-    public MappedUpdateQuery<T> Set(string column, object? value)
+    /// <inheritdoc cref="UpdateCommand.Set(string,object?)"/> 
+    public MappedUpdateCommand<T> Set(string column, object? value)
     {
         this.values.Add(column, new ObjectOverload(value));
         return this;
     }
 
-    /// <inheritdoc cref="UpdateQuery.Set(string,KiwiQuery.SelectQuery)"/> 
-    public MappedUpdateQuery<T> Set(string column, SelectQuery value)
+    /// <inheritdoc cref="UpdateCommand.Set(string,KiwiQuery.SelectCommand)"/> 
+    public MappedUpdateCommand<T> Set(string column, SelectCommand value)
     {
         this.values.Add(column, new SubQueryOverload(value));
         return this;
     }
 
-    /// <inheritdoc cref="UpdateQuery.Apply"/> 
+    /// <inheritdoc cref="UpdateCommand.Apply"/> 
     public bool Apply()
     {
         this.CompleteQuery();
@@ -149,7 +149,7 @@ where T : notnull
     /// <summary>
     /// Downcasts this query into its precise type.
     /// </summary>
-    public MappedUpdateQuery<T> Downcast() => this;
+    public MappedUpdateCommand<T> Downcast() => this;
 
     /// <inheritdoc />
     public WhereClauseBuilder WhereClause => this.rawQuery.WhereClause;

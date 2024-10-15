@@ -52,23 +52,23 @@ public class ExtendedSchema : IFieldMapperCollection
     /// Creates a new mapped SELECT command for a type.
     /// </summary>
     /// <typeparam name="T">The type of entity to read.</typeparam>
-    /// <returns>A <see cref="MappedSelectQuery{T}"/> that can be further configured and then executed.</returns>
-    public MappedSelectQuery<T> Select<T>()
+    /// <returns>A <see cref="MappedSelectCommand{T}"/> that can be further configured and then executed.</returns>
+    public MappedSelectCommand<T> Select<T>()
     where T : notnull
     {
-        return new MappedSelectQuery<T>(this.schema.Select(), this.GetMapper<T>());
+        return new MappedSelectCommand<T>(this.schema.Select(), this.GetMapper<T>());
     }
 
     /// <summary>
     /// Creates a new mapped INSERT command for a type.
     /// </summary>
     /// <typeparam name="T">The type of entity to create.</typeparam>
-    /// <returns>An <see cref="MappedInsertQuery{T}"/> that can be further configured and then executed.</returns>
-    public MappedInsertQuery<T> InsertInto<T>()
+    /// <returns>An <see cref="MappedInsertCommand{T}"/> that can be further configured and then executed.</returns>
+    public MappedInsertCommand<T> InsertInto<T>()
     where T : notnull
     {
         var mapper = this.GetMapper<T>();
-        return new MappedInsertQuery<T>(this.schema.InsertInto(mapper.FirstTable.Name), mapper);
+        return new MappedInsertCommand<T>(this.schema.InsertInto(mapper.FirstTable.Name), mapper);
     }
 
     /// <summary>
@@ -76,23 +76,23 @@ public class ExtendedSchema : IFieldMapperCollection
     /// </summary>
     /// <typeparam name="T">The type of entity to create.</typeparam>
     /// <param name="table">The name of the table into which the values will be inserted.</param>
-    /// <returns>An <see cref="MappedInsertQuery{T}"/> that can be further configured and then executed.</returns>
-    public MappedInsertQuery<T> InsertInto<T>(string table)
+    /// <returns>An <see cref="MappedInsertCommand{T}"/> that can be further configured and then executed.</returns>
+    public MappedInsertCommand<T> InsertInto<T>(string table)
     where T : notnull
     {
-        return new MappedInsertQuery<T>(this.schema.InsertInto(table), this.mapperFactory.MakeMapper<T>());
+        return new MappedInsertCommand<T>(this.schema.InsertInto(table), this.mapperFactory.MakeMapper<T>());
     }
 
     /// <summary>
     /// Creates a new mapped DELETE command for a type.
     /// </summary>
     /// <typeparam name="T">The type of entity to delete.</typeparam>
-    /// <returns>A <see cref="DeleteQuery"/> that can be further configured and then executed.</returns>
-    public MappedDeleteQuery<T> DeleteFrom<T>()
+    /// <returns>A <see cref="DeleteCommand"/> that can be further configured and then executed.</returns>
+    public MappedDeleteCommand<T> DeleteFrom<T>()
     where T : notnull
     {
         var mapper = this.GetMapper<T>();
-        return new MappedDeleteQuery<T>(this.schema.DeleteFrom(mapper.FirstTable.Name));
+        return new MappedDeleteCommand<T>(this.schema.DeleteFrom(mapper.FirstTable.Name));
     }
 
     /// <summary>
@@ -100,24 +100,24 @@ public class ExtendedSchema : IFieldMapperCollection
     /// </summary> on the given table
     /// <typeparam name="T">The type of entity to delete.</typeparam>
     /// <param name="table">The name of the table into which the values will be inserted.</param>
-    /// <returns>A <see cref="DeleteQuery"/> that can be further configured and then executed.</returns>
-    public MappedDeleteQuery<T> DeleteFrom<T>(string table)
+    /// <returns>A <see cref="DeleteCommand"/> that can be further configured and then executed.</returns>
+    public MappedDeleteCommand<T> DeleteFrom<T>(string table)
     where T : notnull
     {
         _ = this.GetMapper<T>(); // create and cache the mapper anyway
-        return new MappedDeleteQuery<T>(this.schema.DeleteFrom(table));
+        return new MappedDeleteCommand<T>(this.schema.DeleteFrom(table));
     }
 
     /// <summary>
     /// Creates a new mapped UPDATE command for a type.
     /// </summary>
     /// <typeparam name="T">The type of entity to update.</typeparam>
-    /// <returns>An <see cref="MappedUpdateQuery{T}"/> that can be further configured and then executed.</returns>
-    public MappedUpdateQuery<T> Update<T>()
+    /// <returns>An <see cref="MappedUpdateCommand{T}"/> that can be further configured and then executed.</returns>
+    public MappedUpdateCommand<T> Update<T>()
     where T : notnull
     {
         var mapper = this.GetMapper<T>();
-        return new MappedUpdateQuery<T>(this.schema.Update(mapper.FirstTable.Name), mapper);
+        return new MappedUpdateCommand<T>(this.schema.Update(mapper.FirstTable.Name), mapper);
     }
 
     /// <summary>
@@ -125,12 +125,12 @@ public class ExtendedSchema : IFieldMapperCollection
     /// </summary>
     /// <typeparam name="T">The type of entity to update.</typeparam>
     /// <param name="table">The name of the table that will be updated.</param>
-    /// <returns>An <see cref="MappedUpdateQuery{T}"/> that can be further configured and then executed.</returns>
-    public MappedUpdateQuery<T> Update<T>(string table)
+    /// <returns>An <see cref="MappedUpdateCommand{T}"/> that can be further configured and then executed.</returns>
+    public MappedUpdateCommand<T> Update<T>(string table)
     where T : notnull
     {
         var mapper = this.GetMapper<T>();
-        return new MappedUpdateQuery<T>(this.schema.Update(mapper.FirstTable.Name), mapper);
+        return new MappedUpdateCommand<T>(this.schema.Update(mapper.FirstTable.Name), mapper);
     }
 
     /// <summary>
@@ -197,22 +197,22 @@ public class ExtendedSchema : IFieldMapperCollection
     #region Schema proxy
 
     /// <inheritdoc cref="Schema.InsertInto(string)"/>
-    public InsertQuery InsertInto(string table) => this.schema.InsertInto(table);
+    public InsertCommand InsertInto(string table) => this.schema.InsertInto(table);
 
     /// <inheritdoc cref="Schema.DeleteFrom(string)"/>
-    public DeleteQuery DeleteFrom(string table) => this.schema.DeleteFrom(table);
+    public DeleteCommand DeleteFrom(string table) => this.schema.DeleteFrom(table);
 
     /// <inheritdoc cref="Schema.Update(string)"/>
-    public UpdateQuery Update(string table) => this.schema.Update(table);
+    public UpdateCommand Update(string table) => this.schema.Update(table);
 
     /// <inheritdoc cref="Schema.Select(string[])"/>
-    public SelectQuery Select(params string[] columns) => this.schema.Select(columns);
+    public SelectCommand Select(params string[] columns) => this.schema.Select(columns);
 
     /// <inheritdoc cref="Schema.Select(Value[])"/>
-    public SelectQuery Select(params Value[] columns) => this.schema.Select(columns);
+    public SelectCommand Select(params Value[] columns) => this.schema.Select(columns);
 
     /// <inheritdoc cref="Schema.Select()"/>
-    public SelectQuery Select() => this.schema.Select();
+    public SelectCommand Select() => this.schema.Select();
 
 #pragma warning disable CA1822 // Static members suggestion
 // ReSharper disable MemberCanBeMadeStatic.Global
@@ -223,8 +223,8 @@ public class ExtendedSchema : IFieldMapperCollection
     /// <inheritdoc cref="Schema.Column(string)"/>
     public Column Column(string name) => this.schema.Column(name);
 
-    /// <inheritdoc cref="Schema.SubQuery(SelectQuery)"/>
-    public SubQuery SubQuery(SelectQuery query) => this.schema.SubQuery(query);
+    /// <inheritdoc cref="Schema.SubQuery(SelectCommand)"/>
+    public SubQuery SubQuery(SelectCommand query) => this.schema.SubQuery(query);
 
 #pragma warning restore CA1822
 // ReSharper restore MemberCanBeMadeStatic.Global

@@ -25,7 +25,7 @@ where T : class
 
     public T? MakeValue()
     {
-        MappedSelectQuery query = new MappedSelectQuery(this.schema.Select(), this.mapper).Where(this.predicate);
+        MappedSelectCommand query = new MappedSelectCommand(this.schema.Select(), this.mapper).Where(this.predicate);
         
         T? value = default;
         foreach (object? result in query.FetchList()) value = (T?)result;

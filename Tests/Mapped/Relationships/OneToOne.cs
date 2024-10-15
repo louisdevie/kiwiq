@@ -16,7 +16,7 @@ public class OneToOne
 
         List<User> fruits = db.Select<User>().FetchList();
 
-        string query = connection.GetSingleSelectQuery();
+        string query = connection.GetSingleSelectCommand();
         Match match = Regex.Match(
             query,
             @"select (.+) , (.+), (.+) from \$User as (.+) inner join \$B as (.+) on (.+) -> \$bId == \$aId"

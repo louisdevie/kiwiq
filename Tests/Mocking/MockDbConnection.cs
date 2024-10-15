@@ -91,7 +91,7 @@ namespace KiwiQuery.Tests.Mocking
             return new MockDbCommand(this);
         }
         
-        public void CheckSelectQueryExecution(string expected, params object[] parameters)
+        public void CheckSelectCommandExecution(string expected, params object[] parameters)
         {
             Assert.Equal(1, this.ExecutedCommandCount);
 
@@ -138,7 +138,7 @@ namespace KiwiQuery.Tests.Mocking
             this.ClearExecutionHistory();
         }
         
-        public string GetSingleSelectQuery()
+        public string GetSingleSelectCommand()
         {
             Assert.Equal(1, this.ExecutedCommandCount);
             string command = this.LastExecutedCommand.CommandText;

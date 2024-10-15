@@ -21,7 +21,7 @@ public class JustHasOne
 
         var users = db.Select<User.NoInverse.ExplicitRef>().FetchList();
 
-        connection.CheckSelectQueryExecution(
+        connection.CheckSelectCommandExecution(
             "select $kiwi -> $id , $kiwi -> $name , $kiwi_r0 -> $id , $kiwi_r0 -> $number "
             + "from $User as $kiwi left join $Phone as $kiwi_r0 on $kiwi_r0 -> $userId == $kiwi -> $id"
         );
@@ -57,7 +57,7 @@ public class JustHasOne
 
         var users = db.Select<User.NoInverse.LazyRef>().FetchList();
 
-        connection.CheckSelectQueryExecution(
+        connection.CheckSelectCommandExecution(
             "select $kiwi -> $id , $kiwi -> $name , $kiwi -> $id as $kiwi_r0_lazy from $User as $kiwi"
         );
 
@@ -69,7 +69,7 @@ public class JustHasOne
         
         Phone.NoInverse alicesPhone = users[0].Phone.Value;
 
-        connection.CheckSelectQueryExecution(
+        connection.CheckSelectCommandExecution(
             "select $kiwi_r0 -> $id , $kiwi_r0 -> $number from $Phone as $kiwi_r0 where $kiwi_r0 -> $userId == @p1",
             1
         );
@@ -80,7 +80,7 @@ public class JustHasOne
 
         Phone.NoInverse bobsPhone = users[1].Phone.Value;
 
-        connection.CheckSelectQueryExecution(
+        connection.CheckSelectCommandExecution(
             "select $kiwi_r0 -> $id , $kiwi_r0 -> $number from $Phone as $kiwi_r0 where $kiwi_r0 -> $userId == @p1",
             2
         );

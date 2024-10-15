@@ -28,7 +28,7 @@ public class JoinAttribute : Attribute, IJoin
         this.referencedColumn = referencedColumn;
     }
 
-    void IJoin.AddTo(SelectQuery query)
+    void IJoin.AddTo(SelectCommand query)
     {
         Table implicitJoinedTable = query.Schema.Table(this.joinedTable);
 

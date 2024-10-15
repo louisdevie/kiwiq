@@ -14,7 +14,7 @@ public class Insert
 
         int id = db.InsertInto<Fruit.Explicit>().Values(new Fruit.Explicit(3, "Apricot", "Orange")).Apply();
 
-        Assert.Equal(InsertQuery.NO_AUTO_ID, id);
+        Assert.Equal(InsertCommand.NO_AUTO_ID, id);
 
         connection.CheckNonQueryExecution(
             1,
@@ -33,7 +33,7 @@ public class Insert
 
         int id = db.InsertInto<Fruit.Implicit>().Values(new Fruit.Implicit(3, "Apricot", "Orange")).Apply();
 
-        Assert.Equal(InsertQuery.NO_AUTO_ID, id);
+        Assert.Equal(InsertCommand.NO_AUTO_ID, id);
 
         connection.CheckNonQueryExecution(
             1,
