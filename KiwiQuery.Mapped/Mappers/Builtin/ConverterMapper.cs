@@ -19,7 +19,7 @@ internal class ConverterMapper : IFieldMapper
 
     public bool CanHandle(Type fieldType) => this.converter.CanHandle(fieldType);
 
-    public IFieldMapper SpecializeFor(Type fieldType, IColumnInfo info) => this;
+    public IFieldMapper SpecializeFor(Type fieldType, IColumnInfo info, IFieldMapperCollection collection) => this;
 
     public object? ReadValue(IDataRecord record, int offset) => this.converter.GetValue(record, offset);
 

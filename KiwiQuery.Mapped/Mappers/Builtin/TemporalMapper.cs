@@ -27,7 +27,7 @@ internal static class TemporalMapper
 
         public bool CanHandle(Type fieldType) => fieldType == typeof(System.DateTime);
 
-        public IFieldMapper SpecializeFor(Type fieldType, IColumnInfo info)
+        public IFieldMapper SpecializeFor(Type fieldType, IColumnInfo info, IFieldMapperCollection collection)
         {
             return new DateTime(info.Format);
         }

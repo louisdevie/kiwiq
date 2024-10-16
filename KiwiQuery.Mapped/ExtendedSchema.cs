@@ -169,7 +169,7 @@ public class ExtendedSchema : IFieldMapperCollection
     {
         if (!this.resolvedFieldMappers.TryGetValue(fieldType, out IFieldMapper? mapper))
         {
-            mapper = DefaultMapperResolver.ResolveFromList(this.fieldMappers, fieldType, info);
+            mapper = DefaultMapperResolver.ResolveFromList(this, this.fieldMappers, fieldType, info);
             this.resolvedFieldMappers.Add(fieldType, mapper);
         }
         return mapper;

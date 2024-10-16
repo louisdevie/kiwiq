@@ -21,7 +21,7 @@ public abstract class FieldMapper<T> : IFieldMapper
     
     bool IFieldMapper.CanHandle(Type fieldType) => fieldType == typeof(T);
 
-    IFieldMapper IFieldMapper.SpecializeFor(Type fieldType, IColumnInfo info) => this;
+    IFieldMapper IFieldMapper.SpecializeFor(Type fieldType, IColumnInfo info, IFieldMapperCollection collection) => this;
 
     object? IFieldMapper.ReadValue(IDataRecord record, int offset) => this.ReadValue(record, offset);
     

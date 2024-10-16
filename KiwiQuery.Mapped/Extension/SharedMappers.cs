@@ -37,6 +37,7 @@ public class SharedMappers : IFieldMapperCollection
         SpanMapper.RegisterAll(this);
         TemporalMapper.RegisterAll(this);
         UnSignedMapper.RegisterAll(this);
+        this.Register(new EnumMapper());
 
         foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
         {
@@ -123,7 +124,7 @@ public class SharedMappers : IFieldMapperCollection
     {
         return this.resolved.GetOrAdd(
             fieldType,
-            _ => DefaultMapperResolver.ResolveFromList(this.mappers, fieldType, info)
+            _ => DefaultMapperResolver.ResolveFromList(this, this.mappers, fieldType, info)
         );
     }
 }

@@ -21,7 +21,7 @@ public interface IFieldMapper
     /// Returns a mapper that is configured specifically to convert values of type <paramref name="fieldType"/> using
     /// the format described by <paramref name="info"/>.
     /// </summary>
-    IFieldMapper SpecializeFor(Type fieldType, IColumnInfo info);
+    IFieldMapper SpecializeFor(Type fieldType, IColumnInfo info, IFieldMapperCollection collection);
 
     /// <summary>
     /// Maps a value from a record.

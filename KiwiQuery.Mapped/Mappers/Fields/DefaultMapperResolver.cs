@@ -9,7 +9,8 @@ namespace KiwiQuery.Mapped.Mappers.Fields
 
 internal static class DefaultMapperResolver
 {
-    public static IFieldMapper ResolveFromList(IEnumerable<IFieldMapper> mappers, Type fieldType, IColumnInfo info)
+    public static IFieldMapper ResolveFromList(IFieldMapperCollection collection, IEnumerable<IFieldMapper> mappers,
+        Type fieldType, IColumnInfo info)
     {
         IFieldMapper? found = null;
 
@@ -17,7 +18,7 @@ internal static class DefaultMapperResolver
         {
             if (found == null && mapper.CanHandle(fieldType))
             {
-                found = mapper.SpecializeFor(fieldType, info);
+                found = mapper.SpecializeFor(fieldType, info, collection);
             }
         }
 

@@ -40,7 +40,7 @@ internal static class SpanMapper
 
         public bool CanHandle(Type fieldType) => fieldType == typeof(T[]);
 
-        public IFieldMapper SpecializeFor(Type fieldType, IColumnInfo info) => this.Clone(info.Size);
+        public IFieldMapper SpecializeFor(Type fieldType, IColumnInfo info, IFieldMapperCollection collection) => this.Clone(info.Size);
 
         public object ReadValue(IDataRecord record, int offset)
         {

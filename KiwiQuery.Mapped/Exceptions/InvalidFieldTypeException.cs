@@ -9,11 +9,18 @@ namespace KiwiQuery.Mapped.Exceptions
 /// </summary>
 public class InvalidFieldTypeException : KiwiException
 {
-    internal InvalidFieldTypeException(Type problematicType) : base(
-        $"Fields of type ${problematicType.FullName ?? problematicType.Name} cannot be mapped to the database. "
+    private readonly Type problematicType;
+
+    internal Type ProblematicType => this.problematicType;
+
+    internal InvalidFieldTypeException(Type problematicType, string details = "") : base(
+        $"Fields of type ${problematicType.FullName ?? problematicType.Name} cannot be mapped to the database{details}. "
         + "You can define a converter for it with a [Column(..., Converter = new MyConverter())] attribute or choose "
         + "to ignore it with a [Transient] attribute."
-    ) { }
+    )
+    {
+        this.problematicType = problematicType;
+    }
 }
 
 }
