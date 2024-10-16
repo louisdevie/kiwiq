@@ -1,7 +1,6 @@
 using System;
-using KiwiQuery.Mapped.Relationships;
 
-namespace KiwiQuery.Mapped
+namespace KiwiQuery.Mapped.Relationships
 {
 
 [AttributeUsage(AttributeTargets.Field)]

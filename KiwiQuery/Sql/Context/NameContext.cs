@@ -1,4 +1,4 @@
-namespace KiwiQuery.Sql
+namespace KiwiQuery.Sql.Context
 {
     /// <summary>
     /// Describes how something can be referred to at this point in the query.

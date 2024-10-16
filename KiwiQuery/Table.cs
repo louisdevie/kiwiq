@@ -1,5 +1,6 @@
 ﻿using KiwiQuery.Expressions;
 using KiwiQuery.Sql;
+using KiwiQuery.Sql.Context;
 
 namespace KiwiQuery
 {
