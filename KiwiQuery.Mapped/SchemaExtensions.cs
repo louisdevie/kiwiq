@@ -88,10 +88,10 @@ public static class SchemaExtensions
     /// <param name="this"></param>
     /// <param name="converters">Converters to register only for this schema.</param>
     /// <returns>An extended schema based on this schema.</returns>
-    public static ExtendedSchema Using(this Schema @this, params IConverter[] converters)
+    public static ExtendedSchema Using(this Schema @this, params IFieldConverter[] converters)
     {
         var extended = new ExtendedSchema(@this);
-        foreach (IConverter converter in converters) extended.Register(converter);
+        foreach (IFieldConverter converter in converters) extended.Register(converter);
         return extended;
     }
 

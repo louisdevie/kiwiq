@@ -15,16 +15,19 @@ internal class ReferenceField : MappedField
     private readonly string columnName;
     private readonly IRelationship relationship;
     private readonly IMapper nestedMapper;
+    private readonly int foreignColumnOffset;
     private int offset;
 
     public ReferenceField(
-        FieldInfo field, string columnName, FieldFlags flags, IRelationship relationship, IMapper nestedMapper, int constructorArgumentPosition
-    ): base(flags, constructorArgumentPosition)
+        FieldInfo field, string columnName, FieldFlags flags, IRelationship relationship, IMapper nestedMapper,
+        int foreignColumnOffset, int constructorArgumentPosition
+    ) : base(flags, constructorArgumentPosition)
     {
         this.field = field;
         this.columnName = columnName;
         this.relationship = relationship;
         this.nestedMapper = nestedMapper;
+        this.foreignColumnOffset = foreignColumnOffset;
         this.offset = -1;
     }
 
@@ -42,7 +45,8 @@ internal class ReferenceField : MappedField
 
     public override object? ReadArgument(IDataRecord record, Schema schema)
     {
-        return this.nestedMapper.RowToObject(new OffsetRecord(record, this.offset), schema);
+        var offsetRecord = new OffsetRecord(record, this.offset);
+        return offsetRecord.IsDBNull(this.foreignColumnOffset) ? null : this.nestedMapper.RowToObject(offsetRecord, schema);
     }
 
     public override void ReadInto(object instance, IDataRecord record, Schema schema)

@@ -15,7 +15,7 @@ namespace KiwiQuery.Mapped.Queries
 /// A SQL SELECT command with its results mapped to objects. <br/>
 /// Instances of this class should be created from a <see cref="Schema"/> or a mapped <see cref="Table"/>.
 /// </summary>
-// TODO expose this API
+// TODO maybe one day expose this API, currently only used for querying tables behind relationships
 internal class MappedSelectCommand : IHasJoinClause<MappedSelectCommand>, IHasWhereClause<MappedSelectCommand>,
     IHasLimitClause<MappedSelectCommand>
 {

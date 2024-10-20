@@ -154,7 +154,7 @@ public class ExtendedSchema : IFieldMapperCollection
     #region IFieldMapperCollection implementation
 
     /// <inheritdoc />
-    public void Register(IConverter converter)
+    public void Register(IFieldConverter converter)
     {
         this.Register(new ConverterMapper(converter));
     }

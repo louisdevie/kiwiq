@@ -2,6 +2,7 @@
 using System;
 using System.Data.Common;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace KiwiQuery
 {
@@ -18,9 +19,20 @@ public class Schema
     /// The default dialect is initially <see cref="Dialect.MySql"/>.
     /// </summary>
     public static void SetDefaultDialect(Dialect dialect) => defaultDialect = dialect;
+    
+    private static ILogger? globalLogger;
+    
+    /// <summary>
+    /// Sets a global logger to use with every instance of this class.
+    /// </summary>
+    public static void AlwaysLogTo(ILogger logger)
+    {
+        globalLogger = logger;
+    }
 
     private readonly DbConnection connection;
     private readonly Dialect dialect;
+    private readonly ILogger? logger;
 
     /// <summary>
     /// The connection to the database through which commands are executed.
@@ -33,6 +45,11 @@ public class Schema
     internal Dialect CurrentDialect => this.dialect;
 
     /// <summary>
+    /// The logger used for this schema.
+    /// </summary>
+    internal ILogger? CurrentLogger => this.logger;
+
+    /// <summary>
     /// Creates a new schema using a specific mode.
     /// </summary>
     /// <param name="connection">The connection to the database through which commands will be executed.</param>
@@ -41,6 +58,7 @@ public class Schema
     {
         this.connection = connection;
         this.dialect = dialect;
+        this.logger = globalLogger;
     }
 
     /// <summary>

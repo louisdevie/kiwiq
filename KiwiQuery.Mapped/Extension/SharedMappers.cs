@@ -75,10 +75,10 @@ public class SharedMappers : IFieldMapperCollection
         {
             if (!loaded
                 && attr is SharedConverterAttribute
-                && typeof(IConverter).IsAssignableFrom(type)
+                && typeof(IFieldConverter).IsAssignableFrom(type)
                 && this.TryInvokeParameterlessConstructor(type, out object? converter))
             {
-                this.Register((IConverter)converter);
+                this.Register((IFieldConverter)converter);
                 loaded = true;
             }
             if (!loaded
@@ -109,7 +109,7 @@ public class SharedMappers : IFieldMapperCollection
     }
 
     /// <inheritdoc />
-    public void Register(IConverter converter)
+    public void Register(IFieldConverter converter)
     {
         this.Register(new ConverterMapper(converter));
     }

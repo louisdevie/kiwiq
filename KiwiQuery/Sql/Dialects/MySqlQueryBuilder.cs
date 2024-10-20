@@ -18,7 +18,7 @@ namespace KiwiQuery.Sql.Dialects
         {
             this.EnsureWordBoundary();
             this.Buffer.Append('`').Append(tableOrColumn).Append('`');
-            this.EndsWithWordBoundary();
+            this.DoesntEndWithWordBoundary();
             return this;
         }
 

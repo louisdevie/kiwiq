@@ -304,9 +304,15 @@ internal class GenericMapperFactory
         else
         {
             GenericMapper nestedMapper = this.MakeMapper(fieldType, tableAlias);
+            
+            Column foreignColumn = relationship.FindForeignColumn(nestedMapper.FirstTable, init.FirstTable);
+            int foreignColumnOffset = nestedMapper.Projection.Select((column, offset) => (column, offset)).FirstOrDefault((tuple) =>
+                    tuple.column.Table?.Name == nestedMapper.FirstTable.Name && tuple.column.Name == foreignColumn.Name)
+                .offset;
+
             init.Joins.Add(
                 new ReferenceJoin(
-                    relationship.FindForeignColumn(nestedMapper.FirstTable, init.FirstTable),
+                    foreignColumn,
                     init.FirstTable.Column(init.PrimaryKey.GetColumnToReference()),
                     nestedMapper.Joins
                 )
@@ -318,6 +324,7 @@ internal class GenericMapperFactory
                     info.Flags,
                     relationship,
                     nestedMapper,
+                    foreignColumnOffset,
                     FindConstructorArgumentPosition(init.Constructor, field)
                 )
             );

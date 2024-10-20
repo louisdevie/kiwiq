@@ -10,7 +10,7 @@ public interface IFieldMapperCollection
     /// Register a new converter.
     /// </summary>
     /// <param name="converter">A converter instance.</param>
-    void Register(IConverter converter);
+    void Register(IFieldConverter converter);
 
     /// <summary>
     /// Register a new field mapper.

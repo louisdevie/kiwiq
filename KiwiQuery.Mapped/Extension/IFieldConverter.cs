@@ -6,9 +6,9 @@ namespace KiwiQuery.Mapped.Extension
 {
 
 /// <summary>
-/// Describes how to read a certain type of values from database rows.
+/// Converts a value before it is stored, and converts it back when it's read. 
 /// </summary>
-public interface IConverter
+public interface IFieldConverter
 {
     /// <summary>
     /// Check if this can convert values of type <paramref name="fieldType"/>.
@@ -16,23 +16,25 @@ public interface IConverter
     bool CanHandle(Type fieldType);
 
     /// <summary>
+    /// The type this converter will output.
+    /// </summary>
+    Type StorageType { get; }
+    
+    /// <summary>
     /// Returns a mapper that is configured specifically to convert values of type <paramref name="fieldType"/> using
     /// the format described by <paramref name="info"/>.
     /// </summary>
-    IConverter SpecializeFor(Type fieldType, IColumnInfo info);
+    IFieldConverter SpecializeFor(Type fieldType, IColumnInfo info);
 
     /// <summary>
-    /// Extracts the value from a result row at a specified column index.
+    /// Converts a value from the model type to the storage type.
     /// </summary>
-    /// <param name="record">The current row being read.</param>
-    /// <param name="ordinal"></param>
-    /// <returns></returns>
-    object? GetValue(IDataRecord record, int ordinal);
+    object? ToStoredValue(object? value);
 
     /// <summary>
-    /// Converts a value to be used as a query parameter.
+    /// Converts a value from the storage type to the model type.
     /// </summary>
-    object? ToParameter(object? value);
+    object? FromStoredValue(object? value);
 }
 
 }

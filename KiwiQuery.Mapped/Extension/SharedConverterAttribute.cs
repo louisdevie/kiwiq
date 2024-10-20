@@ -10,7 +10,7 @@ namespace KiwiQuery.Mapped.Extension
 public class SharedConverterAttribute : Attribute
 {
     /// <summary>
-    /// Indicates that this class should be used as a converter for all mapped queries. <see cref="IConverter"/> must be
+    /// Indicates that this class should be used as a converter for all mapped queries. <see cref="IFieldConverter"/> must be
     /// implemented.
     /// </summary>
     public SharedConverterAttribute() { }
