@@ -4,7 +4,10 @@ using KiwiQuery.Expressions.Predicates;
 
 namespace KiwiQuery
 {
-
+    
+/// <summary>
+/// Contains methods for commands that accept a WHERE clause.
+/// </summary>
 public static class WhereClauseExtensions
 {
     /// <summary>

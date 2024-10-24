@@ -22,6 +22,7 @@ namespace KiwiQuery.Expressions
             this.arguments = arguments;
         }
 
+        /// <inheritdoc />
         public override void WriteTo(QueryBuilder builder)
         {
             builder.AppendRaw(this.function)

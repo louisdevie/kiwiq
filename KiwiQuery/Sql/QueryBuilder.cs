@@ -328,7 +328,7 @@ namespace KiwiQuery.Sql
                 this.Buffer.Append('+');
                 break;
 
-            case ArithmeticOperator.Substraction:
+            case ArithmeticOperator.Subtraction:
                 this.Buffer.Append('-');
                 break;
 

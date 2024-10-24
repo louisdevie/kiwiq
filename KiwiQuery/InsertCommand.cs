@@ -113,6 +113,7 @@ namespace KiwiQuery
             return this;
         }
 
+        /// <inheritdoc />
         protected override string BuildCommandText(QueryBuilder result)
         {
             result.AppendInsertIntoKeywords()

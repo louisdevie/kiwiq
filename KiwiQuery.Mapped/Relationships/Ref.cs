@@ -21,6 +21,10 @@ where T : class
     private bool initialized;
     private T? value;
 
+    /// <summary>
+    /// Creates a ref containing a static value.
+    /// </summary>
+    /// <param name="value">The value to wrap in the ref.</param>
     public Ref(T value)
     {
         this.factory = null;

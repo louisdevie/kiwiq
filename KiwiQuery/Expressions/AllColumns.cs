@@ -7,6 +7,7 @@ namespace KiwiQuery.Expressions
     /// </summary>
     public sealed class AllColumns : Value
     {
+        /// <inheritdoc />
         public override void WriteTo(QueryBuilder builder)
         {
             builder.AppendAllColumnsWildcard();

@@ -6,12 +6,18 @@ using KiwiQuery.Sql.Dialects;
 
 namespace KiwiQuery.Sql
 {
+    /// <summary>
+    /// Provides <see cref="QueryBuilder"/> instances.
+    /// </summary>
     public class QueryBuilderFactory
     {
         #region Singleton
 
         private static QueryBuilderFactory? current;
 
+        /// <summary>
+        /// The current instance of the QueryBuilderFactory in use.
+        /// </summary>
         public static QueryBuilderFactory Current
         {
             get
@@ -26,7 +32,7 @@ namespace KiwiQuery.Sql
 
         #endregion
 
-        private Dictionary<Dialect, ConstructorInfo> implementations;
+        private readonly Dictionary<Dialect, ConstructorInfo> implementations;
 
         private QueryBuilderFactory()
         {

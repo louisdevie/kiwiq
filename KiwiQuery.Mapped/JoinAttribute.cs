@@ -4,6 +4,9 @@ using KiwiQuery.Mapped.Mappers;
 namespace KiwiQuery.Mapped
 {
 
+/// <summary>
+/// Join an additional table when reading this entity.
+/// </summary>
 [AttributeUsage(AttributeTargets.Class, Inherited = false)]
 public class JoinAttribute : Attribute, IJoin
 {
@@ -12,6 +15,9 @@ public class JoinAttribute : Attribute, IJoin
     private readonly string? referencedTable;
     private readonly string referencedColumn;
 
+    /// <summary>
+    /// Join an additional table when reading this entity.
+    /// </summary>
     public JoinAttribute(string joinedTable, string joinedColumn, string referencedColumn)
     {
         this.joinedTable = joinedTable;
@@ -20,6 +26,9 @@ public class JoinAttribute : Attribute, IJoin
         this.referencedColumn = referencedColumn;
     }
 
+    /// <summary>
+    /// Join an additional table when reading this entity.
+    /// </summary>
     public JoinAttribute(string joinedTable, string joinedColumn, string referencedTable, string referencedColumn)
     {
         this.joinedTable = joinedTable;

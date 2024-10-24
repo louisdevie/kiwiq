@@ -4,6 +4,9 @@ using KiwiQuery.Mapped.Extension;
 namespace KiwiQuery.Mapped.Mappers.Fields
 {
 
+/// <summary>
+/// An object that can store instances of IFieldMapper.
+/// </summary>
 public interface IFieldMapperCollection
 {
     /// <summary>

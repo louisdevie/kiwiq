@@ -4,12 +4,15 @@ using KiwiQuery.Clauses;
 namespace KiwiQuery
 {
 
+/// <summary>
+/// Contains methods for commands that accept a LIMIT / OFFSET clause.
+/// </summary>
 public static class LimitClauseExtensions
 {
     /// <summary>
     /// Adds a LIMIT statement to the query without offset. The offset can
-    /// be configured by combining <br/> this method with <see cref="Offset"/>
-    /// or using the <see cref="Limit(int, int)"/> overload.
+    /// be configured by combining <br/> this method with <see cref="Offset{TSelf}"/>
+    /// or using the <see cref="Limit{TSelf}(IHasLimitClause{TSelf}, int, int)"/> overload.
     /// </summary>
     /// <param name="query">The query to add the limit to.</param>
     /// <param name="limit">The maximum number of rows the query should return.</param>

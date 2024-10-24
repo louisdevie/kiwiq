@@ -1,5 +1,8 @@
 namespace KiwiQuery.Mapped.Mappers.Fields
 {
+    /// <summary>
+    /// Metadata for a mapped field.
+    /// </summary>
     public interface IColumnInfo
     {
         /// <summary>

@@ -19,7 +19,7 @@ internal class OffsetRecord : IDataRecord
 
     public byte GetByte(int i) => this.original.GetByte(this.offset + i);
 
-    public long GetBytes(int i, long fieldOffset, byte[] buffer, int bufferoffset, int length)
+    public long GetBytes(int i, long fieldOffset, byte[]? buffer, int bufferoffset, int length)
         => this.original.GetBytes(this.offset + i, fieldOffset, buffer, bufferoffset, length);
 
     public char GetChar(int i) => this.original.GetChar(this.offset + i);
@@ -27,7 +27,7 @@ internal class OffsetRecord : IDataRecord
     public long GetChars(int i, long fieldoffset, char[]? buffer, int bufferoffset, int length)
         => this.original.GetChars(this.offset + i, fieldoffset, buffer, bufferoffset, length);
 
-    public IDataReader? GetData(int i) => this.original.GetData(this.offset + i);
+    public IDataReader GetData(int i) => this.original.GetData(this.offset + i);
 
     public string GetDataTypeName(int i) => this.original.GetDataTypeName(this.offset + i);
 

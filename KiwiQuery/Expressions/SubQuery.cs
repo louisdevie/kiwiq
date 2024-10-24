@@ -12,12 +12,13 @@ namespace KiwiQuery.Expressions
         /// <summary>
         /// Creates a new subquery from the given SELECT query.
         /// </summary>
-        /// <param name="command</param>
+        /// <param name="command">A SELECT command to use as the subquery.</param>
         internal SubQuery(SelectCommand command)
         {
             this.command = command;
         }
 
+        /// <inheritdoc />
         public override void WriteTo(QueryBuilder builder)
         {
 

@@ -72,7 +72,7 @@ namespace KiwiQuery.Tests.Mocking
                 case ArithmeticOperator.Multiplication:
                     this.Buffer.Append('*');
                     break;
-                case ArithmeticOperator.Substraction:
+                case ArithmeticOperator.Subtraction:
                     this.Buffer.Append('-');
                     break;
             }
