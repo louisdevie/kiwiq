@@ -91,10 +91,10 @@ internal static class BasicTypesMapper
         public override object MapIntegerKey(int key) => (long)key;
      }
 
-    private class String : FieldMapper<string> {
-        protected override string ReadValue(IDataRecord record, int offset) => record.GetString(offset);
+    private class String : FieldMapper<string?> {
+        protected override string? ReadValue(IDataRecord record, int offset) => record.IsDBNull(offset) ? null : record.GetString(offset);
 
-        protected override object WriteValue(string value) => value;
+        protected override object? WriteValue(string? value) => value;
      }
 }
 

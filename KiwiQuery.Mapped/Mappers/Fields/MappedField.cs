@@ -9,14 +9,21 @@ namespace KiwiQuery.Mapped.Mappers.Fields
 
 internal abstract class MappedField
 {
+    private readonly string name;
     private readonly FieldFlags flags;
     private readonly int constructorArgumentPosition;
 
-    protected MappedField(FieldFlags flags, int constructorArgumentPosition)
+    protected MappedField(string name, FieldFlags flags, int constructorArgumentPosition)
     {
+        this.name = name;
         this.flags = flags;
         this.constructorArgumentPosition = constructorArgumentPosition;
     }
+
+    /// <summary>
+    /// The name of the field.
+    /// </summary>
+    public string Name => this.name;
     
     /// <summary>
     /// The main column containing the value of the field. It is used for comparison when used as a key and for
@@ -43,6 +50,8 @@ internal abstract class MappedField
     public abstract IEnumerable<object?> WriteFrom(object instance);
 
     public abstract void PutKeyInto(object instance, int key);
+
+    public abstract Column ResolveAttributePath(string path, string pathFromRoot);
 }
 
 }

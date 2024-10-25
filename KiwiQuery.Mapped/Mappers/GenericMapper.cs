@@ -88,6 +88,33 @@ internal class GenericMapper : IMapper
     }
 
     public IPrimaryKey PrimaryKey => this.primaryKey;
+
+    public Column Attribute(string path) => this.ResolveAttributePath(path, path);
+
+    public Column ResolveAttributePath(string path, string pathFromRoot)
+    {
+        string[] segments = path.Split('.', 2);
+        string localSegment = segments[0];
+        MappedField? localField = this.fields.Find(field => field.Name == localSegment);
+        if (localField == null)
+        {
+            throw InvalidAttributePathException.FieldNotFound(localSegment, this.constructor.DeclaringType?.Name, pathFromRoot);
+        }
+
+        if (segments.Length == 2)
+        {
+            return localField.ResolveAttributePath(segments[1], pathFromRoot);
+        }
+        else
+        {
+            string? column = localField.Column;
+            if (column == null)
+            {
+                throw InvalidAttributePathException.FieldHasNoMainColumn(localSegment, this.constructor.DeclaringType?.Name, pathFromRoot);
+            }
+            return this.firstTable.Column(column);
+        }
+    }
 }
 
 internal class GenericMapper<T> : GenericMapper, IMapper<T>

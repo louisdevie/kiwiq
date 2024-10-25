@@ -21,7 +21,7 @@ internal class ReferenceField : MappedField
     public ReferenceField(
         FieldInfo field, string columnName, FieldFlags flags, IRelationship relationship, IMapper nestedMapper,
         int foreignColumnOffset, int constructorArgumentPosition
-    ) : base(flags, constructorArgumentPosition)
+    ) : base(field.Name, flags, constructorArgumentPosition)
     {
         this.field = field;
         this.columnName = columnName;
@@ -62,6 +62,11 @@ internal class ReferenceField : MappedField
     public override void PutKeyInto(object instance, int key)
     {
         throw new NotImplementedException();
+    }
+
+    public override Column ResolveAttributePath(string path, string pathFromRoot)
+    {
+        return this.nestedMapper.ResolveAttributePath(path, pathFromRoot);
     }
 }
 

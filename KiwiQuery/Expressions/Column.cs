@@ -67,6 +67,9 @@ namespace KiwiQuery.Expressions
             }
         }
 
+        /// <inheritdoc />
+        public override bool IsNull() => false;
+
         /// <summary>
         /// Creates a column that belongs to the same <see cref="KiwiQuery.Table"/>, or the same <see cref="Schema"/> if it
         /// doesn't have a parent table.

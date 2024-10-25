@@ -34,5 +34,8 @@ namespace KiwiQuery.Expressions
             this.rhs.WriteTo(builder);
             builder.CloseBracket();
         }
+
+        /// <inheritdoc />
+        public override bool IsNull() => false;
     }
 }

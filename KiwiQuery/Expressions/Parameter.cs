@@ -23,5 +23,8 @@ namespace KiwiQuery.Expressions
             string param = builder.ResisterParameterWithValue(this.inner);
             builder.AppendRaw(param);
         }
+
+        /// <inheritdoc />
+        public override bool IsNull() => false;
     }
 }

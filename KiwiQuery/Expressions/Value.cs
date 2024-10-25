@@ -11,6 +11,9 @@ namespace KiwiQuery.Expressions
         /// <inheritdoc />
         public abstract void WriteTo(QueryBuilder builder);
 
+        /// <summary>Returns true if this value is always NULL.</summary>
+        public abstract bool IsNull();
+
         /// <inheritdoc />
         public override bool Equals(object? obj)
         {

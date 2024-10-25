@@ -245,6 +245,12 @@ namespace KiwiQuery.Sql
         /// <summary>Write the NULL constant.</summary>
         public virtual QueryBuilder AppendNull() => this.AppendKeywords("NULL");
 
+        /// <summary>Write a IS NULL check.</summary>
+        public virtual QueryBuilder AppendIsNull() => this.AppendKeywords("IS NULL");
+
+        /// <summary>Write a IS NOT NULL check.</summary>
+        public virtual QueryBuilder AppendIsNotNull() => this.AppendKeywords("IS NOT NULL");
+
         /// <summary>Write a LIMIT clause (some dialects may use the OFFSET keyword).</summary>
         /// <param name="limit">The maximum number of rows the query should return.</param>
         /// <param name="offset">The row offset, starting at 0.</param>

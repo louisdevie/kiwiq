@@ -25,7 +25,7 @@ internal class LazyReferenceField : MappedField
     public LazyReferenceField(
         FieldInfo field, Column column, FieldFlags flags, IFieldMapper mapper,
         bool isReferencing, Column foreignColumn, IMapper nestedMapper, RefActivator activator, int constructorArgumentPosition
-    ) : base(flags, constructorArgumentPosition)
+    ) : base(field.Name, flags, constructorArgumentPosition)
     {
         this.field = field;
         this.column = column;
@@ -68,6 +68,11 @@ internal class LazyReferenceField : MappedField
     public override void PutKeyInto(object instance, int key)
     {
         throw new NotImplementedException();
+    }
+
+    public override Column ResolveAttributePath(string path, string pathFromRoot)
+    {
+        return this.nestedMapper.ResolveAttributePath(path, pathFromRoot);
     }
 }
 

@@ -1,4 +1,3 @@
-using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using KiwiQuery.Mapped;
 using KiwiQuery.Tests.Mapped.Model;
@@ -76,11 +75,12 @@ public class Select
 
         connection.MockResults(["FRUIT_ID", "NAME", "COLOR"], [[3, "Apricot", "Orange"]]);
 
-        db.Select<Fruit.Explicit>().Where(db.Column("NAME") == "Apricot").FetchList();
+        db.Select<Fruit.Explicit>().Where(fruit => fruit.Attribute("name") == "Apricot").FetchList();
 
         string query = connection.GetSingleSelectCommand();
-        Match match = Regex.Match(query, @"select (.+) from \$FRUIT as (.+) where \$NAME == @p1");
+        Match match = Regex.Match(query, @"select (.+) from \$FRUIT as (.+) where (.+) -> \$NAME == @p1");
         Assert.True(match.Success, $"Actual: {query}");
+        AssertThat.GroupsAreTheSame(match, 2, 3);
     }
     
     [Fact]

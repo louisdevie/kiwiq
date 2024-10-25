@@ -9,7 +9,7 @@ using KiwiQuery.Mapped.Mappers.PrimaryKeys;
 namespace KiwiQuery.Mapped.Mappers
 {
 
-internal interface IMapper
+internal interface IMapper : IMappedRoot
 {
     object RowToObject(IDataRecord reader, Schema schema);
 
@@ -24,6 +24,7 @@ internal interface IMapper
     public IEnumerable<(string, object?)> ObjectToValues(object obj, IColumnFilter filter);
 
     IPrimaryKey PrimaryKey { get; }
+    Column ResolveAttributePath(string path, string pathFromRoot);
 }
 
 internal interface IMapper<T> : IMapper

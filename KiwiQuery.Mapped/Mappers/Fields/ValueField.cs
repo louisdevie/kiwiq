@@ -5,6 +5,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Reflection;
 using KiwiQuery.Expressions;
+using KiwiQuery.Mapped.Exceptions;
 using KiwiQuery.Mapped.Extension;
 using KiwiQuery.Mapped.Helpers;
 
@@ -18,7 +19,7 @@ internal class ValueField : MappedField
     private readonly IFieldMapper mapper;
     private int offset;
 
-    public ValueField(FieldInfo field, Column column, FieldFlags flags, IFieldMapper mapper, int constructorArgumentPosition) : base(flags, constructorArgumentPosition)
+    public ValueField(FieldInfo field, Column column, FieldFlags flags, IFieldMapper mapper, int constructorArgumentPosition) : base(field.Name, flags, constructorArgumentPosition)
     {
         this.field = field;
         this.column = column;
@@ -56,6 +57,11 @@ internal class ValueField : MappedField
     public override void PutKeyInto(object instance, int key)
     {
         if (this.mapper.CanMapIntegerKey) this.field.SetValue(instance, this.mapper.MapIntegerKey(key));
+    }
+
+    public override Column ResolveAttributePath(string path, string pathFromRoot)
+    {
+        throw InvalidAttributePathException.TriedReadingFromValue(path, this.FieldType.Name, pathFromRoot);
     }
 }
 

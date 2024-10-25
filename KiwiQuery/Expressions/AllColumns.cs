@@ -12,5 +12,8 @@ namespace KiwiQuery.Expressions
         {
             builder.AppendAllColumnsWildcard();
         }
+
+        /// <inheritdoc />
+        public override bool IsNull() => false;
     }
 }

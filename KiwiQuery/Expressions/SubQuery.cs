@@ -26,5 +26,8 @@ namespace KiwiQuery.Expressions
             this.command.WriteTo(builder);
             builder.CloseBracket();
         }
+
+        /// <inheritdoc />
+        public override bool IsNull() => false;
     }
 }

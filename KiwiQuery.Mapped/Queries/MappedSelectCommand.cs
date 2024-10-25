@@ -161,7 +161,7 @@ internal class MappedSelectCommand : IHasJoinClause<MappedSelectCommand>, IHasWh
 /// A SQL SELECT command with its results mapped to objects. <br/>
 /// Instances of this class should be created from a <see cref="Schema"/> or a mapped <see cref="Table"/>.
 /// </summary>
-public class MappedSelectCommand<T> : IHasJoinClause<MappedSelectCommand<T>>, IHasWhereClause<MappedSelectCommand<T>>,
+public class MappedSelectCommand<T> : IHasJoinClause<MappedSelectCommand<T>>, IHasMappedWhereClause<MappedSelectCommand<T>>,
     IHasLimitClause<MappedSelectCommand<T>>
 where T : notnull
 {
@@ -301,6 +301,9 @@ where T : notnull
 
     /// <inheritdoc />
     public LimitClauseBuilder LimitClause => this.rawQuery.LimitClause;
+
+    /// <inheritdoc />
+    public IMappedRoot Root => this.mapper;
 }
 
 }

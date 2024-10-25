@@ -17,5 +17,8 @@ namespace KiwiQuery.Expressions.Predicates
         {
             yield return this;
         }
+
+        /// <inheritdoc />
+        public override bool IsNull() => false;
     }
 }

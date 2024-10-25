@@ -30,5 +30,8 @@ namespace KiwiQuery.Expressions
                    .AppendCommaSeparatedElements(this.arguments)
                    .CloseBracket();
         }
+
+        /// <inheritdoc />
+        public override bool IsNull() => false;
     }
 }

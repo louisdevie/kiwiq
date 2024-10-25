@@ -12,5 +12,8 @@ namespace KiwiQuery.Expressions
         {
             builder.AppendNull();
         }
+
+        /// <inheritdoc />
+        public override bool IsNull() => true;
     }
 }
