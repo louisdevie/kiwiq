@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using KiwiQuery.Clauses;
 using KiwiQuery.Expressions;
-using KiwiQuery.Expressions.Predicates;
 using KiwiQuery.Mapped.Exceptions;
 using KiwiQuery.Mapped.Helpers;
 using KiwiQuery.Mapped.Mappers;

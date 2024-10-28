@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using KiwiQuery.Mapped.Exceptions;
 using KiwiQuery.Mapped.Extension;
-using KiwiQuery.Mapped.Mappers.Builtin;
 
 namespace KiwiQuery.Mapped.Mappers.Fields
 {

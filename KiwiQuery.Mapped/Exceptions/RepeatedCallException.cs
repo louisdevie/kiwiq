@@ -1,4 +1,3 @@
-using System;
 using KiwiQuery.Exceptions;
 
 namespace KiwiQuery.Mapped.Exceptions

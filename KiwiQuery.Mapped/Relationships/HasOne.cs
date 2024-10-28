@@ -1,9 +1,6 @@
 using System;
-using System.Data;
 using KiwiQuery.Expressions;
 using KiwiQuery.Mapped.Exceptions;
-using KiwiQuery.Mapped.Mappers;
-using KiwiQuery.Mapped.Mappers.Fields;
 using KiwiQuery.Mapped.Mappers.PrimaryKeys;
 
 namespace KiwiQuery.Mapped.Relationships

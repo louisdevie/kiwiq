@@ -1,6 +1,4 @@
-﻿using KiwiQuery.Expressions;
-using KiwiQuery.Expressions.Predicates;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.Common;
 
 namespace KiwiQuery.Sql.Dialects

@@ -1,6 +1,5 @@
 ﻿using System.Data;
 using System.Data.Common;
-using System.Text.RegularExpressions;
 
 namespace KiwiQuery.Tests.Mocking
 {

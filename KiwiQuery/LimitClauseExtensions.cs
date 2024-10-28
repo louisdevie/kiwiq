@@ -1,4 +1,3 @@
-using System;
 using KiwiQuery.Clauses;
 
 namespace KiwiQuery

@@ -1,5 +1,3 @@
-using KiwiQuery.Tests.Mapped;
-
 namespace KiwiQuery.Tests.Live
 {
     internal class Fruit : IEquatable<Fruit>

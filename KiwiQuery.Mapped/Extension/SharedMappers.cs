@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using KiwiQuery.Mapped.Mappers;
 using KiwiQuery.Mapped.Mappers.Builtin;
 using KiwiQuery.Mapped.Mappers.Fields;
 

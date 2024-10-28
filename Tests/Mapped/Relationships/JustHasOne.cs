@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using KiwiQuery.Mapped;
 using KiwiQuery.Mapped.Exceptions;
 using KiwiQuery.Tests.Mapped.Model;

@@ -1,6 +1,5 @@
 ﻿using System;
 using KiwiQuery.Sql;
-using System.Collections.Generic;
 
 namespace KiwiQuery.Clauses
 {

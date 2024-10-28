@@ -1,7 +1,4 @@
-using System;
 using KiwiQuery.Clauses;
-using KiwiQuery.Expressions.Predicates;
-using KiwiQuery.Mapped.Helpers;
 
 namespace KiwiQuery.Mapped.Queries
 {

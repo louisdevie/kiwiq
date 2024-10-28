@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using KiwiQuery.Mapped.Mappers.Fields;
 
 namespace KiwiQuery.Mapped.Extension

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using KiwiQuery.Clauses;
 using KiwiQuery.Expressions;
 
 namespace KiwiQuery.Mapped.Mappers

@@ -1,7 +1,6 @@
 using System;
 using KiwiQuery.Expressions.Predicates;
 using KiwiQuery.Mapped.Exceptions;
-using KiwiQuery.Mapped.Extension;
 using KiwiQuery.Mapped.Mappers.Fields;
 
 namespace KiwiQuery.Mapped.Mappers.PrimaryKeys

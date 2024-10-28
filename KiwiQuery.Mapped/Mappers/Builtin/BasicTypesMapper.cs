@@ -1,7 +1,5 @@
-using System;
 using System.Data;
 using KiwiQuery.Mapped.Extension;
-using KiwiQuery.Mapped.Mappers.Fields;
 
 namespace KiwiQuery.Mapped.Mappers.Builtin
 {

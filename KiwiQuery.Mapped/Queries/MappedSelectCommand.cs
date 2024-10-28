@@ -5,7 +5,6 @@ using System.Data.Common;
 using System.Linq;
 using KiwiQuery.Clauses;
 using KiwiQuery.Expressions;
-using KiwiQuery.Expressions.Predicates;
 using KiwiQuery.Mapped.Mappers;
 
 namespace KiwiQuery.Mapped.Queries

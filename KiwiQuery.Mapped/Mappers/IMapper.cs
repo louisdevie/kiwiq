@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using KiwiQuery.Expressions;
-using KiwiQuery.Mapped.Helpers;
 using KiwiQuery.Mapped.Mappers.Filters;
 using KiwiQuery.Mapped.Mappers.PrimaryKeys;
 

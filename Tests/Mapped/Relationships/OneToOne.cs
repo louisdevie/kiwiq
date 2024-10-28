@@ -1,6 +1,5 @@
 using System.Text.RegularExpressions;
 using KiwiQuery.Mapped;
-using KiwiQuery.Mapped.Relationships;
 using KiwiQuery.Tests.Mocking;
 
 namespace KiwiQuery.Tests.Mapped.Relationships;

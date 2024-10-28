@@ -1,5 +1,3 @@
-using System;
-
 namespace KiwiQuery.Mapped.Helpers
 {
     internal class IdentifierGenerator

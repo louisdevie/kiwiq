@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using KiwiQuery.Expressions;
 using KiwiQuery.Mapped.Exceptions;
 using KiwiQuery.Mapped.Helpers;
@@ -8,7 +6,6 @@ using KiwiQuery.Mapped.Mappers;
 using KiwiQuery.Mapped.Mappers.Filters;
 using KiwiQuery.Mapped.Mappers.PrimaryKeys;
 using KiwiQuery.Mapped.Queries.ValueOverloads;
-using KiwiQuery.Sql;
 
 namespace KiwiQuery.Mapped.Queries
 {

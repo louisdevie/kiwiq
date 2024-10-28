@@ -4,7 +4,6 @@ using System.Linq;
 using KiwiQuery.Expressions.Predicates;
 using KiwiQuery.Mapped.Exceptions;
 using KiwiQuery.Mapped.Mappers;
-using KiwiQuery.Mapped.Mappers.PrimaryKeys;
 using KiwiQuery.Mapped.Queries;
 
 namespace KiwiQuery.Mapped
