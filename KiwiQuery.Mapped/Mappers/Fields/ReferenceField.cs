@@ -54,6 +54,8 @@ internal class ReferenceField : MappedField
         this.field.SetValue(instance, this.ReadArgument(record, schema));
     }
 
+    public override bool IsWriteable => this.relationship.IsReferencing;
+
     public override IEnumerable<object?> WriteFrom(object instance)
     {
         throw new NotImplementedException();

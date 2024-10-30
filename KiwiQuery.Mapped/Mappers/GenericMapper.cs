@@ -73,7 +73,7 @@ internal class GenericMapper : IMapper
         var values = new List<(string, object?)>();
         foreach (MappedField field in this.fields)
         {
-            if (!filter.Filter(field)) continue;
+            if (!field.IsWriteable || !filter.Filter(field)) continue;
 
             int offset = field.Offset;
             foreach (object? mappedValue in field.WriteFrom(obj))

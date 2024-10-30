@@ -37,6 +37,7 @@ public class SharedMappers : IFieldMapperCollection
         TemporalMapper.RegisterAll(this);
         UnSignedMapper.RegisterAll(this);
         this.Register(new EnumMapper());
+        this.Register(new NullableMapper());
 
         foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
         {

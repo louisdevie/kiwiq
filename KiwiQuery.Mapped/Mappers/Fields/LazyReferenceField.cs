@@ -60,6 +60,8 @@ internal class LazyReferenceField : MappedField
         this.field.SetValue(instance, this.ReadArgument(record, schema));
     }
 
+    public override bool IsWriteable => this.isReferencing;
+
     public override IEnumerable<object?> WriteFrom(object instance)
     {
         throw new NotImplementedException();

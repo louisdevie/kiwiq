@@ -48,6 +48,8 @@ internal class ValueField : MappedField
         this.field.SetValue(instance, this.ReadArgument(record, schema));
     }
 
+    public override bool IsWriteable => true;
+
     public override IEnumerable<object?> WriteFrom(object instance)
     {
         return this.mapper.WriteValue(this.field.GetValue(instance));

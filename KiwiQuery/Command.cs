@@ -1,5 +1,6 @@
 ﻿using KiwiQuery.Sql;
 using System.Data.Common;
+using System.Text;
 using Microsoft.Extensions.Logging;
 
 namespace KiwiQuery
@@ -50,11 +51,12 @@ namespace KiwiQuery
             
             if (this.Schema.CurrentLogger != null)
             {
-                this.Schema.CurrentLogger.LogDebug("Command: {}", this.DbCommand.CommandText);
+                var sb = new StringBuilder();
                 foreach (DbParameter parameter in this.DbCommand.Parameters)
                 {
-                    this.Schema.CurrentLogger.LogDebug("Parameter {}: {}", parameter.ParameterName, parameter.Value);
+                    sb.Append($"{parameter.ParameterName}: {parameter.Value}");
                 }
+                this.Schema.CurrentLogger.LogDebug("Command: {}\n{}", this.DbCommand.CommandText, sb);
             }
         }
     }

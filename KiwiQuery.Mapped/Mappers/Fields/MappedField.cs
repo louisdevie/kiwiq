@@ -46,6 +46,8 @@ internal abstract class MappedField
     public abstract object? ReadArgument(IDataRecord record, Schema schema);
 
     public abstract void ReadInto(object instance, IDataRecord record, Schema schema);
+    
+    public abstract bool IsWriteable { get; }
 
     public abstract IEnumerable<object?> WriteFrom(object instance);
 
