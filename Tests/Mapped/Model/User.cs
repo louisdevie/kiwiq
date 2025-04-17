@@ -43,7 +43,7 @@ internal static class User
         [Table("User")]
         public class ExplicitRef : IEquatable<ExplicitRef>
         {
-            [Key]
+            [PrimaryKey]
             private readonly int id;
             private readonly string name;
             [HasOne("userId")]
@@ -78,7 +78,7 @@ internal static class User
         [Table("User")]
         public class LazyRef : IEquatable<LazyRef>
         {
-            [Key]
+            [PrimaryKey]
             private readonly int id;
             private readonly string name;
             [HasOne("userId")]

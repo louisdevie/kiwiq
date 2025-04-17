@@ -5,8 +5,7 @@ internal static class Fruit
 {
     public class Implicit : IEquatable<Implicit>
     {
-        [Key]
-        [Column(Inserted = false)]
+        [PrimaryKey(AutoIncrement = true)]
         private readonly int id;
 
         private readonly string name;
@@ -79,7 +78,7 @@ internal static class Fruit
     [Table("FRUIT")]
     internal class Explicit : IEquatable<Explicit>
     {
-        [Key]
+        [PrimaryKey]
         [Column("FRUIT_ID", Inserted = false)]
         private readonly int id;
     
@@ -154,7 +153,7 @@ internal static class Fruit
     
     public class NoEmptyConstructor : IEquatable<NoEmptyConstructor>
     {
-        [Key]
+        [PrimaryKey]
         [Column(Inserted = false)]
         private readonly int id;
 
@@ -225,8 +224,7 @@ internal static class Fruit
     
     public class SingleConstructor : IEquatable<SingleConstructor>
     {
-        [Key]
-        [Column(Inserted = false)]
+        [PrimaryKey(AutoIncrement = true)]
         private readonly int id;
 
         private readonly string name;

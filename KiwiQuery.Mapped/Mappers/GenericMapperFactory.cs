@@ -205,9 +205,10 @@ internal class GenericMapperFactory
             if (!columnAttribute.Inserted) this.Flags |= FieldFlags.NotInserted;
         }
 
-        public void SetPrimaryKeyFlag()
+        public void AddPrimaryKeyInfo(PrimaryKeyAttribute primaryKeyAttribute)
         {
             this.Flags |= FieldFlags.PrimaryKey;
+            if (primaryKeyAttribute.AutoIncrement) this.Flags |= FieldFlags.NotInserted;
         }
     }
 
@@ -223,8 +224,8 @@ internal class GenericMapperFactory
                 info.AddColumnInfo(columnAttribute);
                 break;
 
-            case KeyAttribute _:
-                info.SetPrimaryKeyFlag();
+            case PrimaryKeyAttribute primaryKeyAttribute:
+                info.AddPrimaryKeyInfo(primaryKeyAttribute);
                 break;
             }
         }

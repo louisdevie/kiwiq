@@ -7,7 +7,7 @@ internal static class Phone
     [Table("Phone")]
     public class NoInverse : IEquatable<NoInverse>
     {
-        [Key]
+        [PrimaryKey]
         private readonly int id;
         private readonly string number;
 
