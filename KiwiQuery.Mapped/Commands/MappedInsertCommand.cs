@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using KiwiQuery.Expressions;
+using KiwiQuery.Mapped.Commands.ValueOverloads;
 using KiwiQuery.Mapped.Exceptions;
 using KiwiQuery.Mapped.Helpers;
 using KiwiQuery.Mapped.Mappers;
 using KiwiQuery.Mapped.Mappers.Filters;
 using KiwiQuery.Mapped.Mappers.PrimaryKeys;
-using KiwiQuery.Mapped.Queries.ValueOverloads;
 
-namespace KiwiQuery.Mapped.Queries
+namespace KiwiQuery.Mapped.Commands
 {
 
 /// <summary>
@@ -86,11 +86,11 @@ where T : notnull
     /// <returns>The ID (value of the primary key) of the inserted row, or -1 of the primary key is not an integer.</returns>
     public int Apply()
     {
-        this.CompleteQuery();
+        this.CompleteCommand();
         return this.rawQuery.Apply();
     }
 
-    private void CompleteQuery()
+    private void CompleteCommand()
     {
         if (this.obj.IsSomething)
         {

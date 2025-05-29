@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
@@ -19,6 +20,7 @@ internal class GenericMapper : IMapper
     private readonly List<MappedField> fields;
     private readonly List<Column> allColumns;
     private readonly IPrimaryKey primaryKey;
+    private bool finalised;
 
     internal GenericMapper(
         Table firstTable, List<IJoin> joins, bool hasFreeJoins, ConstructorInfo constructor, List<MappedField> fields,
@@ -31,6 +33,7 @@ internal class GenericMapper : IMapper
         this.constructor = constructor;
         this.fields = fields;
         this.primaryKey = primaryKey;
+        this.finalised = false;
 
         this.allColumns = new List<Column>();
         foreach (MappedField field in this.fields)
@@ -112,6 +115,32 @@ internal class GenericMapper : IMapper
             }
             return this.firstTable.Column(column);
         }
+    }
+
+    public MappedField? FindField(Predicate<MappedField> match)
+    {
+        return this.fields.Find(match);
+    }
+
+    public void AddField(MappedField field)
+    {
+        if (this.finalised) throw new InvalidOperationException("Attempt to configure a mapper after it has been finalised");
+        this.fields.Add(field);
+        this.allColumns.AddRange(field.SetUpColumns(this.allColumns.Count));
+    }
+
+    public void AddJoin(IJoin join)
+    {
+        if (this.finalised) throw new InvalidOperationException("Attempt to configure a mapper after it has been finalised");
+        this.joins.Add(join);
+    }
+    
+    public ConstructorInfo Constructor => this.constructor;
+
+    public void Lock()
+    {
+        if (this.finalised) throw new InvalidOperationException("Attempt to configure a mapper after it has been finalised");
+        this.finalised = true;
     }
 }
 

@@ -79,6 +79,20 @@ public class SelectCommand : Command, IWriteable, IHasJoinClause<SelectCommand>,
         this.table = table;
         return this;
     }
+    
+    /// <summary>
+    /// Remove duplicates from the query results.
+    /// </summary>
+    public SelectCommand Distinct()
+    {
+        this.distinct = true;
+        return this;
+    }
+    
+    /// <summary>
+    /// Turns this SELECT command into a subquery that you can then use anywhere a <see cref="Value"/> is expected.
+    /// </summary>
+    public SubQuery ToSubQuery() => new SubQuery(this);
 
     /// <inheritdoc/>
     public void WriteTo(QueryBuilder result)
@@ -147,15 +161,6 @@ public class SelectCommand : Command, IWriteable, IHasJoinClause<SelectCommand>,
     /// </returns>
     public TReader Fetch<TReader>()
     where TReader : DbDataReader => (TReader)this.Fetch();
-
-    /// <summary>
-    /// Remove duplicates from the query results.
-    /// </summary>
-    public SelectCommand Distinct()
-    {
-        this.distinct = true;
-        return this;
-    }
 
     /// <summary>
     /// Downcasts this query into its precise type.

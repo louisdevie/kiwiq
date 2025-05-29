@@ -28,7 +28,7 @@ internal class GenericMapperFactory
     where T : notnull
     {
         GenericMapperInit init = this.Init(typeof(T), TABLE_ALIAS_BASE);
-        return new GenericMapper<T>(
+        var mapper = new GenericMapper<T>(
             init.FirstTable,
             init.Joins,
             init.HasFreeJoins,
@@ -36,12 +36,18 @@ internal class GenericMapperFactory
             init.Fields,
             init.PrimaryKey
         );
+        for (var i = 0; i < init.ReferenceFields.Count; i++)
+        {
+            this.MapReferenceField(mapper, init.ReferenceFields[i], $"{TABLE_ALIAS_BASE}_r{i}");
+        }
+        mapper.Lock();
+        return mapper;
     }
 
     private GenericMapper MakeMapper(Type type, string tableAlias)
     {
         GenericMapperInit init = this.Init(type, tableAlias);
-        return new GenericMapper(
+        var mapper = new GenericMapper(
             init.FirstTable,
             init.Joins,
             init.HasFreeJoins,
@@ -49,6 +55,24 @@ internal class GenericMapperFactory
             init.Fields,
             init.PrimaryKey
         );
+        for (var i = 0; i < init.ReferenceFields.Count; i++)
+        {
+            this.MapReferenceField(mapper, init.ReferenceFields[i], $"{tableAlias}_r{i}");
+        }
+        mapper.Lock();
+        return mapper;
+    }
+
+    private struct ReferenceFieldInit
+    {
+        public readonly FieldInfo Field;
+        public readonly IRelationship Relationship;
+
+        public ReferenceFieldInit(FieldInfo field, IRelationship relationship)
+        {
+            this.Field = field;
+            this.Relationship = relationship;
+        }
     }
 
     private struct GenericMapperInit
@@ -58,6 +82,7 @@ internal class GenericMapperFactory
         public readonly bool HasFreeJoins;
         public readonly ConstructorInfo Constructor;
         public readonly List<MappedField> Fields;
+        public readonly List<ReferenceFieldInit> ReferenceFields;
         public IPrimaryKey PrimaryKey;
 
         public GenericMapperInit(Table firstTable, List<IJoin> freeJoins, ConstructorInfo constructor)
@@ -67,6 +92,7 @@ internal class GenericMapperFactory
             this.HasFreeJoins = freeJoins.Count != 0;
             this.Constructor = constructor;
             this.Fields = new List<MappedField>();
+            this.ReferenceFields = new List<ReferenceFieldInit>();
             this.PrimaryKey = new UndefinedPrimaryKey();
         }
     }
@@ -113,8 +139,6 @@ internal class GenericMapperFactory
 
         var init = new GenericMapperInit(this.GetTable(type).As(tableAlias), this.GetFreeJoins(type), constructor);
 
-        var referenceFields = new List<(FieldInfo, IRelationship)>();
-
         foreach (FieldInfo field in type.GetFields(FIELDS_BINDING_FLAGS))
         {
             IRelationship? relationship = null;
@@ -125,6 +149,14 @@ internal class GenericMapperFactory
                 {
                 case HasOneAttribute hasOne:
                     relationship = hasOne.ToRelationship();
+                    break;
+                
+                case HasManyAttribute hasMany:
+                    relationship = hasMany.ToRelationship();
+                    break;
+                
+                case BelongsToAttribute belongsTo:
+                    relationship = belongsTo.ToRelationship();
                     break;
 
                 case TransientAttribute _:
@@ -137,7 +169,7 @@ internal class GenericMapperFactory
             {
                 if (relationship != null)
                 {
-                    referenceFields.Add((field, relationship));
+                    init.ReferenceFields.Add(new ReferenceFieldInit(field, relationship));
                 }
                 else
                 {
@@ -160,12 +192,6 @@ internal class GenericMapperFactory
         default:
             init.PrimaryKey = new CompoundPrimaryKey();
             break;
-        }
-
-        for (var i = 0; i < referenceFields.Count; i++)
-        {
-            (FieldInfo field, IRelationship relationship) = referenceFields[i];
-            this.MapReferenceField(init.FirstTable, field, init, relationship, $"{tableAlias}_r{i}");
         }
 
         return init;
@@ -263,42 +289,43 @@ internal class GenericMapperFactory
                 field,
                 table.Column(info.ColumnName),
                 info.Flags,
-                this.provider.GetMapper(field.FieldType, info.ColumnInfo),
+                this.provider.GetMapper(field.FieldType, info.ColumnInfo, this.provider),
                 FindConstructorArgumentPosition(init.Constructor, field)
             )
         );
     }
 
-    // TODO remove table parameter
     private void MapReferenceField(
-        Table table, FieldInfo field, GenericMapperInit init, IRelationship relationship, string tableAlias
+        GenericMapper mapper,
+        ReferenceFieldInit init, 
+        string tableAlias
     )
     {
-        MappedFieldInfo info = this.GetMappingInfo(field);
-        Type fieldType = field.FieldType;
+        MappedFieldInfo info = this.GetMappingInfo(init.Field);
+        Type fieldType = init.Field.FieldType;
 
         if (fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(Ref<>))
         {
             Type wrappedType = fieldType.GetGenericArguments()[0];
             GenericMapper nestedMapper = this.MakeMapper(wrappedType, tableAlias);
 
-            Column localColumn = relationship.FindLocalColumn(nestedMapper.FirstTable, init.FirstTable, init.PrimaryKey)
-                .As($"{tableAlias}_lazy");
+            Column localColumn = init.Relationship.FindLocalColumn(nestedMapper.FirstTable, mapper.FirstTable, mapper.PrimaryKey)
+                .As($"{tableAlias}lazy");
 
-            Type localColumnType = init.Fields.Find(f => f.Column == localColumn.Name)?.FieldType
+            Type localColumnType = mapper.FindField(f => f.Column == localColumn.Name)?.FieldType
                                    ?? throw CouldNotInferException.ColumnType(localColumn);
 
-            init.Fields.Add(
+            mapper.AddField(
                 new LazyReferenceField(
-                    field,
+                    init.Field,
                     localColumn,
                     info.Flags,
-                    this.provider.GetMapper(localColumnType, info.ColumnInfo),
-                    relationship.IsReferencing,
-                    relationship.FindForeignColumn(nestedMapper.FirstTable, init.FirstTable),
+                    this.provider.GetMapper(localColumnType, info.ColumnInfo, this.provider),
+                    init.Relationship.IsReferencing,
+                    init.Relationship.FindForeignColumn(nestedMapper.FirstTable, mapper.FirstTable),
                     nestedMapper,
-                    relationship.GetRefActivator(wrappedType),
-                    FindConstructorArgumentPosition(init.Constructor, field)
+                    init.Relationship.GetRefActivator(wrappedType),
+                    FindConstructorArgumentPosition(mapper.Constructor, init.Field)
                 )
             );
         }
@@ -306,27 +333,27 @@ internal class GenericMapperFactory
         {
             GenericMapper nestedMapper = this.MakeMapper(fieldType, tableAlias);
             
-            Column foreignColumn = relationship.FindForeignColumn(nestedMapper.FirstTable, init.FirstTable);
+            Column foreignColumn = init.Relationship.FindForeignColumn(nestedMapper.FirstTable, mapper.FirstTable);
             int foreignColumnOffset = nestedMapper.Projection.Select((column, offset) => (column, offset)).FirstOrDefault((tuple) =>
                     tuple.column.Table?.Name == nestedMapper.FirstTable.Name && tuple.column.Name == foreignColumn.Name)
                 .offset;
 
-            init.Joins.Add(
+            mapper.AddJoin(
                 new ReferenceJoin(
                     foreignColumn,
-                    init.FirstTable.Column(init.PrimaryKey.GetColumnToReference()),
+                    mapper.FirstTable.Column(mapper.PrimaryKey.GetColumnToReference()),
                     nestedMapper.Joins
                 )
             );
-            init.Fields.Add(
+            mapper.AddField(
                 new ReferenceField(
-                    field,
+                    init.Field,
                     info.ColumnName,
                     info.Flags,
-                    relationship,
+                    init.Relationship,
                     nestedMapper,
                     foreignColumnOffset,
-                    FindConstructorArgumentPosition(init.Constructor, field)
+                    FindConstructorArgumentPosition(mapper.Constructor, init.Field)
                 )
             );
         }

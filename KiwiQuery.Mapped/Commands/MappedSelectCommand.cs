@@ -7,7 +7,7 @@ using KiwiQuery.Clauses;
 using KiwiQuery.Expressions;
 using KiwiQuery.Mapped.Mappers;
 
-namespace KiwiQuery.Mapped.Queries
+namespace KiwiQuery.Mapped.Commands
 {
 
 /// <summary>

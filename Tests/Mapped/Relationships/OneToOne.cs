@@ -1,5 +1,7 @@
 using System.Text.RegularExpressions;
 using KiwiQuery.Mapped;
+using KiwiQuery.Mapped.Exceptions;
+using KiwiQuery.Tests.Mapped.Model;
 using KiwiQuery.Tests.Mocking;
 
 namespace KiwiQuery.Tests.Mapped.Relationships;
@@ -12,113 +14,77 @@ public class OneToOne
         var connection = new MockDbConnection();
         Schema db = new(connection, MockQueryBuilder.MockDialect);
 
-        connection.MockResults(["columnFromA", "columnFromB"], []);
-
-        List<User> fruits = db.Select<User>().FetchList();
-
-        string query = connection.GetSingleSelectCommand();
-        Match match = Regex.Match(
-            query,
-            @"select (.+) , (.+), (.+) from \$User as (.+) inner join \$B as (.+) on (.+) -> \$bId == \$aId"
+        connection.MockResults(
+            ["id", "name", "id", "number"],
+            [[1, "alice", 1, "305-269-4990"], [2, "bob", 2, "931-442-2530"]]
         );
-        Assert.True(match.Success, $"Actual: {query}");
-        AssertThat.GroupsAreTheSame(match, 4, 5);
-        AssertThat.GroupsEqualUnordered(["$columnFromA", "$columnFromB"], match, 1, 2);
+
+        var users = db.Select<User.WithInverse.ExplicitRef>().FetchList();
+
+        connection.CheckSelectCommandExecution(
+            "select $kiwi -> $id , $kiwi -> $name , $kiwi_r0 -> $id , $kiwi_r0 -> $number "
+            + "from $User as $kiwi left join $Phone as $kiwi_r0 on $kiwi_r0 -> $userId == $kiwi -> $id"
+        );
 
         Assert.Equal(
-            fruits,
-            new User[] { new("Apple", new Phone(3, "Pepins")), new("Peach", new Phone(2, "Large Noyau")) }
+            new User.WithInverse.ExplicitRef []
+            {
+                new(1, "alice", new Phone.WithInverse.ExplicitRef(1, "305-269-4990")),
+                new(2, "bob", new Phone.WithInverse.ExplicitRef(2, "931-442-2530"))
+            }, 
+            users
         );
     }
 
-    private class User : IEquatable<User>
+    [Fact]
+    public void TryToUseImplicitRef()
     {
-        private readonly string name;
-        [HasOne]
-        private readonly Phone phone;
+        var connection = new MockDbConnection();
+        Schema db = new(connection, MockQueryBuilder.MockDialect);
 
-        // db constructor
-        private User() { }
-
-        public User(string name, Phone phone)
-        {
-            this.name = name;
-            this.phone = phone;
-        }
-
-        public bool Equals(User? other)
-        {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return this.name == other.name && Equals(this.phone, other.phone);
-        }
-
-        public override bool Equals(object? obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return this.Equals((User)obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(this.name, this.phone);
-        }
-
-        public static bool operator ==(User? left, User? right)
-        {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(User? left, User? right)
-        {
-            return !Equals(left, right);
-        }
+        Assert.Throws<CouldNotInferException>(() => db.Select<User.NoInverse.ImplicitRef>().FetchList());
     }
 
-    private class Phone : IEquatable<Phone>
+    [Fact]
+    public void SelectLazy()
     {
-        private readonly int id;
-        private readonly string number;
+        var connection = new MockDbConnection();
+        Schema db = new(connection, MockQueryBuilder.MockDialect);
+        
+        // 1. FETCHING USERS
 
-        // db constructor
-        private Phone() { }
+        connection.MockResults(["id", "name", "kiwi_r0_lazy"], [[1, "alice", 1], [2, "bob", 2]]);
 
-        public Phone(int id, string number)
-        {
-            this.id = id;
-            this.number = number;
-        }
+        var users = db.Select<User.NoInverse.LazyRef>().FetchList();
 
-        public bool Equals(Phone? other)
-        {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return this.id == other.id && this.number == other.number;
-        }
+        connection.CheckSelectCommandExecution(
+            "select $kiwi -> $id , $kiwi -> $name , $kiwi -> $id as $kiwi_r0_lazy from $User as $kiwi"
+        );
 
-        public override bool Equals(object? obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return this.Equals((Phone)obj);
-        }
+        Assert.Equal(new User.NoInverse.LazyRef[] { new(1, "alice"), new(2, "bob") }, users);
+        
+        // 2. FETCHING PHONES OF USERS
+        
+        connection.MockResults(["id", "number"], [[8, "305-269-4990"]]);
+        
+        Phone.NoInverse alicesPhone = users[0].Phone.Value;
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(this.id, this.number);
-        }
+        connection.CheckSelectCommandExecution(
+            "select $kiwi_r0 -> $id , $kiwi_r0 -> $number from $Phone as $kiwi_r0 where $kiwi_r0 -> $userId == @p1",
+            1
+        );
 
-        public static bool operator ==(Phone? left, Phone? right)
-        {
-            return Equals(left, right);
-        }
+        Assert.Equal(new Phone.NoInverse(8, "305-269-4990"), alicesPhone);
+        
+        connection.MockResults(["id", "number"], [[9, "931-442-2530"]]);
 
-        public static bool operator !=(Phone? left, Phone? right)
-        {
-            return !Equals(left, right);
-        }
+        Phone.NoInverse bobsPhone = users[1].Phone.Value;
+
+        connection.CheckSelectCommandExecution(
+            "select $kiwi_r0 -> $id , $kiwi_r0 -> $number from $Phone as $kiwi_r0 where $kiwi_r0 -> $userId == @p1",
+            2
+        );
+
+        Assert.Equal(new Phone.NoInverse(9, "931-442-2530"), bobsPhone);
     }
 }

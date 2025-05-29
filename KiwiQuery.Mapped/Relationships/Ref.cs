@@ -11,9 +11,7 @@ namespace KiwiQuery.Mapped.Relationships
 /// </summary>
 /// <typeparam name="T"></typeparam>
 public class Ref<T>
-#if NET8_0_OR_GREATER
-where T : notnull
-#else
+#if !NET8_0_OR_GREATER
 where T : class
 #endif
 {
@@ -69,10 +67,10 @@ internal class RefActivator
     public RefActivator(Type refType, Type factoryType)
     {
 #if NET8_0_OR_GREATER
-        ConstructorInfo? refCtorInfo = refType.GetConstructor(CONSTRUCTOR_BINDING_FLAGS, new[] { factoryType });
+        ConstructorInfo? refCtorInfo = refType.GetConstructor(CONSTRUCTOR_BINDING_FLAGS, [factoryType]);
         ConstructorInfo? factoryCtorInfo = factoryType.GetConstructor(
             CONSTRUCTOR_BINDING_FLAGS,
-            new[] { typeof(IMapper), typeof(Predicate), typeof(Schema) }
+            [typeof(IMapper), typeof(Predicate), typeof(Schema)]
         );
 #else
         ConstructorInfo? refCtorInfo = refType.GetConstructor(

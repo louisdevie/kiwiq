@@ -1,5 +1,6 @@
 using System;
 using KiwiQuery.Mapped.Extension;
+using KiwiQuery.Mapped.Mappers.Builtin;
 
 namespace KiwiQuery.Mapped.Mappers.Fields
 {
@@ -21,7 +22,7 @@ public interface IFieldMapperCollection
     /// <param name="mapper">A field mapper instance.</param>
     void Register(IFieldMapper mapper);
 
-    internal IFieldMapper GetMapper(Type fieldType, IColumnInfo info);
+    internal IFieldMapper GetMapper(Type fieldType, IColumnInfo info, IFieldMapperCollection topCollection);
 }
 
 }

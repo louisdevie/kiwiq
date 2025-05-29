@@ -2,11 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using KiwiQuery.Expressions.Predicates;
-using KiwiQuery.Mapped.Commands;
 using KiwiQuery.Mapped.Exceptions;
 using KiwiQuery.Mapped.Mappers;
 
-namespace KiwiQuery.Mapped
+namespace KiwiQuery.Mapped.Commands
 {
 
 /// <summary>

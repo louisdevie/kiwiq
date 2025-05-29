@@ -19,7 +19,7 @@ internal class NullableMapper : IFieldMapper
         IFieldMapper underlyingMapper;
         try
         {
-            underlyingMapper = collection.GetMapper(Nullable.GetUnderlyingType(fieldType)!, new NoColumnInfo());
+            underlyingMapper = collection.GetMapper(Nullable.GetUnderlyingType(fieldType)!, new NoColumnInfo(), collection);
         }
         catch (InvalidFieldTypeException e)
         {
@@ -28,7 +28,7 @@ internal class NullableMapper : IFieldMapper
         return new Specialized(fieldType, underlyingMapper);
     }
 
-    public object? ReadValue(IDataRecord record, int offset) => throw new MapperMustBeSpecializedException();
+    public object ReadValue(IDataRecord record, int offset) => throw new MapperMustBeSpecializedException();
 
     public IEnumerable<object?> WriteValue(object? fieldValue) => throw new MapperMustBeSpecializedException();
 

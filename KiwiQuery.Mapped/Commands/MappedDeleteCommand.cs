@@ -1,20 +1,23 @@
 using KiwiQuery.Clauses;
+using KiwiQuery.Mapped.Mappers;
 
-namespace KiwiQuery.Mapped.Queries
+namespace KiwiQuery.Mapped.Commands
 {
 
 /// <summary>
 /// A SQL DELETE command for a mapped class. <br/>
 /// Instances of this class should be created from a <see cref="Schema"/> or a mapped <see cref="Table"/>.
 /// </summary>
-public class MappedDeleteCommand<T> : IHasWhereClause<MappedDeleteCommand<T>>
+public class MappedDeleteCommand<T> : IHasMappedWhereClause<MappedDeleteCommand<T>>
 where T : notnull
 {
     private readonly DeleteCommand rawQuery;
+    private readonly IMapper<T> mapper;
 
-    internal MappedDeleteCommand(DeleteCommand rawQuery)
+    internal MappedDeleteCommand(DeleteCommand rawQuery, IMapper<T> mapper)
     {
         this.rawQuery = rawQuery;
+        this.mapper = mapper;
     }
 
     /// <summary>
@@ -33,6 +36,9 @@ where T : notnull
 
     /// <inheritdoc />
     public WhereClauseBuilder WhereClause => this.rawQuery.WhereClause;
+    
+    /// <inheritdoc />
+    public IMappedRoot Root => this.mapper;
 }
 
 }

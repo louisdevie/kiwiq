@@ -24,11 +24,11 @@ internal class ConverterMapper : IFieldMapper
     {
         return new Specialized(
             this.converter.SpecializeFor(fieldType, info),
-            collection.GetMapper(this.converter.StorageType, new NoColumnInfo())
+            collection.GetMapper(this.converter.StorageType, new NoColumnInfo(), collection)
         );
     }
     
-    public object? ReadValue(IDataRecord record, int offset) => throw new MapperMustBeSpecializedException();
+    public object ReadValue(IDataRecord record, int offset) => throw new MapperMustBeSpecializedException();
 
     public IEnumerable<object?> WriteValue(object? fieldValue) => throw new MapperMustBeSpecializedException();
 

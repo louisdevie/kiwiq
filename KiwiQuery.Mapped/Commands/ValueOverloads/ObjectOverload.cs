@@ -1,13 +1,11 @@
-using KiwiQuery.Expressions;
-
-namespace KiwiQuery.Mapped.Queries.ValueOverloads
+namespace KiwiQuery.Mapped.Commands.ValueOverloads
 {
 
-internal class ValueOverload : IValueOverload
+internal class ObjectOverload : IValueOverload
 {
-    private readonly Value value;
+    private readonly object? value;
 
-    public ValueOverload(Value value)
+    public ObjectOverload(object? value)
     {
         this.value = value;
     }

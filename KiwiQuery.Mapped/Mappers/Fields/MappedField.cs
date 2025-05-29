@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using KiwiQuery.Expressions;
-using KiwiQuery.Mapped.Queries;
+using KiwiQuery.Mapped.Commands;
 
 namespace KiwiQuery.Mapped.Mappers.Fields
 {

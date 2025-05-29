@@ -1,12 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Data.Common;
 using KiwiQuery.Expressions;
+using KiwiQuery.Mapped.Commands;
 using KiwiQuery.Mapped.Extension;
 using KiwiQuery.Mapped.Mappers;
-using KiwiQuery.Mapped.Mappers.Builtin;
 using KiwiQuery.Mapped.Mappers.Fields;
-using KiwiQuery.Mapped.Queries;
 
 namespace KiwiQuery.Mapped
 {
@@ -21,10 +19,8 @@ public class ExtendedSchema : IFieldMapperCollection
     #region Attributes and constructors
 
     private readonly Schema schema;
-    private readonly List<IFieldMapper> fieldMappers;
-    private readonly Dictionary<Type, IFieldMapper> resolvedFieldMappers;
+    private readonly FieldMapperCollection fieldMappers;
     private readonly GenericMapperFactory mapperFactory;
-    private readonly Dictionary<Type, IMapper> existingMappers;
 
     /// <inheritdoc cref="Schema(DbConnection, Dialect)"/>
     public ExtendedSchema(DbConnection connection, Dialect dialect) : this(new Schema(connection, dialect)) { }
@@ -38,10 +34,8 @@ public class ExtendedSchema : IFieldMapperCollection
     public ExtendedSchema(Schema schema)
     {
         this.schema = schema;
-        this.fieldMappers = new List<IFieldMapper>();
-        this.resolvedFieldMappers = new Dictionary<Type, IFieldMapper>();
+        this.fieldMappers = new FieldMapperCollection(SharedMappers.Current);
         this.mapperFactory = new GenericMapperFactory(this.schema, this);
-        this.existingMappers = new Dictionary<Type, IMapper>();
     }
 
     #endregion
@@ -92,7 +86,7 @@ public class ExtendedSchema : IFieldMapperCollection
     where T : notnull
     {
         var mapper = this.GetMapper<T>();
-        return new MappedDeleteCommand<T>(this.schema.DeleteFrom(mapper.FirstTable.Name));
+        return new MappedDeleteCommand<T>(this.schema.DeleteFrom(mapper.FirstTable.Name), mapper);
     }
 
     /// <summary>
@@ -104,8 +98,8 @@ public class ExtendedSchema : IFieldMapperCollection
     public MappedDeleteCommand<T> DeleteFrom<T>(string table)
     where T : notnull
     {
-        _ = this.GetMapper<T>(); // create and cache the mapper anyway
-        return new MappedDeleteCommand<T>(this.schema.DeleteFrom(table));
+        var mapper = this.GetMapper<T>();
+        return new MappedDeleteCommand<T>(this.schema.DeleteFrom(table), mapper);
     }
 
     /// <summary>
@@ -154,42 +148,26 @@ public class ExtendedSchema : IFieldMapperCollection
     #region IFieldMapperCollection implementation
 
     /// <inheritdoc />
-    public void Register(IFieldConverter converter)
-    {
-        this.Register(new ConverterMapper(converter));
-    }
-
-    /// <inheritdoc />
     public void Register(IFieldMapper mapper)
     {
-        this.fieldMappers.Add(mapper);
+        this.fieldMappers.Register(mapper);
     }
-
-    IFieldMapper IFieldMapperCollection.GetMapper(Type fieldType, IColumnInfo info)
+    
+    /// <inheritdoc />
+    public void Register(IFieldConverter converter)
     {
-        if (!this.resolvedFieldMappers.TryGetValue(fieldType, out IFieldMapper? mapper))
-        {
-            mapper = DefaultMapperResolver.ResolveFromList(this, this.fieldMappers, fieldType, info);
-            this.resolvedFieldMappers.Add(fieldType, mapper);
-        }
-        return mapper;
+        this.fieldMappers.Register(converter);
     }
 
-    private IMapper<T> GetMapper<T>()
+    IFieldMapper IFieldMapperCollection.GetMapper(Type fieldType, IColumnInfo info, IFieldMapperCollection topCollection)
+    {
+        return ((IFieldMapperCollection) this.fieldMappers).GetMapper(fieldType, info, topCollection);
+    }
+
+    private GenericMapper<T> GetMapper<T>()
     where T : notnull
     {
-        IMapper<T> mapper;
-        Type entityType = typeof(T);
-        if (this.existingMappers.TryGetValue(entityType, out IMapper? existingMapper))
-        {
-            mapper = (IMapper<T>)existingMapper;
-        }
-        else
-        {
-            mapper = this.mapperFactory.MakeMapper<T>();
-            this.existingMappers.Add(entityType, mapper);
-        }
-        return mapper;
+        return this.mapperFactory.MakeMapper<T>();
     }
 
     #endregion
@@ -222,9 +200,6 @@ public class ExtendedSchema : IFieldMapperCollection
 
     /// <inheritdoc cref="Schema.Column(string)"/>
     public Column Column(string name) => this.schema.Column(name);
-
-    /// <inheritdoc cref="Schema.SubQuery(SelectCommand)"/>
-    public SubQuery SubQuery(SelectCommand query) => this.schema.SubQuery(query);
 
 #pragma warning restore CA1822
 // ReSharper restore MemberCanBeMadeStatic.Global

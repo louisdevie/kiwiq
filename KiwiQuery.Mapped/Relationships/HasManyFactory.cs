@@ -3,9 +3,8 @@ using KiwiQuery.Mapped.Commands;
 using KiwiQuery.Mapped.Mappers;
 
 namespace KiwiQuery.Mapped.Relationships
-{
-
-internal class HasOneFactory<T> : IRefValueFactory<T>
+{ 
+internal class HasManyFactory<T> : IRefValueFactory<T>
 #if NET8_0_OR_GREATER
 where T : notnull
 #else
@@ -16,7 +15,7 @@ where T : class
     private readonly Predicate predicate;
     private readonly Schema schema;
 
-    private HasOneFactory(IMapper mapper, Predicate predicate, Schema schema)
+    private HasManyFactory(IMapper mapper, Predicate predicate, Schema schema)
     {
         this.mapper = mapper;
         this.predicate = predicate;

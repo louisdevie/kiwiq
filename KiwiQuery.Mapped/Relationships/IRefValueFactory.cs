@@ -2,9 +2,7 @@ namespace KiwiQuery.Mapped.Relationships
 {
 
 internal interface IRefValueFactory<T>
-#if NET8_0_OR_GREATER
-where T : notnull
-#else
+#if !NET8_0_OR_GREATER
 where T : class
 #endif
 {

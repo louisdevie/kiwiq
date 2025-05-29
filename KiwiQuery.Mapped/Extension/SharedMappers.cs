@@ -10,7 +10,7 @@ namespace KiwiQuery.Mapped.Extension
 {
 
 /// <summary>
-/// A thread-safe, singleton implementation of <see cref="IFieldMapperCollection"/>. You can use it to register
+/// A singleton implementation of <see cref="IFieldMapperCollection"/>. You can use it to register
 /// mappers for the whole application.
 /// </summary>
 public class SharedMappers : IFieldMapperCollection
@@ -23,14 +23,12 @@ public class SharedMappers : IFieldMapperCollection
     public static SharedMappers Current => current ??= new SharedMappers();
 
     private readonly HashSet<string> loadedAssemblies;
-    private readonly ConcurrentStack<IFieldMapper> mappers;
-    private readonly ConcurrentDictionary<Type, IFieldMapper> resolved;
+    private readonly FieldMapperCollection mappers;
 
     private SharedMappers()
     {
         this.loadedAssemblies = new HashSet<string>();
-        this.mappers = new ConcurrentStack<IFieldMapper>();
-        this.resolved = new ConcurrentDictionary<Type, IFieldMapper>();
+        this.mappers = new FieldMapperCollection();
 
         BasicTypesMapper.RegisterAll(this);
         SpanMapper.RegisterAll(this);
@@ -78,7 +76,7 @@ public class SharedMappers : IFieldMapperCollection
                 && typeof(IFieldConverter).IsAssignableFrom(type)
                 && this.TryInvokeParameterlessConstructor(type, out object? converter))
             {
-                this.Register((IFieldConverter)converter);
+                this.mappers.Register((IFieldConverter)converter);
                 loaded = true;
             }
             if (!loaded
@@ -86,7 +84,7 @@ public class SharedMappers : IFieldMapperCollection
                 && typeof(IFieldMapper).IsAssignableFrom(type)
                 && this.TryInvokeParameterlessConstructor(type, out object? mapper))
             {
-                this.Register((IFieldMapper)mapper);
+                this.mappers.Register((IFieldMapper)mapper);
                 loaded = true;
             }
         }
@@ -111,21 +109,18 @@ public class SharedMappers : IFieldMapperCollection
     /// <inheritdoc />
     public void Register(IFieldConverter converter)
     {
-        this.Register(new ConverterMapper(converter));
+        this.mappers.Register(converter);
     }
 
     /// <inheritdoc />
     public void Register(IFieldMapper mapper)
     {
-        this.mappers.Push(mapper);
+        this.mappers.Register(mapper);
     }
 
-    IFieldMapper IFieldMapperCollection.GetMapper(Type fieldType, IColumnInfo info)
+    IFieldMapper IFieldMapperCollection.GetMapper(Type fieldType, IColumnInfo info, IFieldMapperCollection topCollection)
     {
-        return this.resolved.GetOrAdd(
-            fieldType,
-            _ => DefaultMapperResolver.ResolveFromList(this, this.mappers, fieldType, info)
-        );
+        return ((IFieldMapperCollection)this.mappers).GetMapper(fieldType, info, topCollection);
     }
 }
 

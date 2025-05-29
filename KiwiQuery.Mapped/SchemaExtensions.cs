@@ -1,6 +1,6 @@
+using KiwiQuery.Mapped.Commands;
 using KiwiQuery.Mapped.Extension;
 using KiwiQuery.Mapped.Mappers;
-using KiwiQuery.Mapped.Queries;
 
 namespace KiwiQuery.Mapped
 {
@@ -44,15 +44,15 @@ public static class SchemaExtensions
     where T : notnull
     {
         var mapper = new GenericMapperFactory(@this, SharedMappers.Current).MakeMapper<T>();
-        return new MappedDeleteCommand<T>(@this.DeleteFrom(mapper.FirstTable.Name));
+        return new MappedDeleteCommand<T>(@this.DeleteFrom(mapper.FirstTable.Name), mapper);
     }
 
     /// <inheritdoc cref="ExtendedSchema.DeleteFrom{T}(string)" />
     public static MappedDeleteCommand<T> DeleteFrom<T>(this Schema @this, string table)
     where T : notnull
     {
-        new GenericMapperFactory(@this, SharedMappers.Current).MakeMapper<T>();
-        return new MappedDeleteCommand<T>(@this.DeleteFrom(table));
+        var mapper = new GenericMapperFactory(@this, SharedMappers.Current).MakeMapper<T>();
+        return new MappedDeleteCommand<T>(@this.DeleteFrom(table), mapper);
     }
 
     /// <inheritdoc cref="ExtendedSchema.Update{T}()" />

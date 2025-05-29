@@ -1,20 +1,20 @@
 using System.Collections.Generic;
 using KiwiQuery.Clauses;
 using KiwiQuery.Expressions;
+using KiwiQuery.Mapped.Commands.ValueOverloads;
 using KiwiQuery.Mapped.Exceptions;
 using KiwiQuery.Mapped.Helpers;
 using KiwiQuery.Mapped.Mappers;
 using KiwiQuery.Mapped.Mappers.Filters;
-using KiwiQuery.Mapped.Queries.ValueOverloads;
 
-namespace KiwiQuery.Mapped.Queries
+namespace KiwiQuery.Mapped.Commands
 {
 
 /// <summary>
 /// A SQL UPDATE command for a mapped class. <br/>
 /// Instances of this class should be created from a <see cref="Schema"/> or a mapped <see cref="Table"/>.
 /// </summary>
-public class MappedUpdateCommand<T> : IHasWhereClause<MappedUpdateCommand<T>>
+public class MappedUpdateCommand<T> : IHasMappedWhereClause<MappedUpdateCommand<T>>
 where T : notnull
 {
     private readonly UpdateCommand rawQuery;
@@ -152,6 +152,9 @@ where T : notnull
 
     /// <inheritdoc />
     public WhereClauseBuilder WhereClause => this.rawQuery.WhereClause;
+    
+    /// <inheritdoc />
+    public IMappedRoot Root => this.mapper;
 }
 
 }

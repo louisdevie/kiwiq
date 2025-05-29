@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Threading.Tasks;
 
-namespace KiwiQuery.Mapped.Queries
+namespace KiwiQuery.Mapped.Commands
 {
 
 

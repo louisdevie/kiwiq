@@ -129,12 +129,6 @@ public class Schema
     /// <param name="name">The name of the column.</param>
     public Column Column(string name) => new Column(name, null);
 
-    /// <summary>
-    /// Turns a SELECT command into a subquery that you can then use anywhere a <see cref="Value"/> is expected.
-    /// </summary>
-    /// <param name="query">The subquery.</param>
-    public SubQuery SubQuery(SelectCommand query) => new SubQuery(query);
-
 #pragma warning restore CA1822
 // ReSharper restore MemberCanBeMadeStatic.Global
 }

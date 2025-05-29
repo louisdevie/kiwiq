@@ -1,4 +1,4 @@
-namespace KiwiQuery.Mapped.Queries.ValueOverloads
+namespace KiwiQuery.Mapped.Commands.ValueOverloads
 {
 
 internal interface IValueOverload
