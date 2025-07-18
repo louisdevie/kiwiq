@@ -12,9 +12,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Éléments de solution", "�
 		kiwiq-128.png = kiwiq-128.png
 		mkdocs.yml = mkdocs.yml
 		.readthedocs.yaml = .readthedocs.yaml
+		.gitignore = .gitignore
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{7D84F204-D5CE-4E4D-8A0F-B0EF662906B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KiwiQuery.Runner.MySQL", "KiwiQuery.Runner.MySQL\KiwiQuery.Runner.MySQL.csproj", "{47B48AB3-AD81-4D16-94C0-2814C8852333}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KiwiQuery.Runner.SQLite", "KiwiQuery.Runner.SQLite\KiwiQuery.Runner.SQLite.csproj", "{AA9B76E2-E768-467A-B576-1AE03CCEB8EA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,6 +35,14 @@ Global
 		{7D84F204-D5CE-4E4D-8A0F-B0EF662906B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D84F204-D5CE-4E4D-8A0F-B0EF662906B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D84F204-D5CE-4E4D-8A0F-B0EF662906B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47B48AB3-AD81-4D16-94C0-2814C8852333}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47B48AB3-AD81-4D16-94C0-2814C8852333}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47B48AB3-AD81-4D16-94C0-2814C8852333}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47B48AB3-AD81-4D16-94C0-2814C8852333}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA9B76E2-E768-467A-B576-1AE03CCEB8EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA9B76E2-E768-467A-B576-1AE03CCEB8EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA9B76E2-E768-467A-B576-1AE03CCEB8EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA9B76E2-E768-467A-B576-1AE03CCEB8EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
